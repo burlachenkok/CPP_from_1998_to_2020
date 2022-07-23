@@ -166,16 +166,18 @@ Contents:
 # Introduction
 
 
-On that technical note, we would like to share complete information regarding C and C++ programming languages. If you do not know C/C++, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it. Here "know" has a weak sense; we have tried to appeal even to people with a bit of background in C/C++.
+On that technical note, we would like to share complete information regarding some C standards and C++ programming language C++03/11/14/17/20 standards. If you do not know C/C++ at all, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it mosty. Here "know" has a weak sense. In fact, we have tried to appeal even to people with a bit of background in C/C++.
 
-Do not get us wrong. If you have never seen the C/C++ language to obtain knowledge, we recommend first look into original books by Bjarne Stroustrup first. It would be only more effective for you. In recent years, Bjarne Stroustrup has made a lot of effort by providing easy-to-read books such as: ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend for whom the language is new firstly read that books. If you're not sure should I learn C++ or not, then maybe the example presented in section "Why learn C++ if I know Python (Toy Example)" of this document will bring some consideration to your mind. Even C++ is complex, but currently, it's the fastest high-level, general-purpose programming language.
+Do not get us wrong. If you have never seen the C/C++ language to obtain knowledge, we recommend first dedicating some time to reading original books by Bjarne Stroustrup. It would be only more effective for you. In recent years, Bjarne Stroustrup has made a lot of effort by providing easy-to-read books such as: ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend for whom the language is new firstly read that books. 
+
+If you're not sure should I learn C++ or not, then maybe the example presented in section *"Why learn C++ if I know Python (Toy Example)"* of this document will bring some consideration to your mind. C++ is complex, but currently, it's the fastest high-level, general-purpose programming language in the world.
 
 That note is mainly based on materials from the Reference section and personal experience. We think that information can be helpful for three categories of people:
 * People who want to refresh or go deep into several language constructions.
 * Obtain a pretty in-depth overview of new features from C++11/14/17/20.
 * People who need to support (legacy) C++03 or C99 code base.
 
-Finally, we welcome anybody who wants to make this note cleaner. We appreciate the style between *language lawyers'* style and *practical applicability* style, but we don't want to have both extremes.
+Finally, we welcome anybody who wants to make this note cleaner. We appreciate the style of *language lawyer* and *practical applicability*, but we don't want to have any of the extremes of both of that styles.
 
 # Glossary
 
@@ -217,61 +219,90 @@ public:
 
 *C/C++*. By C/C++ we mean C or C++ programming languages.
 
-*LValue*. An lvalue evaluates to some persistent value with an address in memory where you can store something. Informally that is something to the left of the operator equals. Each lvalue is implicitly converted to an rvalue. Typically, an lvalue reference is an alias for another variable.
-
-*XValue*. Something that would be destroyed very soon and an object for which it is reasonable to use move semantics to take data via `T&&` notation from C++11.
+*LValue*. An lvalue evaluates to some persistent value with an address in memory where you can store something. Informally that is something to the left of the operator equals. Each lvalue is implicitly converted to an rvalue.
 
 *RValue*. An rvalue evaluates a result that is stored only transiently. Expression from which the address cannot be taken. This is something that, at least in principle, can be encoded in the code of generated instructions for the processor. (in 99% of cases, these are unnamed temporary variables. A good counterexample is an *rvalue* but has the name `this.`
 
- Unfortunately, starting from C++11, the *object type* and *reference type* do not match each other.
+----
 
-*LValue Reference* - Lvalue object may be bound to the LValue reference through syntax `X&x = obj;` where `X` is the datatype of `obj`.
+**Important:** Unfortunately, starting from C++11, the *object type* and *reference type* do not match each other due to a more complicated picture with values(expressions) and references.
 
-*RValue Reference (only for C++98/03)* - usual const regular reference in C++03. May bind to LValue Const reference.
+----
 
-*RValue Reference (starting from C++11)* - The goal of an rvalue reference is to have a moving candidate for functions like `void f(T&&)`. Reference to object that soon will be deleted. What was known in C++03/98 as *RValue Reference* starting from C++11 is only named as  *Const LValue Reference*.
+*XValue*. Something that would be destroyed very soon and an object for which it is reasonable to use move semantics to take data via `T&&` notation from C++11.
+
+*LValue Reference (for all C++)* - Typically, an lvalue reference is an alias for another variable. Lvalue object may be bound to the LValue reference through syntax `X&x = obj;` where `X` is the datatype of `obj`.
+
+*RValue Reference (only for C++98/03)* - In C++01 it is a usual const regular reference to a temporary object or expression that can be used from the right-hand side of the operator `=`.
+
+*RValue Reference (starting from C++11)* - The goal of an rvalue reference is to have a moving candidate for functions like `void f(T&&)`. In practice, RValue Reference is either (1) reference to an object that soon will be deleted (xvalue expression), or (2) Explicitly unconditionally casted reference to the object through `std::move` to rvalue reference. The last option explicitly allows to reuse of memory of that object and after moving brings it to a valid, but the undefined state. 
+
+----
+
+**Comment:** It is absolutely legal and valid to reuse an object after moving from it, but the object should be initialized via class API.
+
+----
+
+**Important:** What was known in C++03/98 as *RValue Reference* starting from C++11 is named as  *Const LValue Reference*.
+
+----
 
 # Motivation
 
 The C/C++ programming language represents a pretty thin abstraction over the underlying hardware. The software level below C/C++ is Assembly Language for your computing device.
 
-Why computing is critical is excellently motivated by Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/) from MIT, in his undergraduate course about [Algorithms and Data structures](https://ocw.mit.edu/courses/6-046j-introduction-to-algorithms-sma-5503-fall-2005/). 
+Why computing is critical is excellently motivated by Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/) from MIT, in his undergraduate course about [Algorithms and Data structures](https://ocw.mit.edu/courses/6-046j-introduction-to-algorithms-sma-5503-fall-2005/) in the first lecture. 
 
-Nowadays, in 2022 due to [Tobex Index July 2022](https://www.tiobe.com/tiobe-index/), the interpretable programming language [Python](https://www.python.org/) is a big fashion. Python is lightly beyond C in terms of popularity. Interestingly, but Python has been designed originally as a replacement for Bash (See that [blogpost](https://l.facebook.com/l.php?u=https%3A%2F%2Fpython-history.blogspot.com%2F2009%2F01%2Fpersonal-history-part-1-cwi.html%3Ffbclid%3DIwAR1v3C4KHiJtBbG4NYVY2o__lMchCNVKQGe2ozoI-gcxnwCYNvcdxzD_sHU&h=AT1quzeQEvwmfgFXMnWscdzCzWIJrbgoyQKX22c6w2yzVSaUt9LBMdrL66UgpJaz3rh_-BLBa8FVu3sdV_NzuiuSTU4XPZ5zADu4wGoASMxLcRR-n7Emwogq664lszQUbTZM&__tn__=-UK-R&c[0]=AT3TC-zKWleGu9UDUQg6mUKEWZ-El56OnANy8jfnUXLhGPAIHIfrXp6ZVEhtbJztlbUu_3OhD9sRJ7JA_F3ETiL3BsR0dKi58KfhLRwPsHtyRauqYQXDGtxnIeFWRyAxyop0WlHBapKPdoYnVar9DUy3pudNCdWdZ1c4wlxvNA3qoA) written by Guido van Rossum):
+Nowadays, in 2022 due to [Tobex Index July 2022](https://www.tiobe.com/tiobe-index/), the interpretable programming language [Python](https://www.python.org/) is the most popular in that world. In fact, Python is only slightly beyond C in terms of popularity. Interestingly, Python has been designed originally only as a replacement for Bash (See that [blogpost](https://l.facebook.com/l.php?u=https%3A%2F%2Fpython-history.blogspot.com%2F2009%2F01%2Fpersonal-history-part-1-cwi.html%3Ffbclid%3DIwAR1v3C4KHiJtBbG4NYVY2o__lMchCNVKQGe2ozoI-gcxnwCYNvcdxzD_sHU&h=AT1quzeQEvwmfgFXMnWscdzCzWIJrbgoyQKX22c6w2yzVSaUt9LBMdrL66UgpJaz3rh_-BLBa8FVu3sdV_NzuiuSTU4XPZ5zADu4wGoASMxLcRR-n7Emwogq664lszQUbTZM&__tn__=-UK-R&c[0]=AT3TC-zKWleGu9UDUQg6mUKEWZ-El56OnANy8jfnUXLhGPAIHIfrXp6ZVEhtbJztlbUu_3OhD9sRJ7JA_F3ETiL3BsR0dKi58KfhLRwPsHtyRauqYQXDGtxnIeFWRyAxyop0WlHBapKPdoYnVar9DUy3pudNCdWdZ1c4wlxvNA3qoA) written by Guido van Rossum):
 
 > ...My original motivation for creating Python was the perceived need for a higher level language in the Amoeba project. I realized that the development of system administration utilities in C was taking too long. Moreover, doing these in the Bourne shell wouldn't work for a variety of reasons. The most important one was that as a distributed micro-kernel system with a radically new design, Amoeba's primitive operations were very different (and finer-grain) than the traditional primitive operations available in the Bourne shell. So there was a need for a language that would "bridge the gap between C and the shell"...
 
-It is not a secret that today people try to apply Python beyond launching scripts but creating other user space applications. Sometimes when many Algorithms are implemented in C++ or Hardware, and they are available via Python bindings, or the overhead of Python or real consumed compute/memory efforts does not matter because the bottleneck is in another place, it may be a choice. 
+But it is not a secret that today people try to apply Python beyond launching scripts but creating other user space applications. Sometimes, when many underlying Algorithms are implemented in C++ or inside Hardware, and they are available via Python bindings and the overhead of Python is negligible it may be a choice.
 
-We think the main reason popularity of Python is primarily due to the fast learning curve measured by three days (only Language, no external libraries, frameworks, or middleware). At the same time, it's impossible to learn C++ in 3 days. We think the C++ community should think about it for its survival. On that Technical Note, we have attempted to systematize it a bit.
+We think the main reason popularity of Python is primarily due to the fast learning curve measured by three days (only Language, no external libraries, frameworks, or middleware). At the same time, it's impossible to learn C++ in 3 days. We think the C++ community should think about it for its survival.
 
-But any interpretable languages are not a choice when actual time matters or subtle control over the memory in DRAM or any connected device to the computer.
+But any interpretable languages are not a choice when actual time matters or subtle control over the memory in DRAM or any memory/compute inside any device connected to the computer matters, even programming only in user space.
 
 ## Downsides of Interpretable Languages
 
-1. Interpretable languages provide algorithms that are 50'000 times slower than highly optimized C/C++/ASM code. For details, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). Also, the overview of that course is also available here [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
-The interpreter typically parses the program's text line by line (that represented or in text form or extremely high-level instructions), which is highly inefficient.
-2. Interpretable languages do not provide subtle interfaces to work with POSIX API and other OS-dependent APIs. Instead, it provides bindings for which the team that developed the interpreter had time to finish.
-3. During work with interpretable languages, you don't have an interface to work with the computer's memory of devices.
-4. Make correct multithreading, and thread synchronization implementation is suboptimal in the interpreter or impossible.
-5. Garbage Collector brings various limitations to any programming language. For example, pointer arithmetic is disallowed in any language with GC. [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/).
-6. There are some subtleties with implementing function calls in specific hardware that can not be done effectively at the level of the interpreter. Specifically, function inlining or passing arguments via registers or global program optimization is problematic to implement in interpreters due to its high-level design.
-7. The implementation of an interpreter (for example, Python) is a collection of C/C++ libraries wrapped up into the program that can execute the command and therefore called an interpreter. So interpreter as a computer program adds an extra level of abstraction. It improves the time for completing the project, but implementation is suboptimal.
-8. The absence of a compiler makes handling problems in the code testable without a compiler. It has *pros.* you do not spend time on a compilation, but there are *cons.* now, the compiler will not tell you about errors in the code because there is no compiler.
-9. Due to high abstraction, Interpretable Languages violate any memory locality principles. And on that principle, memory caches in all levels of various memory storage are working inside modern computing devices.
-10. Uncontrollable memory allocations in a program that should work for a long time and during runtime allocate memory will lead to memory fragmentation and crash.
+1. The interpreter parses the program's text line by line (that represented or in text form or extremely high-level instructions), which is highly inefficient. As a consequence, Interpretable languages provide algorithms that are up to 50'000 times slower in computing than highly optimized C/C++/ASM code.
 
-The interpretable language is excellent for prototyping, and the project highly leverages constructed C/C++ libraries. But any interpreter, any algorithm in it, can be beaten by C++/ASM implementation. At least be aware of that.
+For a concrete example, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). The overview of that course is also available here [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
+
+2. Interpretable languages do not provide subtle interfaces to  POSIX API and other OS-dependent APIs. It provides bindings for that API which the team that developed the interpreter had time to finish.
+
+3. During work with interpretable languages, you don't have an interface to work with the memory of the devices inside the computer.
+
+4. Make correct multithreading, and thread synchronization implementation is suboptimal in the interpreter or just impossible.
+
+5. Garbage Collector brings various limitations to any programming language. For example, pointer arithmetic is disallowed in any language with GC. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
+
+6. There are some subtleties with implementing function calls in specific hardware that can not be done effectively at the level of the interpreter. Specifically, function inlining or passing arguments via registers or global program optimization is problematic to implement in interpreters due to its high-level design.
+
+7. The implementation of an interpreter (for example, Python) is a collection of C/C++ libraries wrapped up into the program that can execute the command and therefore called an interpreter. So interpreter as a computer program adds an extra level of abstraction. It improves the time for completing the project, but implementation is suboptimal.
+
+8. The absence of a compiler makes handling problems in the code testable without a compiler. It has *pros.* you do not spend time on a compilation, but there are *cons.* now, the compiler will not tell you about errors in the code because there is no compiler.
+
+9. Due to high abstraction, Interpretable Languages violate memory locality principles because almost everything is allocated on the heap. Memory Locality is essential because, on that principle (all natural), memory caches in all levels of various memory storage are working inside modern computing devices.
+
+10. Uncontrollable memory allocations in a program that should work for a long time and during runtime allocate may lead to memory fragmentation and another problems.
+
+The interpretable language is excellent for prototyping, and the project highly leverages constructed C/C++ libraries. But any interpreter, any algorithm in it, can be beaten by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
 
 ## Downsides of C/C++
 
 1. C++ is pretty complex if considering all language details. That aspect is not suitable for spreading the language in society. 
 
-2. So powerful expressivity of C++ is a technical power. At the same time, it's its weakness for obtaining new adepts. Without new adepts, any concept will die. Due to the high entry level for C++ in Academia, high momentum belongs to Python, not C++. And C++ is used only when necessary (E.g., you really need to work with the hardware, or you need to have algorithms/mathematical model that operates in real-time or be careful in terms of consumed memory).
+2. So powerful expressivity of C++ is a technical power. At the same time, it's its weakness for obtaining new adepts. Without new adepts, any concept will die. 
 
-3. The speed of development of the prototype is faster in Python.
+3. Due to the high entry level for C++ in Academia, high momentum belongs to Python, not to C++ at all. And C++ is used only when necessary (E.g., you really need to work with the hardware, or you need to have algorithms/mathematical model that operates in real-time or be careful in terms of consumed memory).
 
-4. C++, to some extent, forces you to be aware of hardware level. It's not clear is it good or bad. On one side, when you want to try an idea, interpretable language provides a fast way to do that. On another side, widespread usage of interpretable languages will lead to situations in which many people will not know how the computer works. You will lose the ability to distinguish a big lie from a small lie and truth in the context of computing machines.
+4. The speed of development of the prototype is faster in Python.
+
+5. C++, to some extent, forces you to be aware of hardware level. It's not clear is it good or bad. 
+
+* On one side, when you want to try an idea, interpretable language provides a fast way to do that. 
+* On another side, widespread usage of interpretable languages will lead to situations in which many people will not know how the computer works. You will lose the ability to distinguish a big lie from a small lie and truth in the context of computing machines.
 
 People predict that C++ will die for three decades, but it is not happening. It seems that the fundamental things of the language make it immortal, even though the language tends to be more and more complex. 
 
@@ -295,9 +326,14 @@ Some language decisions due to B.Stroustoup:
 - *"Templates are not Generics (from C# or Java). Generics are primarily syntactic sugar for abstract classes. That is, with generics (whether Java or C# generics), You program against precisely defined interfaces and typically pay the cost of virtual function calls and/or dynamic casts to use arguments."*
 
 # Why learn C++ if I know Python (Toy Example)
-Sometimes while making programs in Python, you need to write programs directly in Python, not only call external C++ libraries from it.
 
-Let's compare the wall clock time of two programs written in C++11 and Python3 under the following assumptions:
+Sometimes while making programs in Python, you need to write programs directly in Python, not only call external C++ libraries from it. Possible reasons why you need (really) implement algorithm in Python:
+* Algorithm is short and suitable for CPU.
+* Library does not exist and does not provide Python bindings.
+* Library does not provide enough configuration
+* You need to change something fundamental inside Library, but Library is written in C++ and you don't know C++.
+
+Unfortunately, creating an (CPU effective) algorithm in Python when total wall clock time matters is not easy at all. As a concrete example Let's compare the wall clock time of two programs written in C++11 and Python3 under the following assumptions:
 * Both programs use single-core CPU 
 * C++ program does not use any special optimization techniques. It's usual C++ code.
 
@@ -378,14 +414,19 @@ int main() {
 }
 ```
 > Output for building and compiling with g++ 7.5.0:
-`g++ -O3 -Wall --std=c++11 -s test2.cpp -o testcpp; ./testcpp`
+
+> `g++ -O3 -Wall --std=c++11 -s test2.cpp -o testcpp; ./testcpp`
 
 > Processing 10M elements takes 16 ms
 Sum is: 5e+13
 
-In Python programming language, the `float` type is equivalent to `double` in C/C++. (See [sys.float_info](https://docs.python.org/3/library/sys.html#sys.float_info) in Python3 Library documentation).
+----
 
-The C++ implementation:
+**Comment:** In Python programming language, the `float` type is equivalent to `double` in C/C++. (See [sys.float_info](https://docs.python.org/3/library/sys.html#sys.float_info) in Python3 Library documentation).
+
+----
+
+From that benchmark we see that the C++ implementation:
 * works *x137* times faster than plain Python implementation
 * works *x65* times faster than Python implementation that uses Numpy
 
