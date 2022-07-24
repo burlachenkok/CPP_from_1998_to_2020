@@ -2586,23 +2586,27 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/languag
 
 Standart `#include` preprocessor directive helps organize project but at a considerable cost. The desirability of modules due to B.Stroustroup was already well known in 1980.
 
-Modules will come from C++20 to upgrade the understanding of header files. And there are reasons to include it in standards.B.Stroustroup mentions two things:
+Modules have come with C++20 to upgrade the understanding of header files. And there are reasons to include it in standards.B.Stroustroup mentions two things:
 - Google reports x2-4 improvements in compile-time
 - Microsoft reports x5-x50 times improvements in compile time
 
-Modules result in reduced compilation times. The order in which you import modules never matters.
+Result of applying modules:
+* Reduce compilation time. 
+* The order in which you import modules never matters.
 
-The C++20 has introduced the mechanism to form self-contained
-subcomponents of related functionality, called a module. Important conceptual things:
+The C++20 has introduced that mechanism to form a self-contained
+subcomponents of related functionality and called it a *module*. 
 
-* A module can *export* any number of C++ entities (functions, constants, types, and so on)
-* An exported entity by one module can be used in any source file that *imports* that module.
-* A module can *export entire other modules*. 
-* The combination of all entities that a module export is called the *module interface*.
+Before technical details, let's take a look into several critical conceptual things:
 
-In real life compiler is not yet fully supported modules (At the moment of 2022), so please be careful.
+* A module can **export** any number of C++ entities (functions, constants, types, etc.)
+* An exported entity by one module can be used in any source file that **imports** that module.
+* A module can **export entire other modules**. 
+* The combination of all entities that a module export is called the **module interface**.
 
-Modules usage has many features so that we will go example by example.
+In real life, compilers are not yet fully supported modules (At the moment of 2022), so please be careful if you're going to use them in 2022 and check that your toolchain supports it.
+
+We will go example by example to open all features.
 
 ## Single Module Interface File/Module Unit
 
@@ -2612,11 +2616,16 @@ Modules usage has many features so that we will go example by example.
 // *.cppm is c++ module file/module unit.
 
 // 1. At the start of every module file is a module declaration
-export module simple;
 // 2. "export module ..." means that this is module interface file
-// 3. Within a module name you may use dots to string together multiple identifiers. Module names are the only names in C++ in which this is allowed.
+export module simple;
+
+// 3. Within a module name you may use dots to concatenate together multiple identifiers. Module names are the only names in C++ in which this is allowed.
+// Example: export module simple.my.hello;
+
+//---------------------------------------------------------
 // 4. All import declarations must appear after the module declaration
-// 5. To export an entity from a module, you simply add export.
+// 5. To export an entity from a module, you simply add "export".
+
 export auto square(const auto& x) { return x * x; }
 export enum class Oddity { Even, Odd };
 export auto getOddity(int x) 
@@ -2624,23 +2633,26 @@ export auto getOddity(int x)
   return isOdd(x) ? Oddity::Odd : Oddity::Even; 
 }
 // 6. Only module interface files may contain export declarations.
-
 // 7. You can also export multiple entities all at once by grouping them into export block.
 export
 {
   const double a{ 1.2 }; 
   const double b{ 1.5 }; 
 }
+//----------------------------------------------------------
 
-// 8. Module-local function (not exported)
+// 8. Module Local function (not exported)
 bool isOdd(int x) { return x % 2 != 0; } 
-// 9. Only entities that are exported by a module can be used in files that import the module
+
+// 9. Only entities that are exported by a module can be used in files that "import" the module
 ```
 
 ## Module Interface File With Implementation inside it
-First of all you may delcare export symbols and implement them inside module interface file.
+First, you may declare export symbols and implement them inside the module interface file, as seen in the previous subsection.
+
 ```cpp
 export module simple;
+
 export // The module's interface
 {
  auto square(const auto& x);
@@ -2656,9 +2668,10 @@ auto square(const auto& x) { return x * x; }
 ## Module Interface File With Separate Implementation
 
 The module interface file then includes the prototypes of all exported functions. Their definitions, along with any
-module-local entities can be moved to one or more *module implementation files*.
+module-local entities can be moved to one or more **module implementation files**.
 
-In a module file, all import declarations must appear after the module declaration and before any other.
+In a **module interface file**, all import declarations must appear after the module declaration only.
+
 ```cpp
 // mymodule.cppm – Interface test file
 export module mymodule;
@@ -2671,6 +2684,7 @@ export std::string to_string(unsigned int i);
 
 // 1. Unlike module interface files, a module implementation file does not begin with the export keyword. 
 // 2. You are not even allowed to repeat the export keyword here in front of the definition of to_string
+
 module mymodule;
 import <string>;
 std::string to_string(unsigned int i)
@@ -2683,7 +2697,7 @@ Every module implementation file implicitly:
 * Gains access to all declarations, even those that are not exported. [5,p.396]
 
 ## What you can not Define in a Module Implementation File
-Some entities must always be defined in a module interface file:
+Some entities must always be defined in a **module interface file**:
 
 1. The definitions of all exported templates,
 2. A function definition with `auto` return type deduction. For auto return type deduction to work, the compiler needs the function definition to be part of the module interface.
@@ -2692,7 +2706,7 @@ Some entities must always be defined in a module interface file:
 
 Compiling a module interface creates a binary representation of all exported entities for the compiler to consult when processing files that import the module quickly.
 
-You import the module by `import mymodule;` declaration. You do not put angle brackets around the name of your modules, and add you should use a semicolumn at the end of the expression.
+You import the module via the `import mymodule;` declaration. You do not put angle brackets around the name of your modules, and add you should use a semicolon at the end of the expression, which is not the case when you C preprocessor.
 
 Unlike for header files, the name that you use to *import* a module is not based on the name of the file that contains the module interface. It is based on the name that is declared in the `export module mymodule;` declaration.
 
@@ -2717,7 +2731,7 @@ If you add export in front of an import declaration in module interface files (E
 easily. The possibility to use dot (`.`) in the names of modules allows adapting it to make it easier to see the relation between modules and their submodules. Dots were explicitly allowed in module names to facilitate such hierarchical naming.
 
 2. *Use Module Partitions.* Submodules can be imported
-individually by the rest of the application because they are just modules. Module partitions are only visible within a module.
+individually by the rest of the application because they are just modules. Module partitions are not. They are only visible within a module.
 ```cpp
 // internals.cpp – Module implementation file for the internals partition
 
@@ -2726,6 +2740,7 @@ individually by the rest of the application because they are just modules. Modul
 // 3. It is not allowed to export any entities
 
 module mymodule:internals;
+
 unsigned int from_c(char c)
 {
  // Same switch statement as before...
@@ -2737,7 +2752,7 @@ To then use the internals partition and its function in the module implementatio
 // mymodule.cpp – Implementation
 module mymodule;
 
-// Module partitions can only be imported into other files of the same module, and only using import :partition_name;
+// Module partitions can only be imported into other files of the same module, and only via using import :partition_name;
 import :internals;
 
 unsigned int from_abc(std::string roman)
@@ -2769,8 +2784,7 @@ export import :partb;
 
 # Templates
 
-1. In addition to type, template parameters include Non Type Parameters, which can have the type of integral constant, reference, and a pointer to a given function. Pointers to data of function must have an external link type. As of C++20, a template parameter can be of any fundamental type (bool, float, int, and so on), enumeration type, pointer type, and reference type. [4, p.380]. The compiler needs to be able to evaluate the arguments corresponding to all non-type parameters
-at compile time.
+1. In addition to type, template parameters include Non Type Parameters, which can have the type of integral constant, reference, and a pointer to a given function. Pointers to data of function must have an external link type. Starting from C++20, a template parameter can be of any fundamental type (bool, float, int, and so on), enumeration type, pointer type, and reference type. [4, p.380]. The compiler needs to be able to evaluate the arguments corresponding to all non-type parameters at compile time.
 
 2. You can use `template` to create a specialization for the array with a fixed size.
 ```cpp
