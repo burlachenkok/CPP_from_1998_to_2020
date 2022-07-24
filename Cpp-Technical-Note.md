@@ -165,8 +165,7 @@ Contents:
 
 # Introduction
 
-
-On that technical note, we would like to share complete information regarding some C standards and C++ programming language C++03/11/14/17/20 standards. If you do not know C/C++ at all, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it mosty. Here "know" has a weak sense. In fact, we have tried to appeal even to people with a bit of background in C/C++.
+On that technical note, we would like to share complete information regarding C programming language and all primary C++ programming language standards: C++03/11/14/17/20. If you do not know C/C++ at all, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it mosty. Here "know" has a weak sense. In fact, we have tried to appeal even to people with a bit of background in C/C++.
 
 Do not get us wrong. If you have never seen the C/C++ language to obtain knowledge, we recommend first dedicating some time to reading original books by Bjarne Stroustrup. It would be only more effective for you. In recent years, Bjarne Stroustrup has made a lot of effort by providing easy-to-read books such as: ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend for whom the language is new firstly read that books. 
 
@@ -675,13 +674,14 @@ The UTF-8 and UTF-16 are variable width encodings for characters. Not all letter
 
 ## Function Call Nuances
 
-1. There are two kinds of function calls in C++ only:
+1. There are only two kinds of function and function calls in C++:
 * *Ordinary function call.* 
-* *Member function call*. A static member function is an ordinary function. ([6], 9.4)
+A static member function is an ordinary function ([6], 9.4).
+* *Member function call*. 
 
 2. In functions with `void` return types or when the return type is absent, e.g., in constructors/destructors, you can have the absence of a ```return``` statement in a function body. It is equivalent to an explicit ```return;``` at the end of the function body.
 
-3. But due to ([6], 6.6.3) *"Flowing off the end of a function is equivalent to a return with no value; **this results in undefined behavior in a value-returning function**."*
+3. Due to ([6], 6.6.3) *"Flowing off the end of a function is equivalent to a return with no value; **this results in undefined behavior in a value-returning function**."*
 
 4. In C++, the `main` function cannot be called recursively.
 
@@ -2239,7 +2239,7 @@ This indicates that the use of the name or entity declared with this attribute i
 ```cpp
 [[deprecated]] void func(int);
 ```
-Documentaion: [cpp reference details](https://en.cppreference.com/w/cpp/language/attributes/deprecated).
+Documentaion: [cpp reference details about deprecated](https://en.cppreference.com/w/cpp/language/attributes/deprecated).
 
 ## 2. Return Type Deduction
 For functions, it is now possible to deduce the return type from its return statements.
@@ -2249,7 +2249,7 @@ auto f() {
    return 42;
 }
 ```
-Documentaion: [cpp reference details](https://en.cppreference.com/w/cpp/language/auto).
+Documentaion: [cpp reference details about auto](https://en.cppreference.com/w/cpp/language/auto).
 
 ## 3. Binary Literals
 In C/C++, you can use decimal literals (`123`), hexadecimal literals (`0xFF, 0Xff`), and octal literals (`071`). 
@@ -2259,7 +2259,7 @@ Starting from C++14, there is support for Binary Literals. You can write a binar
 ```cpp
 unsigned char a = 0b00110011;
 ```
-Documentaion: [cpp reference details](https://en.cppreference.com/w/cpp/language/integer_literal).
+Documentaion: [cpp reference details about integer literals](https://en.cppreference.com/w/cpp/language/integer_literal).
 
 ## 4. Variable Templates
 
@@ -2269,12 +2269,16 @@ template<class T>
 inline constexpr T pi = T(3.14159)
 ```
 
+Documentaion: [cpp reference details about variable template](https://en.cppreference.com/w/cpp/language/variable_template).
+
 ## 5. Delimiter Inside Numeric Literals
 
 You can use the single quote character to separate digits for readability in integer literals. Example:
 ```cpp
 long long d {10'000'000LL};
 ```
+Documentaion: [cpp reference details about integer literals](https://en.cppreference.com/w/cpp/language/integer_literal).
+
 
 ## 6. std::make_unique<T>
 
@@ -2287,7 +2291,7 @@ struct Vec {
 };
 std::unique_ptr<Vec> v = std::make_unique<Vec>();
 ```
-Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique).
+Documentation: [cpp reference details about make_unique](https://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique).
 
 # Miscellaneous Features of C++17
 
@@ -2303,7 +2307,7 @@ auto [n,v] = read_entry(is)
 
 The `auto [n,v]` declares two local variables n and v with their types deduced from read_entry() return type. This mechanism for giving local names to members of a class object is named a structured binding.
 
-Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/structured_binding).
+Documentation: [cpp reference details structured binding](https://en.cppreference.com/w/cpp/language/structured_binding).
 
 ## 2. Deduce Template Parameters from Ctor. Arguments
 
@@ -2319,7 +2323,7 @@ public:
 ```
 Starting from C++17 it's possible to just write `A a(123);` instead of `A<int> a(123)`. Before C++17, such a feature was supported only for template functions but not for template classes. That feature is called Class Template Argument Deduction.
 
-Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction).
+Documentation: [cpp reference details about class template deduction](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction).
 
 ## 3. Compile Time if 
 
@@ -2340,13 +2344,22 @@ int main() {
 }
 ```
 
-Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/if).
+Documentation: [cpp reference details about compile if](https://en.cppreference.com/w/cpp/language/if).
 
 ## 4. __has_include Macro
-The new macro `__has_include ` to test that header file is presented. Example of usage: `#if __has_include(<optional>)`.
+The new macro `__has_include ` to test that header file is presented. Example of usage: 
+```cpp
+#if __has_include(<optional>)
+#endif
+```
+
+Documentation: [cpp reference details about feature test](https://en.cppreference.com/w/cpp/feature_test).
 
 ## 5. std::byte
 C++17 introduces byte type to work directly with bytes `std::byte` defined in `<cstddef>`.
+
+Documentation: [cpp reference details about std::byte](https://en.cppreference.com/w/cpp/types/byte).
+
 
 ## 6. [[fallthrough]]
 In C/C++ language in `switch` construction, if not explicitly use `break` instruction, instruction flow will fall through after the first `case` statement without reevaluating the predicate. The C++17 added a language feature to signal to the compiler and the person reading your code that you are intentionally using a fallthrough. Example:
@@ -2363,6 +2376,8 @@ case 78:
 //...
 }
 ```
+
+Documentation: [cpp reference details about fallthrough](https://en.cppreference.com/w/cpp/language/attributes/fallthrough).
 
 ## 7. Initialization Statements in if/switch/for
 
@@ -2389,35 +2404,40 @@ The `std::optional` is a class template for conceptually storing an object. The 
 * call the `has_value()` member function.
 * compare the `optional` object to `std::nullopt`.
 
+Documentation: [cpp reference details about optional](https://en.cppreference.com/w/cpp/utility/optional).
 
 ## 9. std::string_view
 The type `std::string_view` has been introduced in C++17. It can be used instead of `const std::string&` for input string
 parameters. Initializing or copying a string_view is very cheap.
 Similar to `std::string_view` there is a `std::span<const T>` that can be used instead of `const std::vector<T>&`.
 
+Documentation: [cpp reference details about optional](https://en.cppreference.com/w/cpp/string/basic_string_view).
+
 ## 10. Inline Variables
 
 Inline variables have been supported only since C++17.
 ```cpp
 // C++17 simplified static variables declaration
-class Objects
-{
- static inline size_t s_object_count {};
+class Objects {
+    static inline size_t s_object_count {};
 };
 ```
 Before inline variables, it was possible to use static variables, but the burden to add static variables into compilable unit is under your responsibility.
 ```cpp
-class ObjectsOld
-{
- static size_t s_object_count;
+class ObjectsOld {
+    static size_t s_object_count;
 };
 
 // somewhere in cpp unit
 size_t ObjectsOld::s_object_count;
 ```
+Documentation: [cpp reference details about inline keyword](https://en.cppreference.com/w/cpp/string/basic_string_view).
+
 
 ## 11. The Exception Specification has been Removed
 The exception specification has been deprecated in C++11 and removed from C++17.
+
+Details: [Core Working Group about removing Deprecated Exception Specifications from C++17](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0003r5.html)
 
 # Miscellaneous Features of C++20
 
@@ -2744,23 +2764,20 @@ For more info: please view at "B.13.6 template" in Special Edition, Biern Strous
 5. A template specialization can be complete (type int), or partial (the type that uses T as the basis for something else). However, the general template must be declared before any partial or complete specialization. Also, partial specialization only works for classes but doesn't work for functions. Example:
 ```cpp
 template <class T>
-struct Single
-{
+struct Single {
   Single() : var(T()) {}
   T var;
 };
 
 template <class T>
-struct Single<T*>
-{
+struct Single<T*> {
   Single() : var(T()) {}
   T var;
   int extra_for_ptr;
 };
 
 template <>
-struct Single<int>
-{
+struct Single<int> {
   Single() : var(int()) {}
   int var;
   int extra_for_int;
@@ -2782,8 +2799,9 @@ When instantiating a template, starting from C++11 not necessary to make a space
 Example of using `>>`:
 ```cpp
 template <class T, int size>
-class AA
-{};
+class AA {
+};
+
 AA<std::vector<int>>, 2> obj;
 ```
 
@@ -2792,7 +2810,7 @@ from longer to shorter form A->B->C. On the complex rules of the admissible deri
 
 ```cpp
 template <class T>
-void swap(T* a, T* b)
+void swap(T* a, T* b) 
 {
    Ttemp = *a;
    *a = *b;
@@ -2854,8 +2872,7 @@ extern template void MyVector<int>::size();
 Let's assume you define template class Array, e.g. in the following way:
 ```cpp
 template <typename T>
-class Array
-{
+class Array {
 public:
   explicit Array<T>(size_t size);
   ~Array<T>();
@@ -2869,8 +2886,7 @@ private:
 Using the complete(full) template identifier within a template definition scope is not essential. So the following is the legal code:
 ```cpp
 template <typename T>
-class Array
-{
+class Array {
 public:
   explicit Array(size_t size);
   ~Array();
