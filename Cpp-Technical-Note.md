@@ -328,7 +328,7 @@ Some language decisions due to B.Stroustoup:
 
 Sometimes while making programs in Python, you need to write programs directly in Python, not only call external C++ libraries from it. Possible reasons why you need (really) implement algorithm in Python:
 * Algorithm is short and suitable for CPU.
-* Library does not exist and does not provide Python bindings.
+* Library does not exist or Library exists but does not provide Python bindings.
 * Library does not provide enough configuration
 * You need to change something fundamental inside Library, but Library is written in C++ and you don't know C++.
 
