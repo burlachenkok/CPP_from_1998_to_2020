@@ -165,18 +165,18 @@ Contents:
 
 # Introduction
 
-On that technical note, we would like to share complete information regarding C programming language and all primary C++ programming language standards: C++03/11/14/17/20. If you do not know C/C++ at all, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it mosty. Here "know" has a weak sense. In fact, we have tried to appeal even to people with a bit of background in C/C++.
+On that technical note, we would like to share complete information regarding C programming language and all primary C++ programming language standards: C++03/11/14/17/20. If you do not know C/C++, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it a bit. Here "know" has a weak sense. We have also tried to appeal in that note to people with a not-so-big background in C/C++.
 
-Do not get us wrong. If you have never seen the C/C++ language to obtain knowledge, we recommend first dedicating some time to reading original books by Bjarne Stroustrup. It would be only more effective for you. In recent years, Bjarne Stroustrup has made a lot of effort by providing easy-to-read books such as: ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend for whom the language is new firstly read that books. 
+Do not get us wrong. If you have never seen the C/C++ language to obtain knowledge, we recommend first dedicating some time to reading original books by Bjarne Stroustrup. It would be only more effective for you. In recent years, Bjarne Stroustrup has made a lot of effort by providing easy-to-read books such as: ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend for whom the language is new firstly read any of that books.
 
 If you're not sure should I learn C++ or not, then maybe the example presented in section *"Why learn C++ if I know Python (Toy Example)"* of this document will bring some consideration to your mind. C++ is complex, but currently, it's the fastest high-level, general-purpose programming language in the world.
 
 That note is mainly based on materials from the Reference section and personal experience. We think that information can be helpful for three categories of people:
-* People who want to refresh or go deep into several language constructions.
+* People who want to refresh or go deep into several language constructions of C++.
 * Obtain a pretty in-depth overview of new features from C++11/14/17/20.
 * People who need to support (legacy) C++03 or C99 code base.
 
-Finally, we welcome anybody who wants to make this note cleaner. We appreciate the style of *language lawyer* and *practical applicability*, but we don't want to have any of the extremes of both of that styles.
+Finally, we welcome anybody who wants to make this note cleaner. We appreciate the style of *language lawyer* and *practical applicability*, but we don't want to have any of the extremes of both types.
 
 # Glossary
 
@@ -2030,8 +2030,12 @@ If you call the function through a base pointer, you will always get the default
 
 The `emplace_back` construct object is directly in place in the memory of the container.
 
+Documentation: [cpp reference details about emplace_back](https://en.cppreference.com/w/cpp/container/vector/emplace_back).
+
 ## 2. vector::shrink_to_fit
 vector::shrink_to_fit method requests the removal of unused capacity from reserved memory of std::vector that encapsulates dynamic linear array.
+
+Documentation: [cpp reference details about shrink_to_fit](https://en.cppreference.com/w/cpp/container/vector/shrink_to_fit).
 
 ## 3. noexcept
 The `noexcept` specification - like `throw()` specification for functions from C++98/03, but it allows more optimization. And also, `throw()` is an explicit exception specification. The exception specification has been deprecated in C++11 and removed from C++17.
@@ -2133,7 +2137,12 @@ using MyAllocVec = std::vector<T, MyAllocator>;
 // MyAllocVec is alias template
 ```
 
-They cannot be partially specialized and can be used wherever `typedef` is used.
+**Remarks:**
+* They cannot be partially specialized 
+* They can be used wherever `typedef` is used.
+
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/type_alias).
+
 
 ## 12. Static Variables are Always Initialized Thread Safe
 
@@ -2191,7 +2200,7 @@ public:
 Derived d1(1);    
 Derived d2(2, 3);
 ```
-Documentation: [cpp reference](https://en.cppreference.com/w/cpp/language/constructor).
+Documentation: [cpp reference about constructors](https://en.cppreference.com/w/cpp/language/constructor).
 
 
 ## 15. Destructors are Implicitly noexcept
@@ -2201,21 +2210,23 @@ Starting with C++11, destructors are normally implicitly `noexcept`. Even if you
 ## 16. Fixed Width Integer Types
 Since C++11 various fixed integer types like `std::int64_t` is a part of the library and are available from `<cstdint>`.
 
+Documentation: [cpp reference about integer types](https://en.cppreference.com/w/cpp/types/integer)
+
 ## 17. Concurrency Support
 
 For first-time concurrency support has been introduced into the language for C++11. Before C++11 the language was not aware of multithreading aspects.
 
-* `std::thread`. Independent execution by real OS threads. Thread detachment when no thread joining is needed is supported.
+* [std::thread](https://en.cppreference.com/w/cpp/thread/thread). Independent execution by real OS threads. Thread detachment when no thread joining is needed is supported.
 
-* `std::async()`. Request asynchronous execution of a function
-* `std::future<ret_type>`. Token representing functions result and encapsulate thrown exception.
+* [std::async()](https://en.cppreference.com/w/cpp/thread/async). Request asynchronous execution of a function
+* [std::future<ret_type>](https://en.cppreference.com/w/cpp/thread/future). Token representing functions result and encapsulate thrown exception.
 
-* Mutexes (`std::mutex`, `std::timed_mutex`, `std::recursive_mutex`, `std::recursive_timed_mutex`, `std::shared_timed_mutex`) for controlled access to shared data.
-* Condition Variables (`std::condition_variable`). To allow threads to communicate about changes to shared data. Via ability to notify one/all waiting threads.
-* `thread_local` data with static storage duration for thread-specific data.
-* `std::atomic` atomic types (e.g., std::atomic<int>) with memory ordering options.
-* Thread safe one-time function invocation (`std::call_once`).
-* Thread safe initialization garantees of objects of static storage duration.
+* Mutexes ([std::mutex](https://en.cppreference.com/w/cpp/thread/mutex), [std::timed_mutex](https://en.cppreference.com/w/cpp/thread/timed_mutex), [std::recursive_mutex](https://en.cppreference.com/w/cpp/thread/recursive_mutex), [std::recursive_timed_mutex](https://en.cppreference.com/w/cpp/thread/recursive_timed_mutex), [std::shared_timed_mutex](https://en.cppreference.com/w/cpp/thread/shared_timed_mutex)) for controlled access to shared data.
+* Condition Variables ([std::condition_variable](https://en.cppreference.com/w/cpp/thread/condition_variable)). To allow threads to communicate about changes to shared data. Via ability to notify one/all waiting threads.
+* [thread_local](https://en.cppreference.com/w/cpp/language/storage_duration) data with static storage duration for thread-specific data.
+* [std::atomic](https://en.cppreference.com/w/cpp/atomic/atomic) atomic types (e.g., `std::atomic<int>`) with memory ordering options.
+* Thread safe only one-time function invocation ([std::call_once](https://en.cppreference.com/w/cpp/thread/call_once)).
+* Thread safe initialization garantees of objects of [static](https://en.cppreference.com/w/cpp/language/storage_duration#Static_local_variables) storage duration.
 * There are some Library thread safety guarantees (e.g., for std::cin/std::cout, containers). Please check 
 ([9], [link](https://www.stroustrup.com/C++11FAQ.html#std-threads)).
 
@@ -2231,6 +2242,8 @@ class MyClass {
 MyClass a;
 std::string s = static_cast<std::string>(w)); // ok
 ```
+
+Documentation: [cpp reference about explicit keyword](https://en.cppreference.com/w/cpp/language/explicit).
 
 # Miscellaneous Features of C++14
 
@@ -2442,7 +2455,26 @@ Details: [Core Working Group about removing Deprecated Exception Specifications 
 # Miscellaneous Features of C++20
 
 ## 1. [[no_unique_address]]
-The `[[no_unique_address]]` attribute allows empty non-static data members to share space with another subobject of a different type.
+The `[[no_unique_address]]` attribute allows empty non-static data members to share space with another subobject of a different type. Example based on materials from cpp reference:
+
+```cpp
+#include <iostream>
+struct Empty  {};
+
+struct X {
+    int i;
+    [[no_unique_address]] Empty e;
+};
+
+int main() {
+    X obj;
+    std::cout << ( (void*)&obj.i == (void*)&obj.e );
+    return 0;
+}
+```
+
+Documentation: [cpp reference details about no_unique_address](https://en.cppreference.com/w/cpp/language/attributes/no_unique_address).
+
 
 ## 2. Spaceship operator
 
@@ -2462,6 +2494,7 @@ The `<=>` operator can return one of the following return types:
 
 * std::weak_ordering. It's a enumeration type of available values - std::strong_ordering::less, std::strong_ordering::greater, std::strong_ordering::equivalent.
 
+Documentation: [cpp reference details about no_unique_address](https://en.cppreference.com/w/cpp/language/operator_comparison).
 
 ## 3. [[likely]] and [[unlikely]]
 
@@ -2475,6 +2508,8 @@ switch(value) {
     break;
 }
 ```
+
+Documentation: [cpp reference details about likely](https://en.cppreference.com/w/cpp/language/attributes/likely).
 
 ## 4. std::format()
 
@@ -2493,15 +2528,23 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/utility
 
 Compile time information about current source file `source_location::current()`. Defined in `<source_location>`.
 
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/utility/source_location/current).
+
 ## 6. [[nodiscard(reason)]]
 
 Attribute `[[nodiscard(reason)]]` applied for function and described the consequence of discarding the return object from the function call. And the compiler is encouraged to issue a warning in case of discarding the return value. Example:
 ```cpp
-[[nodiscard("DO NOT IGNORE")]] int sum(int x, int y) { return x + y; }
+[[nodiscard("DO NOT IGNORE")]] int sum(int x, int y) 
+{ return x + y; }
 ```
+Documentation: [cpp reference details about nodiscard](https://en.cppreference.com/w/cpp/language/attributes/nodiscard).
 
 ## 7. Only one Signed Integer Representation
 Starting from `C++20`, there is only one signed integer representation, and it's twos-complement-notation.
+
+Documentation: [cpp reference details about fundamental types](https://en.cppreference.com/w/cpp/language/types).
+
+
 
 ## 8. Abbreviated Function Templates
 
@@ -2526,6 +2569,8 @@ If you overload `operator ==` C++20 compiler automatically generates `operator !
 ## 10. Right Shift is Arithmetic Right Shift
 
 From C++20 the right-shift on signed integral types is an arithmetic right shift, which performs sign-extension. It's not an undefined behaviour.
+
+Documentation: [cpp reference arithmetic operations details](https://en.cppreference.com/w/cpp/language/operator_arithmetic).
 
 ## 11. Designated initializers
 
