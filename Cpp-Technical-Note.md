@@ -336,9 +336,15 @@ Unfortunately, creating an (CPU effective) algorithm in Python when total wall c
 * Both programs use single-core CPU 
 * C++ program does not use any special optimization techniques. It's usual C++ code.
 
-The test is based on comparing the behavior of native Python lists and NumPy arrays versus flat C arrays for performing setup elements in the array, their summation, and conversion to `double` (fp64). We will perform a sum of 10M elements of arithmetic series(start element is 0 and step is 1, number of elements is 10M) via brute force. Our OS is Ubuntu 18.04.6, x86_64.
+The test is based on comparing the behavior of:
+1. Python with native Python lists
+2. Python implementation with NumPy arrays
+3. Cython(a programming language that mixes C and Python)
+4. Flat C/C++ arrays used in C/C++. 
 
-**Native Python implementations:**
+The task is performing setup elements in the array in an arithmetic sequence, their summation, and conversion to `double` (fp64). We will perform a sum of 10M elements of arithmetic series(start element is 0 and step is 1, number of elements is 10M) via brute force. Our OS is Ubuntu 18.04.6, x86_64.
+
+**1. Native Python implementations:**
 
 ```Python
 #!/usr/bin/env python3
@@ -363,11 +369,12 @@ print(str.format("Sum is {0:g}" , s))
 > Processing 10.0M elements takes:  2193.230390548706 ms
 Sum is 5e+13`
 
-**Python implementations based on using numpy:**
+**2. Python implementations based on using numpy:**
 
 ```Python
 #!/usr/bin/env python3
 # Python Code that leverages Numpy Library 1.22.4
+# pip install numpy
 
 import time
 import numpy as np
@@ -388,7 +395,57 @@ print(str.format("Sum is {0:g}" , s))
 > Processing 10.0M elements takes:  1051.522970199585  milliseconds
 Sum is 5e+13
 
-**C/C++ implementation:**
+**3. Cython implementation**
+
+```python
+#!/usr/bin/env python
+# setup.py
+# Cython version 0.29.24
+# pip install Cython
+
+from setuptools import setup
+from Cython.Build import cythonize
+
+setup(
+    name        = 'Reduction Test',
+    ext_modules = cythonize("*.pyx"),
+    zip_safe    = False,
+)
+```
+
+```python
+#!/usr/bin/env python3
+import time
+
+start = time.time()
+
+cdef int i
+cdef double s
+cdef int[10*1000*1000] a
+
+for i in range(10*1000*1000):
+    a[i] = i
+    s += float(a[i])
+end = time.time()
+
+print(f"Processing {len(a)/1000000}M elements takes: ", (end - start) * 1000.0, " milliseconds")
+print(str.format("Sum is {0:g}" , s))
+```
+**Build and launch**
+> python setup.py build_ext --inplace
+
+> python -c "import test_cython"
+----
+
+Output for Python 3.6.9:
+
+> 'Processing 10M elements takes: 19.9463367 milliseconds
+
+> Sum is 5e+13
+
+----
+
+**4. C/C++ implementation:**
 ```cpp
 #include <iostream>
 #include <chrono>
@@ -425,11 +482,21 @@ Sum is: 5e+13
 
 ----
 
-From that benchmark we see that the C++ implementation:
+**Results.** From that benchmark we see that the C++ implementation:
 * works *x137* times faster than plain Python implementation
 * works *x65* times faster than Python implementation that uses Numpy
+* works *x1.18* faster compare to [Cython](https://cython.readthedocs.io/en/latest/index.html) implementation
 
-There are other ways to speed up Python implementation and another way to speed up C++ implementation. The big picture is that if you need to have a highly effective algorithm implementation in Python by itself, it's not easy to be better even than usual C++ code, even in simple things.
+The big picture is that if you need to have a highly effective algorithm implementation in Python by itself (without appealing to variations of Python language such as Cython), it's not easy to be better even than usual C++ code, even in simple things.
+
+> [Cython](https://cython.readthedocs.io/en/latest/index.html) is Python language with C data types. During using Cython the source code into C/C++ code and compiled as Python extension modules. 
+> 
+> As you see compilable languages brings an extemely great speedup.Almost any piece of Python code is also valid Cython code (See [Cython limitations](https://cython.readthedocs.io/en/latest/src/userguide/limitations.html)). 
+> Cythons two major use cases: 
+> 1. Extending the CPython interpreter with fast binary modules
+> 2. Interfacing Python code with external C libraries.
+> 
+> As we have observed Cython provides a way to speedup at least simple Python code. But usage of Cython brings to situation that you are not using interpreter anymore.
 
 # Standards for the Language
 
