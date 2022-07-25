@@ -307,12 +307,11 @@ The interpretable language is excellent for prototyping, and the project highly 
 People predict that C++ will die for three decades, but it is not happening. It seems that the fundamental things of the language make it immortal, even though the language tends to be more and more complex. 
 
 # Deep principles of the Language
-
-Principles of C++ language, which B.Stroustrup put into the Language in 1994, are still inside it, and they are the heart of the Language ([3]):
+The language started as a project in Bell Labs in 1979 ([3]).  The principles of C++ language, which B.Stroustrup put into the Language, were documented between 1981 and 1991. They existed even before the decision of standardization that took place in 1989. More importantly principles of the language even in 2022 are still inside it, and they are the heart of the Language ([3]):
 
 1. No implicit violation of static type system.
 2. Provide good support for user-defined types similar to built-in types.
-3. The locality is good.
+3. The locality of memory access patterns for variables and arrays is good for hardware in the long term.
 4. Zero-Overhead principle:
 
     a. What you don't use, you should not pay for.
