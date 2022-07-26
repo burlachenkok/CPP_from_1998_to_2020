@@ -269,26 +269,28 @@ But any interpretable languages are not a choice when actual time matters or sub
 
 For a concrete example, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). The overview of that course is also available here [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
 
-2. Interpretable languages do not provide subtle interfaces to  POSIX API and other OS-dependent APIs. It provides bindings for that API which the team that developed the interpreter had time to finish.
+2. Interpretable languages do not provide subtle interfaces to  POSIX API or [Windows API](https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list) or other OS-dependent APIs. It provides bindings for that API which the team that developed the interpreter had time to finish.
 
-3. During work with interpretable languages, you don't have an interface to work with the memory of the devices inside the computer.
+3. To some extent, interpreters provide portability in the source code for user space applications. Still, it comes with the cost of reducing the number of possible calls to OS. Creating portability at the source code level between different OS is a big thing, and in the past, people thought about that, and that problem brought to the creation of [POSIX](https://en.wikipedia.org/wiki/POSIX). So if your goal is portability between different OS, it can be solved via standardization of API to OS without using extra software layers.
 
-4. Make correct multithreading, and thread synchronization implementation is suboptimal in the interpreter or just impossible.
+4. During work with interpretable languages, you don't have an interface to work with the memory of the devices inside the computer.
 
-5. Garbage Collector(GC) brings various limitations to any programming language. For example, pointer arithmetic is disallowed in any language with GC. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
+5. Make correct multithreading, and thread synchronization implementation is suboptimal in the interpreter or just impossible.
 
-6. Some subtleties exist with implementing function calls(referred to as functions linkage in Assembly language books) in specific hardware. It can not be done effectively at the level of an interpreter if it is not compilable language. Specifically, function inlining or passing arguments via registers or global program optimization is problematic to implement in interpreters due to the high-level design of interpreters.
+6. Garbage Collector(GC) brings various limitations to any programming language. For example, pointer arithmetic is disallowed in any language with GC. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
 
-7. The implementation of an interpreter (for example, CPython) is a collection of C/C++ libraries wrapped up into the program that can execute the command and therefore called an interpreter. So interpreter as a computer program adds an extra level of abstraction. 
+7. Some subtleties exist with implementing function calls(referred to as functions linkage in Assembly language books) in specific hardware. It can not be done effectively at the level of an interpreter if it is not compilable language. Specifically, function inlining or passing arguments via registers or global program optimization is problematic to implement in interpreters due to the high-level design of interpreters.
+
+8. The implementation of an interpreter (for example, CPython) is a collection of C/C++ libraries wrapped up into the program that can execute the command and therefore called an interpreter. So interpreter as a computer program adds an extra level of abstraction. 
 The standard implementation Python interpreter is CPython. It is called CPython, because it is implemented in C/C++. Such software as an interpreter improves the time for completing the project type, but implementation is suboptimal.
 
-8. The absence of a compiler has *pros* - you do not spend time on a compilation, but there are *cons* - now, the compiler will not tell you about errors in the code because there is no compiler.
+9. The absence of a compiler has *pros* - you do not spend time on a compilation, but there are *cons* - now, the compiler will not tell you about errors in the code because there is no compiler.
 
-9. Due to high abstraction, Interpretable Languages violate memory locality principles because almost everything is allocated on the heap. Memory Locality is essential because, on that principle (all natural), memory caches in all levels of various memory storage are working inside modern computing devices.
+10. Due to high abstraction, Interpretable Languages violate memory locality principles because almost everything is allocated on the heap. Memory Locality is essential because, on that principle (all natural), memory caches in all levels of various memory storage are working inside modern computing devices.
 
-10. Uncontrollable memory allocations in a program that should work for a long time and during runtime allocate may lead to memory fragmentation and another problems.
+11. Uncontrollable memory allocations in a program that should work for a long time and during runtime allocate may lead to memory fragmentation and another problems.
 
-The interpretable language is excellent for prototyping, and the project highly leverages constructed C/C++ libraries. Any interpreter, any algorithm in it, can be beaten by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
+The interpretable language is excellent for prototyping, and the project, in that case, interpreter infrastructure will leverage into C/C++ libraries implicitly. But any interpreter, any user space algorithm in it, can be beaten by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
 
 ## Downsides of C/C++
 
