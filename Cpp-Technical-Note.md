@@ -19,7 +19,6 @@ Contents:
 - [Deep principles of the Language](#deep-principles-of-the-language)
 - [Why learn C++ if I know Python (Toy Example)](#why-learn-c---if-i-know-python--toy-example-)
 - [Standards for the Language](#standards-for-the-language)
-- [Language Author Point of View](#language-author-point-of-view)
 - [Language Guarantees](#language-guarantees)
 - [Stages of Processing Source Code in C++](#stages-of-processing-source-code-in-c--)
 - [What is Impossible Even in C/C++](#what-is-impossible-even-in-c-c--)
@@ -170,7 +169,7 @@ On that technical note, we would like to share complete information regarding C 
 
 Do not get us wrong. If you have never seen the C/C++ language to obtain knowledge, we recommend first dedicating some time to reading original books by Bjarne Stroustrup. It would be only more effective for you. In recent years, Bjarne Stroustrup has made a lot of effort by providing easy-to-read books such as: ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend for whom that language is new firstly read any of that books.
 
-If you're not sure should I learn C++ or not, then maybe the example presented in section *"Why learn C++ if I know Python (Toy Example)"* of this document will bring some consideration to your mind. C++ is complex, but currently, it's the fastest  (in terms of execution speed in CPU) high-level, general-purpose programming language in the world.
+If you're not sure whether you should learn C++ or not, then maybe the example presented in section *"Why learn C++ if I know Python (Toy Example)"* of this document will bring some consideration to your mind. C++ is complex, but currently, it's the fastest  (in terms of execution speed in CPU) high-level, general-purpose programming language in the world.
 
 That note is mainly based on materials from the Reference section and personal experience. We think that information can be helpful for three categories of people:
 * People who want to refresh or go deep into several language constructions of C++.
@@ -185,7 +184,7 @@ Finally, we welcome anybody who wants to make this note cleaner. We appreciate t
 
 *A Deep Copy.* A deep copy copies all dynamic memory objects referred to by any pointer members.
 
-*Upcast.* Casting object to it's the base class.
+*Upcast.* Casting object to its base class
 
 *Downcast.* Casting object to the derived class.
 
@@ -217,9 +216,9 @@ public:
 
 *Abstract Class.* A class that contains at least one pure virtual function.
 
-*C/C++*. By C/C++ we mean C or C++ programming languages.
+*C/C++*. By C/C++, we mean C or C++ programming languages.
 
-*LValue*. An lvalue evaluates to some persistent value with an address in memory where you can store something. Informally that is something to the left of the operator equals. Each lvalue is implicitly converted to an rvalue.
+*LValue*. An `lvalue` evaluates during compile time to some persistent value with an address in memory where you can store something. Informally that is something to the left of the operator equals. Each value is implicitly converted to an rvalue.
 
 *RValue*. An rvalue evaluates a result that is stored only transiently. Expression from which the address cannot be taken. This is something that, at least in principle, can be encoded in the code of generated instructions for the processor. (in 99% of cases, these are unnamed temporary variables. A good counterexample is an *rvalue* but has the name `this.`
 
@@ -233,17 +232,19 @@ public:
 
 *LValue Reference (for all C++)* - Typically, an lvalue reference is an alias for another variable. Lvalue object may be bound to the LValue reference through syntax `X&x = obj;` where `X` is the datatype of `obj`.
 
-*RValue Reference (only for C++98/03)* - In C++01 it is a usual const regular reference to a temporary object or expression that can be used from the right-hand side of the operator `=`.
+*RValue Reference (only for C++98/03)* - In C++03, it is a usual const regular reference to a temporary object or expression that can be used from the right-hand side of the operator `=`.
 
-*RValue Reference (starting from C++11)* - The goal of an rvalue reference is to have a moving candidate for functions like `void f(T&&)`. In practice, RValue Reference is either (1) reference to an object that soon will be deleted (xvalue expression), or (2) Explicitly unconditionally casted reference to the object through `std::move` to rvalue reference. The last option explicitly allows to reuse of memory of that object and after moving brings it to a valid, but the undefined state. 
-
-----
-
-**Comment:** It is absolutely legal and valid to reuse an object after moving from it, but the object should be initialized via class API.
+*RValue Reference (starting from C++11)* - The goal of an rvalue reference is to have a moving candidate for functions like `void f(T&&)`. In practice, RValue reference is either:
+* A reference to an object that soon will be deleted (xvalue expression) 
+* Explicitly unconditionally casted reference to the object through `std::move` to an rvalue reference. The last option explicitly allows to reuse of memory of that object and, after moving, brings it to a valid but undefined state. 
 
 ----
 
-**Important:** What was known in C++03/98 as *RValue Reference* starting from C++11 is named as  *Const LValue Reference*.
+**Comment:** Reusing an object after moving from it is legal and valid. In that case, you should reinitialize the object using class API or the logic behind the class.
+
+----
+
+**Important:** What was known in C++03/98 as *RValue Reference* starting from C++11 has been renamed into  *Const LValue Reference*.
 
 ----
 
@@ -253,11 +254,11 @@ The C/C++ programming language represents a pretty thin abstraction over the und
 
 Why computing is critical is excellently motivated by Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/) from MIT, in his undergraduate course about [Algorithms and Data structures](https://ocw.mit.edu/courses/6-046j-introduction-to-algorithms-sma-5503-fall-2005/) in the first lecture. 
 
-Nowadays, in 2022 due to [Tobex Index July 2022](https://www.tiobe.com/tiobe-index/), the interpretable programming language [Python](https://www.python.org/) is the most popular in that world. In fact, Python is only slightly beyond C in terms of popularity. Interestingly, Python has been designed originally only as a replacement for Bash (See that [blogpost](https://l.facebook.com/l.php?u=https%3A%2F%2Fpython-history.blogspot.com%2F2009%2F01%2Fpersonal-history-part-1-cwi.html%3Ffbclid%3DIwAR1v3C4KHiJtBbG4NYVY2o__lMchCNVKQGe2ozoI-gcxnwCYNvcdxzD_sHU&h=AT1quzeQEvwmfgFXMnWscdzCzWIJrbgoyQKX22c6w2yzVSaUt9LBMdrL66UgpJaz3rh_-BLBa8FVu3sdV_NzuiuSTU4XPZ5zADu4wGoASMxLcRR-n7Emwogq664lszQUbTZM&__tn__=-UK-R&c[0]=AT3TC-zKWleGu9UDUQg6mUKEWZ-El56OnANy8jfnUXLhGPAIHIfrXp6ZVEhtbJztlbUu_3OhD9sRJ7JA_F3ETiL3BsR0dKi58KfhLRwPsHtyRauqYQXDGtxnIeFWRyAxyop0WlHBapKPdoYnVar9DUy3pudNCdWdZ1c4wlxvNA3qoA) written by Guido van Rossum):
+Nowadays, in 2022 due to [Tobex Index July 2022](https://www.tiobe.com/tiobe-index/), the interpretable programming language [Python](https://www.python.org/) is the most popular in that world. From the graphics, you can observe that Python is slightly beyond C in terms of popularity. Interestingly, Python has been designed originally only as a replacement for Bash (See that [blogpost](https://l.facebook.com/l.php?u=https%3A%2F%2Fpython-history.blogspot.com%2F2009%2F01%2Fpersonal-history-part-1-cwi.html%3Ffbclid%3DIwAR1v3C4KHiJtBbG4NYVY2o__lMchCNVKQGe2ozoI-gcxnwCYNvcdxzD_sHU&h=AT1quzeQEvwmfgFXMnWscdzCzWIJrbgoyQKX22c6w2yzVSaUt9LBMdrL66UgpJaz3rh_-BLBa8FVu3sdV_NzuiuSTU4XPZ5zADu4wGoASMxLcRR-n7Emwogq664lszQUbTZM&__tn__=-UK-R&c[0]=AT3TC-zKWleGu9UDUQg6mUKEWZ-El56OnANy8jfnUXLhGPAIHIfrXp6ZVEhtbJztlbUu_3OhD9sRJ7JA_F3ETiL3BsR0dKi58KfhLRwPsHtyRauqYQXDGtxnIeFWRyAxyop0WlHBapKPdoYnVar9DUy3pudNCdWdZ1c4wlxvNA3qoA) written by Guido van Rossum):
 
-> ...My original motivation for creating Python was the perceived need for a higher level language in the Amoeba project. I realized that the development of system administration utilities in C was taking too long. Moreover, doing these in the Bourne shell wouldn't work for a variety of reasons. The most important one was that as a distributed micro-kernel system with a radically new design, Amoeba's primitive operations were very different (and finer-grain) than the traditional primitive operations available in the Bourne shell. So there was a need for a language that would "bridge the gap between C and the shell"...
+> "...My original motivation for creating Python was the perceived need for a higher level language in the Amoeba project. I realized that the development of system administration utilities in C was taking too long. Moreover, doing these in the Bourne shell wouldn't work for a variety of reasons. The most important one was that as a distributed micro-kernel system with a radically new design, Amoeba's primitive operations were very different (and finer-grain) than the traditional primitive operations available in the Bourne shell. So there was a need for a language that would "bridge the gap between C and the shell"...", said Guido van Rossum.
 
-But it is not a secret that today people try to apply Python beyond launching scripts but creating other user space applications. Sometimes, when many underlying Algorithms are implemented in C++ or inside Hardware, and they are available via Python bindings and the overhead of Python is negligible it may be a choice.
+It is not a secret that today people try to apply Python beyond launching scripts but creating other user space applications. Sometimes, when many underlying Algorithms are implemented in C++ or inside Hardware, and they are available via Python bindings, and the overhead of Python is negligible, it may be a choice.
 
 We think the main reason popularity of Python is primarily due to the fast learning curve measured by three days (only Language, no external libraries, frameworks, or middleware). At the same time, it's impossible to learn C++ in 3 days. We think the C++ community should think about it for its survival.
 
@@ -269,26 +270,26 @@ But any interpretable languages are not a choice when actual time matters or sub
 
 For a concrete example, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). The overview of that course is also available here [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
 
-2. Interpretable languages do not provide subtle interfaces to  POSIX API or [Windows API](https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list) or other OS-dependent APIs. It provides bindings for that API which the team that developed the interpreter had time to finish.
+2. Interpretable languages do not provide subtle interfaces to  POSIX API or [Windows API](https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list) or other OS-dependent APIs. It provides bindings for API that the team that developed the interpreter had time to finish.
 
 3. To some extent, interpreters provide portability in the source code for user space applications. Still, it comes with the cost of reducing the number of possible calls to OS. Creating portability at the source code level between different OS is a big thing, and in the past, people thought about that, and that problem brought to the creation of [POSIX](https://en.wikipedia.org/wiki/POSIX). So if your goal is portability between different OS, it can be solved via standardization of API to OS without using extra software layers.
 
-4. During work with interpretable languages, you don't have an interface to work with the memory of the devices inside the computer.
+4. During work with interpretable languages, you don't have an interface to work with the devices' memory inside the computer.
 
-5. Make correct multithreading, and thread synchronization implementation is suboptimal in the interpreter or just impossible.
+5. Make correct multithreading and thread synchronization implementation is suboptimal in the interpreter or just impossible.
 
-6. Garbage Collector(GC) brings various limitations to any programming language. For example, pointer arithmetic is disallowed in any language with GC. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
+6. Garbage Collector(GC) brings various limitations to any programming language. For example, GC disallows any pointer arithmetics. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
 
 7. Some subtleties exist with implementing function calls(referred to as functions linkage in Assembly language books) in specific hardware. It can not be done effectively at the level of an interpreter if it is not compilable language. Specifically, function inlining or passing arguments via registers or global program optimization is problematic to implement in interpreters due to the high-level design of interpreters.
 
 8. The implementation of an interpreter (for example, CPython) is a collection of C/C++ libraries wrapped up into the program that can execute the command and therefore called an interpreter. So interpreter as a computer program adds an extra level of abstraction. 
-The standard implementation Python interpreter is CPython. It is called CPython, because it is implemented in C/C++. Such software as an interpreter improves the time for completing the project type, but implementation is suboptimal.
+The standard implementation Python interpreter is CPython. It is called CPython because it has been implemented in C/C++. Such software as an interpreter improves the time for completing the project type, but implementation is suboptimal.
 
 9. The absence of a compiler has *pros* - you do not spend time on a compilation, but there are *cons* - now, the compiler will not tell you about errors in the code because there is no compiler.
 
-10. Due to high abstraction, Interpretable Languages violate memory locality principles because almost everything is allocated on the heap. Memory Locality is essential because, on that principle (all natural), memory caches in all levels of various memory storage are working inside modern computing devices.
+10. Due to high abstraction, Interpretable Languages violate memory locality principles because almost every object is allocated on the heap. Memory Locality is essential because on that principle all memory caches in all levels of various memory storage are working inside modern computing devices.
 
-11. Uncontrollable memory allocations in a program that should work for a long time and during runtime allocate may lead to memory fragmentation and another problems.
+11. Uncontrollable memory allocations in a program that should work for a long time and during runtime require extra memory allocation may lead to memory fragmentation and other problems.
 
 The interpretable language is excellent for prototyping, and the project, in that case, interpreter infrastructure will leverage into C/C++ libraries implicitly. But any interpreter, any user space algorithm in it, can be beaten by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
 
@@ -298,23 +299,23 @@ The interpretable language is excellent for prototyping, and the project, in tha
 
 2. Powerful expressivity of C++ is a technical power. At the same time, it's its weakness for obtaining new adepts. Without new adepts, any concept will die. 
 
-3. Due to the high entry level for C++ in Academia, high momentum belongs to Python, not to C++ at all. And C++ is used only when necessary (E.g., you really need to work with the hardware, or you need to have algorithms/mathematical model that operates in real-time or be careful in terms of consumed memory).
+3. Due to the high entry level for C++ in Academia, high momentum belongs to Python, not to C++ at all. And C++ is used only when necessary (E.g., you need to work with the hardware directly, or you need to have algorithms/mathematical model that operates in real-time or be careful in terms of consumed memory).
 
-4. The speed of development of the prototype (that approximately works) is faster in Python.
+4. The speed of development of the prototype is faster in Python.
 
-5. C++, to some extent, forces you to be aware of hardware level. It's not clear whether is it good or bad. 
+5. C++, to some extent, forces you to be aware of hardware level. It's not clear whether it is good or bad. 
 
 * On one side, when you want to try an idea, interpretable language provides a fast way to do that. 
 * On another side, widespread usage of interpretable languages will lead to situations in which many people will not know how the computer works. You will lose the ability to distinguish a big lie from a small lie and truth in the context of computing machines.
 
-People predict that C++ will die for three decades, but it is not happening. It seems that the fundamental things of the language make it immortal, even though the language tends to be more and more complex. 
+People continue to predict that C++ will die. It's an ongoing three decades process, but it is not happening. It seems that the fundamental things of the language make it immortal, even though the language tends to be more and more complex.
 
-# Deep principles of the Language
-The language started as a project in Bell Labs in 1979 ([3]).  The principles of C++ language, which B.Stroustrup put into the Language, were documented between 1981 and 1991. They existed even before the decision of standardization that took place in 1989. More importantly principles of the language even in 2022 are still inside it, and they are the heart of the Language ([3]):
+# Deep Principles of the Language
+The Language started as a project in Bell Labs in 1979 ([3]). The principles of C++ language, which B.Stroustrup put into the Language, were documented between 1981 and 1991. They existed even before the decision of standardization that took place in 1989. More importantly, principles of the Language, even in 2022, are still inside it, and they are the heart of the Language ([3]):
 
 1. No implicit violation of static type system.
 2. Provide good support for user-defined types similar to built-in types.
-3. The locality of memory access patterns for variables and arrays is good for hardware in the long term.
+3. The locality of memory access patterns for variables and arrays is suitable for hardware in the long term.
 4. Zero-Overhead principle:
 
     a. What you don't use, you should not pay for.
@@ -323,31 +324,31 @@ The language started as a project in Bell Labs in 1979 ([3]).  The principles of
 
 Some language decisions due to B.Stroustoup:
 
-- *"C++ does not have a universal class Object. It's so because, in C++, we don't need one: generic programming provides statically type safe alternatives in most cases. Also, there is no useful universal class, and in fact, using a universal base class implies the cost."*
+- *" C++ does not have a universal class Object. It's so because, in C++, we don't need one: generic programming provides statically type safe alternatives in most cases. Also, there is no valid universal class; in fact, using a universal base class implies the cost."*
 
-- *"Templates are not Generics (from C# or Java). Generics are primarily syntactic sugar for abstract classes. That is, with generics (whether Java or C# generics), You program against precisely defined interfaces and typically pay the cost of virtual function calls and/or dynamic casts to use arguments."*
+- *"Templates are not Generics (from C# or Java). Generics are primarily syntactic sugar for abstract classes. With generics (whether Java or C# generics), You program against precisely defined interfaces and typically pay the cost of virtual function calls and/or dynamic casts to use arguments."*
 
 # Why learn C++ if I know Python (Toy Example)
 
-Sometimes while making programs in Python, you need to write programs directly in Python, not only call external C++ libraries from it. Possible reasons why you need (really) implement algorithm in Python:
+Sometimes while making programs in Python, you need to write programs directly in Python, not only call external C++ libraries from it. Possible reasons why you can implement the algorithm in Python:
 * Algorithm is short and suitable for CPU.
-* Library does not exist or Library exists but does not provide Python bindings.
+* Library does not exist, or Library exists but does not provide Python bindings.
 * Library does not provide enough configuration
-* You need to change something fundamental inside Library, but Library is written in C++ and you don't know C++.
+* You need to change something fundamental inside C++ Library, and you don't know C++.
 
-Unfortunately, creating an (CPU effective) algorithm in Python when total wall clock time matters is not easy at all. As a concrete example Let's compare the wall clock time of two programs written in C++11 and Python3 under the following assumptions:
+Creating a CPU-effective algorithm in Python is difficult when wall clock time matters. As a concrete example, Let's compare the wall clock time of two programs written in C++11 and Python3 under the following assumptions:
 * Both programs use single-core CPU 
 * C++ program does not use any special optimization techniques. It's usual C++ code.
 
-The test is based on comparing the behavior of:
+The test compares wall clock time of the following:
 1. Python with native Python lists
 2. Python implementation with NumPy arrays
 3. Cython(a programming language that mixes C and Python)
-4. Flat C/C++ arrays used in C/C++. 
+4. Flat C/C++ arrays used in C/C++.
 
-The task is performing setup elements in the array in an arithmetic sequence, their summation, and conversion to `double` (fp64). We will perform a sum of 10M elements of arithmetic series(start element is 0 and step is 1, number of elements is 10M) via brute force. Our OS is Ubuntu 18.04.6, x86_64.
+The task is performing setup elements in the array with 10M elements as an arithmetic sequence, performing their summation, and converting the result to `double` (fp64). Our OS is Ubuntu 18.04.6, x86_64.
 
-**1. Native Python implementations:**
+**1. Native Python implementation**
 
 ```Python
 #!/usr/bin/env python3
@@ -372,7 +373,7 @@ print(str.format("Sum is {0:g}" , s))
 > Processing 10.0M elements takes:  2193.230390548706 ms
 Sum is 5e+13`
 
-**2. Python implementations based on using numpy:**
+**2. Python implementation with using numpy**
 
 ```Python
 #!/usr/bin/env python3
@@ -448,7 +449,7 @@ Output for Python 3.6.9:
 
 ----
 
-**4. C/C++ implementation:**
+**4. C/C++ implementation**
 ```cpp
 #include <iostream>
 #include <chrono>
@@ -472,67 +473,55 @@ int main() {
   return 0;
 }
 ```
-> Output for building and compiling with g++ 7.5.0:
-
+> Building command line for g++ 7.5.0:
 > `g++ -O3 -Wall --std=c++11 -s test2.cpp -o testcpp; ./testcpp`
+
+> Output:
 
 > Processing 10M elements takes 16 ms
 Sum is: 5e+13
 
 ----
 
-**Comment:** In Python programming language, the `float` type is equivalent to `double` in C/C++. (See [sys.float_info](https://docs.python.org/3/library/sys.html#sys.float_info) in Python3 Library documentation).
+**Comment:** In Python the `float` type is equivalent to `double` in C/C++. (See [sys.float_info](https://docs.python.org/3/library/sys.html#sys.float_info) in Python3 Library documentation).
 
 ----
 
-**Results.** From that benchmark we see that the C++ implementation:
+**Results.** From that benchmark, we see that the C++ implementation:
 * works *x137* times faster than plain Python implementation
 * works *x65* times faster than Python implementation that uses Numpy
 * works *x1.18* faster compare to [Cython](https://cython.readthedocs.io/en/latest/index.html) implementation
 
-The big picture is that if you need to have a highly effective algorithm implementation in Python by itself (without appealing to variations of Python language such as Cython), it's not easy to be better even than usual C++ code, even in simple things.
+If you need to have a highly effective algorithm implementation in Python without using translation from Python to C++ (via such language as Cython), it's not easy to be better even than usual C++ code, even in simple things.
 
-> [Cython](https://cython.readthedocs.io/en/latest/index.html) is Python language with C data types. During using Cython the source code into C/C++ code and compiled as Python extension modules. 
+> [Cython](https://cython.readthedocs.io/en/latest/index.html) is a Python language with C data types. While using Cython, the source code is translated from Python into C/C++, and finally, the code is compiled as Python extension module.
 > 
-> As you see compilable languages brings an extemely great speedup.Almost any piece of Python code is also valid Cython code (See [Cython limitations](https://cython.readthedocs.io/en/latest/src/userguide/limitations.html)). 
-> Cythons two major use cases: 
+> As you see, compilable languages bring an extremely significant speedup. Almost any piece of Python code is also valid Cython code (See [Cython limitations](https://cython.readthedocs.io/en/latest/src/userguide/limitations.html)). 
+> Cythons two primary use cases: 
 > 1. Extending the CPython interpreter with fast binary modules
 > 2. Interfacing Python code with external C libraries.
 > 
-> As we have observed Cython provides a way to speedup at least simple Python code. But usage of Cython brings to situation that you are not using interpreter anymore.
+> As we have observed, Cython provides a way to speed up at least simple Python code. But usage of Cython brings to a situation where you are not using an interpreter anymore.
 
 # Standards for the Language
 
 Both compilers writers and people who use the C++ language as writers should obey the international standard ISO/IEC for the language. C++ Standardization has a long history:
+* [C\+\+1998 standard - ISO/IEC 14882-1998](https://www.iso.org/ru/standard/25845.html)
+* [C\+\+2003 standard - ISO/IEC 14882:2003](https://www.iso.org/standard/38110.html) and [Technical Report on C++ Library Extensions - ISO/IEC TR 19768:2007](https://www.iso.org/standard/43289.html)
+* [C\+\+ 2011 standard - ISO C\+\+ standard (ISO/IEC 14882-2011)](https://www.iso.org/standard/50372.html)
+* [C\+\+ 2014 standard - ISO C\+\+ standard (ISO/IEC 14882:2014)](https://www.iso.org/standard/64029.html)
+* [C\+\+ 2017 standard - ISO C\+\+ standard (ISO/IEC 14882:2017)](https://www.iso.org/standard/68564.html)
+* [С\+\+ 2020 standard - ISO C\+\+ standard (ISO/IEC 14882:2020)](https://www.iso.org/standard/79358.html)
 
-1. [C\+\+1998 standard - ISO/IEC 14882-1998](https://www.iso.org/ru/standard/25845.html)
-2. [C\+\+2003 standard](https://www.iso.org/standard/38110.html) - A "bug fix release" of this standard was issued in 2003
-3. [C\+\+ 2011 standard - ISO C\+\+ standard (ISO/IEC 14882-2011)](https://www.iso.org/standard/50372.html)
-4. [C\+\+ 2014 standard - ISO C\+\+ standard (ISO/IEC 14882:2014)](https://www.iso.org/standard/64029.html) - completes C\+\+ 11.
-5. [C\+\+ 2017 standard - ISO C\+\+ standard (ISO/IEC 14882:2017)](https://www.iso.org/standard/68564.html)
-6. [С\+\+ 2020 standard - ISO C\+\+ standard (ISO/IEC 14882:2020)](https://www.iso.org/standard/79358.html)
-
-# Language Author Point of View
-
-Barge Stroustrup, in 2010, jokingly describes C++ as a language:
-1. Support generic programming.
-2. Hybrid language.
-3. Multi-paradigm programming Language.
-4. Buffer Overflows.
-5. Too Big.
-6. Object-Oriented-Programming Language.
-7. Low level.
-8. Embedded system language.
-9. Random Collections of features.
-10. It has a C spirit.
+The point of view of [Scott Meyers](https://en.wikipedia.org/wiki/Scott_Meyers) is that C++03 can be considered a bug fix release of C++98, and C++14 completes C++11.
 
 # Language Guarantees
 
-Fundamental types of C++ code guarantees:
-1. **Basic Guarantee** - no leaks and standard libraries supported.
-2. **Strong Guarantee** - whether the operation is completed.
+Fundamental code guarantees of C++ :
+1. **Basic guarantees** - no leaks and standard libraries supported.
+2. **Strong guarantees** - operation is fulfilled completely or not.
 
-All containers in C++98 provide a fundamental guarantee. And some operations (for example, `std::vector<T>::push_back`) give a Strong Guarantee.
+All containers in C++98 provide a fundamental guarantee. And some operations (for example, `std::vector<T>::push_back`) give a strong guarantee.
 
 # Stages of Processing Source Code in C++
 
@@ -540,21 +529,20 @@ All containers in C++98 provide a fundamental guarantee. And some operations (fo
 
 2. Joining strings through the backslash character.
 
-3. Processing the program code by the preprocessor. The preprocessor can be built into the compiler, or it can be an independent program.
+3. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program.
 
-4. Lexical analysis of the program by splitting the program into tokens. An important part is that the C/C++ compiler always tries to assemble the longest token of characters by processing the text from left to right, even if the result is an unbuildable program.
+4. Lexical analysis of the program by splitting the program into tokens  (separate words of a program text). An important part is that the C/C++ compiler always tries to assemble the longest token (in terms of the number of single characters) by processing the text from left to right, even if the result is an unbuildable program.
 
-Tokens (separate words of a program text) can be separated by white spaces. The concept of whitespace in C/C++ includes different keyboard spaces and comments at the compiler level.
+Tokens are separated from each other by white spaces. The concept of whitespace in C/C++ includes different keyboard spaces and comments.
 
-In C++ and in most programming languages, the tokens fundamentally can be one of the following types:
+In C++ and most programming languages, the tokens fundamentally can be one of the following types:
 * a. Operators
 * b. Separators
 * c. Identifiers
 * d. Keywords
-* e. Literal Constants
+* e. Literal constants
 
-After finishing, the lexical analysis, the program consists of a sequence of tokens. And after that source file is processed in the usual manner of compiled languages via obtaining Abstract Syntax Tree from the source code, performing various optimization from the Compilers community, emitting final instructions, and saving results in *object files*. From compiled source files, the linker constructs the final program or library and performs extra optimization, such as 
-whole-program/global program optimization.
+After finishing, the lexical analysis, the program consists of a sequence of tokens. After that stage source code of compile unit is processed by the compiler. The compiler performs various optimization found in the Compilers community. In the end, the compiler emits final instructions and saves results in *object files*. The linker constructs the final program or library from compiled source files and performs extra optimization, such as whole-program/global program optimization. The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor.
 
 # What is Impossible Even in C/C++
 
@@ -600,16 +588,16 @@ class that contains virtual functions. The only time you should even debate whet
 15. There are names reserved for the compiler implementations. It's all names that:
 
 * Starting with a double underscore `__`
-* Names starting a single underscore followed by an uppercase letter `_[A-Z]`, e.g., _Foo. 
+* Names that start with a single underscore followed by an uppercase letter `_[A-Z]`, e.g., _Foo. 
 
-That names should not be used by not compiler writers both for C and C++ languages. With that rule for a long time, people escape conflicts between namings of compiler-specific entities and entities of the constructable program.
+That names should not be used by not compiler writers both for C and C++ languages. With that rule for a long time, people escape conflicts between namings of compiler-specific entities and entities of the construct program.
 
 **a.** Sometimes compiler writers violate that principle.
-For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.html) mentions about standard predefined macro uses `unix` and `linux` during compilation for the Linux platform. That special names are not the names that follow C/C++ conventions to distinguish names used in the program and for compiler writers.
+For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.html) mentions standard predefined macro uses `unix` and `linux` during compilation for the Linux platform. That special names are not the names that follow C/C++ conventions to distinguish names used in the program and for compiler writers.
 
 **b.** **b.** Sometimes, it's possible to observe defined guards at the beginning of the buildable program's header files via `#ifndef/#define` that uses names starting with `__.` That special names are not the names that followed that rules.
 
-16. In C/C++ postfix operators have higher priority than unary operators.
+16. In C/C++, postfix operators have higher priority than unary operators.
 ```cpp
 *p++; // *(p++)
 ```
@@ -620,7 +608,7 @@ For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.htm
 
 19. The C++ standard guarantees that the life of a temporary object if it is **lvalue** (i.e., that temporary object occupies memory) is extended to the life of any reference that refers to it, **including the constant**. In simple cases, based on this trick, you can capture returned temporary objects from a function by constant reference to reduce the number of copy constructors.
 
-20. References to **rvalue** objects objects whose address cannot be obtained do not extend the lifetime of temporary objects. However, the compiler can only detect simple constructions with **rvalue** objects. For example, if you create a temporary object and call a method from this temporary object, that will return a reference to itself. The compiler will no longer be able to determine that this reference is not valid after removing the temporary object.
+20. References to **rvalue** objects whose address cannot be obtained do not extend the lifetime of temporary objects. However, the compiler can only detect simple constructions with **rvalue** objects. For example, if you create a temporary object and call a method from this temporary object, that will return a reference to itself. The compiler will no longer be able to determine that this reference is not valid after removing the temporary object.
 
 # About C/C++ Preprocessor
 
