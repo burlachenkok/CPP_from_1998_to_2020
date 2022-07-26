@@ -275,31 +275,32 @@ For a concrete example, please look at Lecture 1 from [6-172. Performance Engine
 
 4. Make correct multithreading, and thread synchronization implementation is suboptimal in the interpreter or just impossible.
 
-5. Garbage Collector brings various limitations to any programming language. For example, pointer arithmetic is disallowed in any language with GC. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
+5. Garbage Collector(GC) brings various limitations to any programming language. For example, pointer arithmetic is disallowed in any language with GC. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
 
-6. There are some subtleties with implementing function calls in specific hardware that can not be done effectively at the level of the interpreter. Specifically, function inlining or passing arguments via registers or global program optimization is problematic to implement in interpreters due to its high-level design.
+6. Some subtleties exist with implementing function calls(referred to as functions linkage in Assembly language books) in specific hardware. It can not be done effectively at the level of an interpreter if it is not compilable language. Specifically, function inlining or passing arguments via registers or global program optimization is problematic to implement in interpreters due to the high-level design of interpreters.
 
-7. The implementation of an interpreter (for example, Python) is a collection of C/C++ libraries wrapped up into the program that can execute the command and therefore called an interpreter. So interpreter as a computer program adds an extra level of abstraction. It improves the time for completing the project, but implementation is suboptimal.
+7. The implementation of an interpreter (for example, CPython) is a collection of C/C++ libraries wrapped up into the program that can execute the command and therefore called an interpreter. So interpreter as a computer program adds an extra level of abstraction. 
+The standard implementation Python interpreter is CPython. It is called CPython, because it is implemented in C/C++. Such software as an interpreter improves the time for completing the project type, but implementation is suboptimal.
 
-8. The absence of a compiler makes handling problems in the code testable without a compiler. It has *pros.* you do not spend time on a compilation, but there are *cons.* now, the compiler will not tell you about errors in the code because there is no compiler.
+8. The absence of a compiler has *pros* - you do not spend time on a compilation, but there are *cons* - now, the compiler will not tell you about errors in the code because there is no compiler.
 
 9. Due to high abstraction, Interpretable Languages violate memory locality principles because almost everything is allocated on the heap. Memory Locality is essential because, on that principle (all natural), memory caches in all levels of various memory storage are working inside modern computing devices.
 
 10. Uncontrollable memory allocations in a program that should work for a long time and during runtime allocate may lead to memory fragmentation and another problems.
 
-The interpretable language is excellent for prototyping, and the project highly leverages constructed C/C++ libraries. But any interpreter, any algorithm in it, can be beaten by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
+The interpretable language is excellent for prototyping, and the project highly leverages constructed C/C++ libraries. Any interpreter, any algorithm in it, can be beaten by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
 
 ## Downsides of C/C++
 
 1. C++ is pretty complex if considering all language details. That aspect is not suitable for spreading the language in society. 
 
-2. So powerful expressivity of C++ is a technical power. At the same time, it's its weakness for obtaining new adepts. Without new adepts, any concept will die. 
+2. Powerful expressivity of C++ is a technical power. At the same time, it's its weakness for obtaining new adepts. Without new adepts, any concept will die. 
 
 3. Due to the high entry level for C++ in Academia, high momentum belongs to Python, not to C++ at all. And C++ is used only when necessary (E.g., you really need to work with the hardware, or you need to have algorithms/mathematical model that operates in real-time or be careful in terms of consumed memory).
 
-4. The speed of development of the prototype is faster in Python.
+4. The speed of development of the prototype (that approximately works) is faster in Python.
 
-5. C++, to some extent, forces you to be aware of hardware level. It's not clear is it good or bad. 
+5. C++, to some extent, forces you to be aware of hardware level. It's not clear whether is it good or bad. 
 
 * On one side, when you want to try an idea, interpretable language provides a fast way to do that. 
 * On another side, widespread usage of interpretable languages will lead to situations in which many people will not know how the computer works. You will lose the ability to distinguish a big lie from a small lie and truth in the context of computing machines.
