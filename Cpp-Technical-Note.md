@@ -542,16 +542,16 @@ All containers in C++98 provide a fundamental guarantee. And some operations (fo
 
 4. Lexical analysis of the program by splitting the program into tokens. An important part is that the C/C++ compiler always tries to assemble the longest token of characters by processing the text from left to right, even if the result is an unbuildable program.
 
-Tokens can be separated by white spaces. The concept of whitespace includes different keyboard spaces and comments at the compiler level. 
+Tokens (separate words of a program text) can be separated by white spaces. The concept of whitespace in C/C++ includes different keyboard spaces and comments at the compiler level.
 
-In C++ and in most programming languages, the tokens can be one of the following types:
+In C++ and in most programming languages, the tokens fundamentally can be one of the following types:
 * a. Operators
 * b. Separators
 * c. Identifiers
 * d. Keywords
 * e. Literal Constants
 
-After finishing, the linguistic analysis, the program consists of a sequence of tokens. And after that source file is processed in the usual manner of compiled languages via obtaining Abstract Syntax Tree from the source code, performing various optimization from the Compilers community, emitting final instructions, and saving results in *object files*. From compiled source files, the linker constructs the final program or library and performs extra optimization, such as 
+After finishing, the lexical analysis, the program consists of a sequence of tokens. And after that source file is processed in the usual manner of compiled languages via obtaining Abstract Syntax Tree from the source code, performing various optimization from the Compilers community, emitting final instructions, and saving results in *object files*. From compiled source files, the linker constructs the final program or library and performs extra optimization, such as 
 whole-program/global program optimization.
 
 # What is Impossible Even in C/C++
