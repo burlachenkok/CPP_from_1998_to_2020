@@ -159,7 +159,6 @@ Contents:
   * [Define Concepts](#define-concepts)
   * [Use Concepts](#use-concepts)
 - [Coroutines (C++20)](#coroutines--c--20-)
-- [Acknowledgements](#acknowledgements)
 - [References](#references)
 
 *[Table of contents generated with markdown-toc](http://ecotrust-canada.github.io/markdown-toc/)*
@@ -3292,7 +3291,6 @@ while (!x.is_ready())
   x.resume();
 return x.result();
 ```
-# Acknowledgements
 
 # References
 
