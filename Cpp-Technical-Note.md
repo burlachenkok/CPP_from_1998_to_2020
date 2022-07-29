@@ -651,6 +651,8 @@ The original C specification says that the actual directory in which the compile
 
 `__STDC_VERERSION__` - version of standart C.
 
+Example of checking the version of C/C++ compiler  mostly based on [2, p.53]:
+
 ```cpp
 #include <stdio.h>
 int main() {
