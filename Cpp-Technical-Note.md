@@ -3034,24 +3034,21 @@ void f(const T&...arg)
 Example of performing printf in variadic template style:
 ```cpp
 template<typename T, typename... Args>
-void printf(const char *s, T value, Args... args)
+void my_printf(const char *s, T value, Args... args)
 {
-    while (*s)
-    {
-        if (*s == '%')
-        {
-            if (*(s + 1) != '%')
-            {
-                std::cout << value;
+    using std::cout;
+
+    while (*s) {
+        if (*s == '%') {
+            if (*(s + 1) != '%') {
+                cout << value;
                 s += 2;
-                printf(s, args...);
+                my_printf(s, args...);
                 return;
             }
-
             ++s;
         }
-
-        std::cout << *s++;
+        cout << *s++;
     }    
 }
 ```
