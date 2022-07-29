@@ -530,6 +530,14 @@ All containers in C++98 provide a fundamental guarantee. And some operations (fo
 
 1. Processing trigrams.
 
+```cpp
+#include <iostream>
+int main() {
+  std::cout << "Do you know C++? Are you sure ??)";
+  return 0;
+}
+```
+
 2. Joining strings through the backslash character.
 
 3. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program.
