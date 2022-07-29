@@ -528,7 +528,7 @@ All containers in C++98 provide a fundamental guarantee. And some operations (fo
 
 # Stages of Processing Source Code in C++
 
-1. Processing trigrams.
+1. Processing trigrams. For all trigrams please check [2,p.15].
 
 ```cpp
 #include <iostream>
