@@ -3030,10 +3030,11 @@ template <class T...>
 void f(const T&...arg)
 ```
 
-Example of performing printf in variadic template style:
+Example of performing printf in variadic template style (The example is typical and can be found for example in [that](https://stackoverflow.com/questions/17671772/c11-variadic-printf-performance) question in the StackOverflow):
+
 ```cpp
 template<typename T, typename... Args>
-void my_printf(const char *s, T value, Args... args)
+void printf(const char *s, T value, Args... args)
 {
     using std::cout;
 
