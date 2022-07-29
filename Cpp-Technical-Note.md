@@ -8,6 +8,8 @@ Contributors:
 
 Revisions: Draft (v1.1)
 
+Copyright (c) 2022, Konstantin Burlachenko. All rights reserved.
+
 ----
 
 Contents:
