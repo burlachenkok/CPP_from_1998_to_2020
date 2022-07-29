@@ -509,13 +509,14 @@ If you need to have a highly effective algorithm implementation in Python withou
 
 Both compilers writers and people who use the C++ language as writers should obey the international standard ISO/IEC for the language. C++ Standardization has a long history:
 * [C\+\+1998 standard - ISO/IEC 14882-1998](https://www.iso.org/ru/standard/25845.html)
-* [C\+\+2003 standard - ISO/IEC 14882:2003](https://www.iso.org/standard/38110.html) and [Technical Report on C++ Library Extensions - ISO/IEC TR 19768:2007](https://www.iso.org/standard/43289.html)
+* [C\+\+2003 standard - ISO/IEC 14882:2003](https://www.iso.org/standard/38110.html) 
+* [Technical Report on C++ Library Extensions - ISO/IEC TR 19768:2007](https://www.iso.org/standard/43289.html)
 * [C\+\+ 2011 standard - ISO C\+\+ standard (ISO/IEC 14882-2011)](https://www.iso.org/standard/50372.html)
 * [C\+\+ 2014 standard - ISO C\+\+ standard (ISO/IEC 14882:2014)](https://www.iso.org/standard/64029.html)
 * [C\+\+ 2017 standard - ISO C\+\+ standard (ISO/IEC 14882:2017)](https://www.iso.org/standard/68564.html)
 * [С\+\+ 2020 standard - ISO C\+\+ standard (ISO/IEC 14882:2020)](https://www.iso.org/standard/79358.html)
 
-The point of view of [Scott Meyers](https://en.wikipedia.org/wiki/Scott_Meyers) is that C++03 can be considered a bug fix release of C++98, and C++14 completes C++11.
+[Scott Meyers](https://en.wikipedia.org/wiki/Scott_Meyers) gave a presentation about C in YANDEX back in 2014. His point of view was that C++03 can be considered a bug fix release of C++98, and C++14 completes C++11.
 
 # Language Guarantees
 
