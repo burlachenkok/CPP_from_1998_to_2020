@@ -13,16 +13,26 @@ Copyright (c) 2022, Konstantin Burlachenko. All rights reserved.
 ----
 
 Contents:
+
 - [Introduction](#introduction)
 - [Glossary](#glossary)
 - [Motivation](#motivation)
   * [Downsides of Interpretable Languages](#downsides-of-interpretable-languages)
   * [Downsides of C/C++](#downsides-of-c-c--)
-- [Deep principles of the Language](#deep-principles-of-the-language)
+- [Deep Principles of the Language](#deep-principles-of-the-language)
 - [Why learn C++ if I know Python (Toy Example)](#why-learn-c---if-i-know-python--toy-example-)
 - [Standards for the Language](#standards-for-the-language)
 - [Language Guarantees](#language-guarantees)
 - [Stages of Processing Source Code in C++](#stages-of-processing-source-code-in-c--)
+  * [Preprocessing and initial textual source code processing](#preprocessing-and-initial-textual-source-code-processing)
+- [Compiler role Briefly](#compiler-role-briefly)
+- [Compiler role under Zoom](#compiler-role-under-zoom)
+  * [Lexical analysis](#lexical-analysis)
+  * [Syntax analysis](#syntax-analysis)
+  * [Semantic analysis](#semantic-analysis)
+  * [Code emitting and Optimization](#code-emitting-and-optimization)
+  * [Calling Assembler Program](#calling-assembler-program)
+- [Linkage](#linkage)
 - [What is Impossible Even in C/C++](#what-is-impossible-even-in-c-c--)
 - [For People New to C++](#for-people-new-to-c--)
 - [About C/C++ Preprocessor](#about-c-c---preprocessor)
