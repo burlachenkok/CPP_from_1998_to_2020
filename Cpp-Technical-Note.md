@@ -25,12 +25,12 @@ Contents:
 - [Language Guarantees](#language-guarantees)
 - [Stages of Processing Source Code in C++](#stages-of-processing-source-code-in-c--)
   * [Preprocessing and initial textual source code processing](#preprocessing-and-initial-textual-source-code-processing)
-- [Compiler role Briefly](#compiler-role-briefly)
-- [Compiler role under Zoom](#compiler-role-under-zoom)
-  * [Lexical analysis](#lexical-analysis)
-  * [Syntax analysis](#syntax-analysis)
-  * [Semantic analysis](#semantic-analysis)
-  * [Code emitting and Optimization](#code-emitting-and-optimization)
+- [Compiler's Role Briefly](#compiler-s-role-briefly)
+- [The Compiler's Role in Detail](#the-compiler-s-role-in-detail)
+  * [Lexical Analysis](#lexical-analysis)
+  * [Syntax Analysis](#syntax-analysis)
+  * [Semantic Analysis](#semantic-analysis)
+  * [Code Emitting and Optimization](#code-emitting-and-optimization)
   * [Calling Assembler Program](#calling-assembler-program)
 - [Linkage](#linkage)
 - [What is Impossible Even in C/C++](#what-is-impossible-even-in-c-c--)
@@ -560,12 +560,12 @@ int main() {
 
 6. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program. For details about available preprocessor language, please read [2, p.43] or documentation for any de-facto standard toolchain like [GCC](https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros).
 
-# Compiler role Briefly
+# Compiler's Role Briefly
 The compiler compiles the code and converts it into instruction written for a specific Instruction Set Architecture (ISA) or another machine-dependent representation and saves the results of processing of each source file into a correspondent object file.
 
-# Compiler role under Zoom
+# The Compiler's Role in Detail
 
-## Lexical analysis
+## Lexical Analysis
 
 Lexical analysis of the program by splitting the program into. An important part is that the C/C++ compiler always tries to assemble the longest token (in terms of the number of single characters) by processing the text from left to right, even if the result is an unbuildable program.
 
@@ -580,14 +580,14 @@ In C++ and most programming languages, the tokens fundamentally can be one of th
 
 After finishing, the lexical analysis, the program consists of a sequence of tokens. 
 
-## Syntax analysis
+## Syntax Analysis
 The compiler is based on the language rules typically described by Backus – Naur forms for context free-grammars(what is studied is studied in a mathematic area called *Formal Languages and Grammars*). Based on grammar syntax analyzer construct Abstract Syntax Tree (AST) for a text of the program. 
 
 
-## Semantic analysis
+## Semantic Analysis
 Some rules of the language can not be expressed only by using Grammar. Examples: Multiple declarations of a variable in one scope, usage of not yet declared variables, access to a variable that is out of range, etc. For handling that analysis, the Semantic analyzer inside the compiler is used.
 
-## Code emitting and Optimization
+## Code Emitting and Optimization
 
 At that moment, we constructed AST and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and emit code.
 
