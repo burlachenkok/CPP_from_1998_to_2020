@@ -561,13 +561,16 @@ int main() {
 6. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program. For details about available preprocessor language, please read [2, p.43] or documentation for any de-facto standard toolchain like [GCC](https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros).
 
 # Compiler's Role Briefly
-The compiler compiles the code and converts it into instruction written for a specific Instruction Set Architecture (ISA) or another machine-dependent representation and saves the results of processing of each source file into a correspondent object file.
+
+The compiler compiles the code and converts it into instructions for a specific Instruction Set Architecture (ISA) of Computing Device or another machine-dependent representation and saves the results of processing of each source file into a correspondent object file. The language does not specify the internal details of the compilation. 
+
+For curious people, an overview of how it happens is presented in the next section.
 
 # The Compiler's Role in Detail
 
 ## Lexical Analysis
 
-Lexical analysis of the program by splitting the program into. An important part is that the C/C++ compiler always tries to assemble the longest token (in terms of the number of single characters) by processing the text from left to right, even if the result is an unbuildable program.
+The essence of Lexical analysis of the program is in splitting the program text into tokens. An important part is that the C/C++ compiler always tries to assemble the longest valid token (in terms of the number of single characters) by processing the text from left to right, even if the result is an unbuildable program.
 
 Tokens are separated from each other by white spaces. The concept of whitespace in C/C++ includes different keyboard spaces and comments.
 
@@ -578,31 +581,30 @@ In C++ and most programming languages, the tokens fundamentally can be one of th
 * d. Keywords
 * e. Literal constants
 
-After finishing, the lexical analysis, the program consists of a sequence of tokens. 
+After finishing, the Lexical analysis, the program consists of a sequence of tokens. 
 
 ## Syntax Analysis
-The compiler is based on the language rules typically described by Backus – Naur forms for context free-grammars(what is studied is studied in a mathematic area called *Formal Languages and Grammars*). Based on grammar syntax analyzer construct Abstract Syntax Tree (AST) for a text of the program. 
-
+The compiler is based on the language rules typically described by Backus – Naur forms for context free-grammars(the grammars by themselves are studied in a mathematic area called *Formal Languages and Grammars*). Based on the grammar of the C or C++ programming language, the syntax analyzer constructs the Abstract Syntax Tree (AST) for the program's source text. 
 
 ## Semantic Analysis
 Some rules of the language can not be expressed only by using Grammar. Examples: Multiple declarations of a variable in one scope, usage of not yet declared variables, access to a variable that is out of range, etc. For handling that analysis, the Semantic analyzer inside the compiler is used.
 
 ## Code Emitting and Optimization
 
-At that moment, we constructed AST and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and emit code.
+At that moment, we constructed AST for a program and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and emit code.
 
-How exactly emit code is under the decision of the compiler. Some optimization is in the Compilers community, and some are brilliant engineering of people who are working under compilers.
+How exactly emit code is under the decision of the compiler. Some optimization technics are brilliant engineering of people who are working under compilers.
 
- In the end, the compiler emits final instructions for the target assembler.
- 
+In the end, at least conceptually, the compiler emits final instructions for the target assembler.
+
 ## Calling Assembler Program
-Assembler(ASM) as a language is the lowest possible level that can still be readable. One instruction in C++ code can correpons to sevral instructions of ASM code. The same instruction in C++ can be with various instructions in ASM. An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code with machine instructions that satisfy some Instruction Set Architecture (ISA). For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the standard de-facto Assembler is [GAS](https://www.gnu.org/software/binutils/). The output of Assembler is saved into *object files*. 
+Assembler(ASM) Language is the lowest possible level that can still be readable, but understanding it is not easy. In that language, One instruction in C++ code can correspond to several ASM code instructions (in quantity). From another hand, the same instruction in C/C++ can be emitted/materialized/generated into different instructions in ASM (in terms of different instructions). An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code with machine instructions that satisfy some Instruction Set Architecture (ISA). For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the standard de-facto Assembler is [GAS](https://www.gnu.org/software/binutils/). The output of Assembler is saved into *object files*. 
 
  # Linkage
  
- The linker constructs the final program or library from compiled source files in the form of *object files* and performs additional optimization, such as whole-program/global program optimization. 
- 
-The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from C compiler physically. In another toolchain, e.g., from Microsoft Visucal C compilter the translation to final binary code is inside their C compiler.
+ The linker constructs the final program or dynamic(shared) library from compiled source files in the form of *object files* and performs additional semantic checks based on common sense (for example finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links.
+
+The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from the C compiler physically. In another toolchain, e.g., from Microsoft Visual C compiler, the translation to final binary code is inside their C compiler.
 
 # What is Impossible Even in C/C++
 
