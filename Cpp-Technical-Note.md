@@ -550,10 +550,10 @@ int main() {
 
 6. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program. For details about available preprocessor language, please read [2, p.43] or documentation for any de-facto standard toolchain like [GCC](https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros).
 
-# Compiler role Briefly.
-The compiler compiles the code and converts it into Assembly instructions for the target processor and target assembler syntax.
+# Compiler role Briefly
+The compiler compiles the code and converts it into instruction written for a specific Instruction Set Architecture (ISA) or another machine-dependent representation and saves the results of processing of each source file into a correspondent object file.
 
-# Compiler role under Zoom.
+# Compiler role under Zoom
 
 ## Lexical analysis
 
@@ -585,14 +585,14 @@ How exactly emit code is under the decision of the compiler. Some optimization i
 
  In the end, the compiler emits final instructions for the target assembler.
  
- # Assembler
-Assembler(ASM) as a language is the lowest possible level that can still be readable. One instruction in C++ code can correpons to sevral instructions of ASM code. The same instruction in C++ can be with various instructions in ASM. An Assembler is a program that finally converts ASM instructions into binary native code with machine instructions that satisfy some Instruction Set Architecture (ISA). For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the standard de-facto Assembler is [GAS](https://www.gnu.org/software/binutils/). The output of Assembler is saved into *object files*. 
+## Calling Assembler Program
+Assembler(ASM) as a language is the lowest possible level that can still be readable. One instruction in C++ code can correpons to sevral instructions of ASM code. The same instruction in C++ can be with various instructions in ASM. An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code with machine instructions that satisfy some Instruction Set Architecture (ISA). For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the standard de-facto Assembler is [GAS](https://www.gnu.org/software/binutils/). The output of Assembler is saved into *object files*. 
 
  # Linkage
  
  The linker constructs the final program or library from compiled source files in the form of *object files* and performs additional optimization, such as whole-program/global program optimization. 
  
-The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from C compilers. In another toolchain, e.g., from Microsoft, the translation to final binary code is inside their C compiler.
+The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from C compiler physically. In another toolchain, e.g., from Microsoft Visucal C compilter the translation to final binary code is inside their C compiler.
 
 # What is Impossible Even in C/C++
 
