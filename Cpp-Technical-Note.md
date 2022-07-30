@@ -173,6 +173,7 @@ Contents:
   * [Define Concepts](#define-concepts)
   * [Use Concepts](#use-concepts)
 - [Coroutines (C++20)](#coroutines--c--20-)
+- [Acknowledgements](#acknowledgements)
 - [References](#references)
 
 *[Table of contents generated with markdown-toc](http://ecotrust-canada.github.io/markdown-toc/)*
@@ -3426,6 +3427,14 @@ while (!x.is_ready())
   x.resume();
 return x.result();
 ```
+
+# Acknowledgements
+
+I want to acknowledge [Acronis](https://www.acronis.com/en-us/) company that, in 2011-2012, invited [Dr. B.Stroustroup](https://www.stroustrup.com/) to give a long one-day talk for Acronis, HQ and Parallels, HQ in Moscow employees. [Dr. B.Stroustroup](https://www.stroustrup.com/) gave an excellent and practical talk by appealing to everybody, which I highly appreciated. During that time, he described what to wait for in C++2011. Also, I was glad that Dr. B.Stroustroup subscribed Russian translation of his book [1] for me then.
+
+I want to give my acknowledgment to [Yandex](https://yandex.ru/) company that, around 2014, invited [Dr. Scott Meyers](https://www.aristeia.com/) to [Yandex HQ](https://yandex.ru/) in Moscow. He gave a pretty sophisticated three days overview of several features of C++11 and some parts of C++14 for Yandex employees. Scott Meyers gave an excellent and practical talk. He demonstrated excellent communication skills. During that time, he described what to wait for in C++2011 with a pretty in-depth overview with many examples and live discussions.
+
+My enormous thanks are to [Dr. B.Stroustroup](https://www.stroustrup.com/). He created a language, C++ is used to create the most important software in that world. Also, the language created an artificial force that makes people think about hardware, computing, architecture design of computers, algorithms, and first principles. In my opinion, it's great from an educational point of view. My only concern is that I hope that [Dr. B.Stroustroup](https://www.stroustrup.com/) controls the process of the invention of C++23 and correctly assesses the need for change in language and standard library.
 
 # References
 
