@@ -6,7 +6,7 @@ Contributors:
 
 ( https://burlachenkok.github.io, konstantin.burlachenko@kaust.edu.sa )
 
-Revisions: Draft (v1.1)
+Revisions: Draft (v1.2)
 
 Copyright (c) 2022, Konstantin Burlachenko. All rights reserved.
 
@@ -25,13 +25,13 @@ Contents:
 - [Language Guarantees](#language-guarantees)
 - [Stages of Processing Source Code in C++](#stages-of-processing-source-code-in-c--)
   * [Preprocessing and initial textual source code processing](#preprocessing-and-initial-textual-source-code-processing)
-- [Compiler's Role Briefly](#compiler-s-role-briefly)
-- [The Compiler's Role in Detail](#the-compiler-s-role-in-detail)
-  * [Lexical Analysis](#lexical-analysis)
-  * [Syntax Analysis](#syntax-analysis)
-  * [Semantic Analysis](#semantic-analysis)
-  * [Code Emitting and Optimization](#code-emitting-and-optimization)
-  * [Calling Assembler Program](#calling-assembler-program)
+  * [The Compiler and Linker. Briefly.](#the-compiler-and-linker-briefly)
+  * [The Compiler and Linker. Details.](#the-compiler-and-linker-details)
+    + [Lexical Analysis](#lexical-analysis)
+    + [Syntax Analysis](#syntax-analysis)
+    + [Semantic Analysis](#semantic-analysis)
+    + [Code Emitting and Optimization](#code-emitting-and-optimization)
+    + [Calling Assembler Program](#calling-assembler-program)
 - [Linkage](#linkage)
 - [What is Impossible Even in C/C++](#what-is-impossible-even-in-c-c--)
 - [For People New to C++](#for-people-new-to-c--)
@@ -556,55 +556,78 @@ int main() {
 
 4. Replace comments with white space.
 
-5. Split program text by preprocessor tokens. Mainly like the tokens used by the C compiler, except for differences e.g. `##` token concatenation operator is an invalid token for the operator in a valid C/C++ program.
+5. Split program text by preprocessor tokens. Tokens are separate words of a program text. One easy case is that words (or tokens) are split between each other by spaces. The more hard case is to identify tokens when there are no whitespaces.
+ The tokens for the C preprocessor are mainly like the tokens used by the C compiler, except for some differences. Example: Token `##` is a concatenation operator for words in a source code. It is the valid operator for the C preprocessor, but it is an invalid token for the operator in a proper C/C++ program.
 
 6. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program. For details about available preprocessor language, please read [2, p.43] or documentation for any de-facto standard toolchain like [GCC](https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros).
 
-# Compiler's Role Briefly
+## The Compiler and Linker. Briefly.
 
-The compiler compiles the code and converts it into instructions for a specific Instruction Set Architecture (ISA) of Computing Device or another machine-dependent representation and saves the results of processing of each source file into a correspondent object file. The language does not specify the internal details of the compilation. 
+The compiler converts text in a high-level language into instructions for a specific Instruction Set Architecture (ISA) of Computing Device or another machine-dependent representation. It saves the results of processing each source file into a correspondent object file. Compiled object files augmented with another binary file from static libraries are linked into the final executable. The language does not specify the internal details of the compilation or linkage - it's under the responsibility of the creators of toolchains. The final binary format (ELF for Linux and PE for Windows) is also not under the obligation of a Language; it's under the responsibility of the creators of the Operation System. There are situations when the target device in which the program will be executed has no operating system. In that case, the program should be launched. It was so-called bare Metal. The format of binary files is typically under the Vendor's responsibility (example: PTX, SASS for NVIDIA GPU is provided by NVIDIA).
 
-For curious people, an overview of how it happens is presented in the next section.
+> ## The Compiler and Linker. Details.
+> 
+> A high-level overview is presented below if you are curious about how a compiler compiles source code. It's possible to be ultimately productive even without the knowledge below. If you want to know how things are working and you have that curiosity - you're welcome to read the text below. In another case - skip that section.
+>
+> ### Lexical Analysis
+>
+> The essence of Lexical analysis of the program is in splitting the program text into tokens. Separate words or atoms of a program text are some work of source text that cannot be divided further.
+>
+> An important part is that the C/C++ compiler always tries to assemble the longest valid token (in terms of the number of single characters) by processing the text from left to right character by character, even if the result is an unbuildable program. Example from [2, p.20]:
+> ```cpp
+> int a = 1, b = 1, c = 3;
+> // invalid tokenization: tokens (b, --, a)
+> c = b--a;
+> // valid tokenization:tokens(b, -, -, a)
+> // but C/C++ compiler does not do that
+> c = b - -a;   
+> ```
+> The white space forces the end of the token because whitespace is not part of any token. The concept of whitespace in C/C++ includes different keyboard spaces and comments. 
+>
+>In C++ and most programming languages, the tokens fundamentally can be one of the following types:
+>* a. Operators
+>* b. Separators
+> * c. Identifiers
+> * d. Keywords
+> * e. Literal constants
+>
+> After finishing, the Lexical analysis, the program consists of a sequence of tokens. 
+>
+> ### Syntax Analysis
+> The compiler is based on the language rules typically described by Backus – Naur forms for context-free - grammars(the grammars by themselves are studied in a mathematic area called *Formal Languages and Grammars* and is important for Compiler Theory). Based on the grammar of the C or C++ programming language, the syntax analyzer constructs the Abstract Syntax Tree (AST) for the program's source text. 
+The exact Grammar rules can be found in the Appendicies of corresponding Language Standards.
+>
+> ### Semantic Analysis
+> Some rules of the language can not be expressed only by using Grammar. Examples: Multiple declarations of a variable in one scope, usage of not yet declared variables, access to a plain C array via an index that is out of range, etc. For handling that analysis, the Semantic analyzer inside the compiler is used.
+>
+> ### Code Emitting and Optimization
+>
+> At that moment, we constructed AST for a program and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and emit code.
+>
+> How exactly emit code is under the decision of the compiler. Some optimization technics are brilliant engineering of people who are working under compilers. And honestly to state that hear is in fact the main thing of compilers. Compiler rules can be complicated and can be sophisticated.
+> 
+> In the end, at least conceptually, the compiler emits final instructions for the target assembler.
+>
+> ### Calling Assembler Program
+> Assembler(ASM) Language is the lowest possible level that can still be readable, but understanding it is not an easy thing in a big program. ASM language has close relation to a family of target compute devices. One instruction in C++ code can correspond to several(1,2,3,...) ASM code instructions. From another hand, the same instruction in C/C++ can be emitted/materialized/generated into just different instructions in ASM Language.
+>
+> An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code for the target device.
+That machine instruction emitted by ASM is called Instruction Set Architecture (ISA). 
+> 
+> The ISA specified instruction, register, memory architecture, and data types. The ISA connects physical Hardware designed by Electrical Engineering (EE) with the Sofware constructed mainly through Computer Science. The particular implementation of ISA is called Microarchitecture in EE. Different vendors can provide the support of the same ISA, but Microarchitecture is typically under NDA.
+>
+> For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the standard de-facto Assembler is [GAS](https://www.gnu.org/software/binutils/). The output of Assembler is saved into *object files*. 
+> 
+> In Assembly literature, the process of converting ASM instructions into machine code is named `encoding.` An inverse process of reconstructing ASM code from binary code is called `decoding` or `disassembly.` 
+>
+> # Linkage
+> 
+> The linker constructs the final program or dynamic(shared) library from compiled source files in the form of *object files* and performs additional semantic checks based on common sense (for example finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links.
+>
+> The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from the C compiler physically. In another toolchain, e.g., from Microsoft Visual C compiler, the translation to final binary code is inside their C compiler.
+>
 
-# The Compiler's Role in Detail
-
-## Lexical Analysis
-
-The essence of Lexical analysis of the program is in splitting the program text into tokens. An important part is that the C/C++ compiler always tries to assemble the longest valid token (in terms of the number of single characters) by processing the text from left to right, even if the result is an unbuildable program.
-
-Tokens are separated from each other by white spaces. The concept of whitespace in C/C++ includes different keyboard spaces and comments.
-
-In C++ and most programming languages, the tokens fundamentally can be one of the following types:
-* a. Operators
-* b. Separators
-* c. Identifiers
-* d. Keywords
-* e. Literal constants
-
-After finishing, the Lexical analysis, the program consists of a sequence of tokens. 
-
-## Syntax Analysis
-The compiler is based on the language rules typically described by Backus – Naur forms for context free-grammars(the grammars by themselves are studied in a mathematic area called *Formal Languages and Grammars*). Based on the grammar of the C or C++ programming language, the syntax analyzer constructs the Abstract Syntax Tree (AST) for the program's source text. 
-
-## Semantic Analysis
-Some rules of the language can not be expressed only by using Grammar. Examples: Multiple declarations of a variable in one scope, usage of not yet declared variables, access to a variable that is out of range, etc. For handling that analysis, the Semantic analyzer inside the compiler is used.
-
-## Code Emitting and Optimization
-
-At that moment, we constructed AST for a program and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and emit code.
-
-How exactly emit code is under the decision of the compiler. Some optimization technics are brilliant engineering of people who are working under compilers.
-
-In the end, at least conceptually, the compiler emits final instructions for the target assembler.
-
-## Calling Assembler Program
-Assembler(ASM) Language is the lowest possible level that can still be readable, but understanding it is not easy. In that language, One instruction in C++ code can correspond to several ASM code instructions (in quantity). From another hand, the same instruction in C/C++ can be emitted/materialized/generated into different instructions in ASM (in terms of different instructions). An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code with machine instructions that satisfy some Instruction Set Architecture (ISA). For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the standard de-facto Assembler is [GAS](https://www.gnu.org/software/binutils/). The output of Assembler is saved into *object files*. 
-
- # Linkage
- 
- The linker constructs the final program or dynamic(shared) library from compiled source files in the form of *object files* and performs additional semantic checks based on common sense (for example finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links.
-
-The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from the C compiler physically. In another toolchain, e.g., from Microsoft Visual C compiler, the translation to final binary code is inside their C compiler.
+----
 
 # What is Impossible Even in C/C++
 
