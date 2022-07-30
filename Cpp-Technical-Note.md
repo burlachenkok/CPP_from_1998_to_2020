@@ -561,6 +561,8 @@ int main() {
 
 6. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program. For details about available preprocessor language, please read [2, p.43] or documentation for any de-facto standard toolchain like [GCC](https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros).
 
+The output of preprocessing of the source file is named as *preprocessed source* and typically has the extension "*.i." For example, obtaining such a source file from [clang](https://clang.llvm.org/get_started.html) can be achieved via `clang -E.`
+
 ## The Compiler and Linker. Briefly.
 
 The compiler converts text in a high-level language into instructions for a specific Instruction Set Architecture (ISA) of Computing Device or another machine-dependent representation. It saves the results of processing each source file into a correspondent object file. Compiled object files augmented with another binary file from static libraries are linked into the final executable. The language does not specify the internal details of the compilation or linkage - it's under the responsibility of the creators of toolchains. The final binary format (ELF for Linux and PE for Windows) is also not under the obligation of a Language; it's under the responsibility of the creators of the Operation System. There are situations when the target device in which the program will be executed has no operating system. In that case, the program should be launched. It was so-called bare Metal. The format of binary files is typically under the Vendor's responsibility (example: PTX, SASS for NVIDIA GPU is provided by NVIDIA).
@@ -600,13 +602,38 @@ The exact Grammar rules can be found in the Appendicies of corresponding Languag
 > ### Semantic Analysis
 > Some rules of the language can not be expressed only by using Grammar. Examples: Multiple declarations of a variable in one scope, usage of not yet declared variables, access to a plain C array via an index that is out of range, etc. For handling that analysis, the Semantic analyzer inside the compiler is used.
 >
-> ### Code Emitting and Optimization
+> ### Code Optimization
 >
-> At that moment, we constructed AST for a program and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and emit code.
+> At that moment, we constructed AST for a program and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and translate that code into more low-level construction expressed as Assembly Language or Intermediate Representation (IR). But before that stage, there is a stage of code Optimization.
+> Some optimization technics are brilliant innovations for people working under compilers. Compilers' innovations that mainly bring considerable speedup are exploited in that stage. Typically compilers perform
+a sequence of transformation passes. Each transformation pass
+analyzes and edits the code to optimize performance. A transformation pass might run multiple times. Keys run in a predetermined order that usually seems to work well. 
 >
-> How exactly emit code is under the decision of the compiler. Some optimization technics are brilliant engineering of people who are working under compilers. And honestly to state that hear is in fact the main thing of compilers. Compiler rules can be complicated and can be sophisticated.
-> 
-> In the end, at least conceptually, the compiler emits final instructions for the target assembler.
+> Some examples of optimization technics that happens at that moment:
+> * Convert one arithmetic operation into more cheap operations via using bit tricks and logic/arithmetic shifts.
+>  * Replace stack allocation storage with storing variables in the processor's register.
+> * Optimization for structure/class memory layout.
+> * Transform data structures to have the ability to store elements of it as much as possible in CPU registers when some function obtains input in the form of pointer/reference of an object of the structure/class type.
+> * Remove dead-end code never executed in the program's control flow across as compiled source files.
+> * Function inlining. The compiler uses its heuristics to decide what to inline and what to not. Sometimes there is a toolchain extension that forces that.
+> * In case of using global program optimization compiler and linker jointly may want to try inline even function definition from another compilation unit.
+> * Remove Hoisting (also known as loop-invariant code). Try to remove recomputing loop-invariant code inside the loop.
+> * Vectorization. Leverage into vector registers (like SSE2, Arm Neon) when possible.
+> * Loops optimization: unrolling; loop fusion (also known as jamming) to combine multiple loops over the same index range; eliminating wasted iterations in the loop.
+> * Figure out with Memory Aliasing and apply optimization for non-aliased pointed expression. For details please check [Compute Optimization Relative Information](#compute-optimization-relative-information.
+> Various things of optimization are out of the scope of the compiler. And can only be solved by the creator of the Algorithm/Method. Even we think there is a possibility of research to provide that information for the compiler.
+>
+> ### Code Emitting
+> In the end, at least conceptually, the compiler emits final instructions for the target assembler.How exactly emit code is under the decision of the compiler.
+>
+> However, in reality it's possible to have three different scenarios what exactly compilers emit:
+> 1. Compiler emit the final binary code for target Instruction Set Architecture (ISA). (Example: Microsoft Visual C compiler.)
+> 2. Compiler emit the program text written in Assembly and producing final binary code is under responsibiliy of Assembler program. (See next section). You can obtain such assembly source from preprocessed file manually for [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S -o -`.
+> 3. With coming [LLVM](https://llvm.org/) project there is in fact intermediate layer with Intermediate Representation (IR) of the complied source code. At first stage the input preprocessed code is converted into pseudo-assembly called [LLVM-IR](https://llvm.org/docs/LangRef.html) with producing files with extesnions "*.ll". At the second stage LLVM-Optimizer work under that representation and produces optimized "*.ll" source code. At the third and last stage **LLVM code generator** generates real Assembly representation.
+>
+> You can obtain such intermediate source from [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S emit-llvm -o -`.
+>
+> For futher study as introduction to LLVM-IR we recomend [Lecture 5](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/resources/mit6_172f18_lec5/) from MIT course [6.172 Performance Engineering of Software Systems](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
 >
 > ### Calling Assembler Program
 > Assembler(ASM) Language is the lowest possible level that can still be readable, but understanding it is not an easy thing in a big program. ASM language has close relation to a family of target compute devices. One instruction in C++ code can correspond to several(1,2,3,...) ASM code instructions. From another hand, the same instruction in C/C++ can be emitted/materialized/generated into just different instructions in ASM Language.
@@ -622,10 +649,9 @@ That machine instruction emitted by ASM is called Instruction Set Architecture (
 >
 > # Linkage
 > 
-> The linker constructs the final program or dynamic(shared) library from compiled source files in the form of *object files* and performs additional semantic checks based on common sense (for example finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links.
+> The linker constructs the final program or dynamic(shared) library from compiled source files in the form of *object files*, obtains additional input archives of object files (called static libraries), obtains information about used dynamic library dependencies, performs other semantic checks (for example via finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links. The name of linkage program typically has a name in toolchains as [ld](https://linux.die.net/man/1/ld) or [link](https://docs.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170).
 >
 > The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from the C compiler physically. In another toolchain, e.g., from Microsoft Visual C compiler, the translation to final binary code is inside their C compiler.
->
 
 ----
 
@@ -1924,6 +1950,25 @@ X* x = new (&buffer) X(); // construct X in buffer
 * Like [alloca](https://man7.org/linux/man-pages/man3/alloca.3.html) in POSIX, except tandardized, buffer size must be known during compilation.
 
 Documentation: [cpp reference aligned_storage](https://en.cppreference.com/w/cpp/types/aligned_storage).
+
+## Memory Aliasing and restrict
+Example:
+ ```cpp
+void f(int* a, int* b)
+{}
+```
+In C/C++, when you deal with pointers, for example, in a function mentioned above, it can be two possibilities: 
+* Pointers `a` and `b` refer to the exact location in memory, at the start or during runtime. It's legal for such a function signature. 
+* But maybe pointers `a` and `b` never refer to the exact location.
+
+Without any extra help, the compiler has serious problems deciding what the case is. And be default compiler assume (1) case. However, there is a way to specify pointers as `restrict (In C99)` via the following syntax:
+ ```cpp
+void f(int* restrict a, int* restrict b)
+{}
+```
+The C++ does not have such a keyword even up to C++20, but toolchains typically provide C++ extension via the `__restrict`  extension. 
+
+The essence of `restrict` is described in [2,p.94], and here we repeat it shortly. Restrict means that within the scope in which such a pointer is defined, the pointers are the only way to access the object where the pointer is pointed. For functions parameters in the form of pointers with `restrict,` it means that within the function scope, pointers `a` and `b` always point to different memory locations. An essential aspect of the `restrict` pointer is that due to [2,p.95] and the formal definition of `restrict` from C99, it would have an effect if the use of pointed objects as lvalues, i.e., memory in pointers are pointed is used for the write. In the case of using objects by `rvalue,` the restriction does not impose any semantic restriction of memory not overlapping where pointed objects are located.
 
 # Lambda Functions
 
