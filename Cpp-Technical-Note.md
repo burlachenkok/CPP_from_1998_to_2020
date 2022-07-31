@@ -1,20 +1,20 @@
-**Technical Note. From C++1998 to C++2020.**
+# Technical Note. From C++1998 to C++2020
 
-Contributors:
+[Konstantin Burlachenko](https://burlachenkok.github.io/)
 
-*Konstantin Burlachenko*
+King Abdullah University of Science and Technology, Thuwal, Saudi Arabia. 
 
-( https://burlachenkok.github.io, konstantin.burlachenko@kaust.edu.sa )
-
-Revisions: Draft (v1.2)
-
-Last Update: July 31, 2022
-
-Copyright (c) 2022, Konstantin Burlachenko. All rights reserved.
+Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Contents:
+Revision: Draft / Last Update: July 31, 2022
+
+© 2022 Konstantin Burlachenko, all rights reserved.
+
+----
+
+**Table of Content**
 
 - [Introduction](#introduction)
 - [Glossary](#glossary)
