@@ -16,6 +16,7 @@ Revision: Draft / Last Update: July 31, 2022
 
 **Table of Content**
 
+- [Technical Note. From C++1998 to C++2020](#technical-note-from-c--1998-to-c--2020)
 - [Introduction](#introduction)
 - [Glossary](#glossary)
 - [Motivation](#motivation)
@@ -116,7 +117,7 @@ Revision: Draft / Last Update: July 31, 2022
   * [6. alignof](#6-alignof)
   * [7. Default Member Initializers (C++11)](#7-default-member-initializers--c--11-)
   * [8. User-Defined Literals (UDL)](#8-user-defined-literals--udl-)
-  * [9. [[noreturn]]](#9---noreturn--)
+  * [9. noreturn Attribute](#9-noreturn-attribute)
   * [10. Anonymous Unions](#10-anonymous-unions)
   * [11. Type Alias](#11-type-alias)
   * [12. Static Variables are Always Initialized Thread Safe](#12-static-variables-are-always-initialized-thread-safe)
@@ -127,7 +128,7 @@ Revision: Draft / Last Update: July 31, 2022
   * [17. Concurrency Support](#17-concurrency-support)
   * [18. Explicit Conversion Functions](#18-explicit-conversion-functions)
 - [Miscellaneous Features of C++14](#miscellaneous-features-of-c--14)
-  * [1. [[deprecated]] attribute](#1---deprecated---attribute)
+  * [1. deprecated Attribute](#1-deprecated-attribute)
   * [2. Return Type Deduction](#2-return-type-deduction)
   * [3. Binary Literals](#3-binary-literals)
   * [4. Variable Templates](#4-variable-templates)
@@ -139,19 +140,19 @@ Revision: Draft / Last Update: July 31, 2022
   * [3. Compile Time if](#3-compile-time-if)
   * [4. __has_include Macro](#4---has-include-macro)
   * [5. std::byte](#5-std--byte)
-  * [6. [[fallthrough]]](#6---fallthrough--)
+  * [6. fallthrough Attribute](#6-fallthrough-attribute)
   * [7. Initialization Statements in if/switch/for](#7-initialization-statements-in-if-switch-for)
   * [8. std::optional](#8-std--optional)
   * [9. std::string_view](#9-std--string-view)
   * [10. Inline Variables](#10-inline-variables)
   * [11. The Exception Specification has been Removed](#11-the-exception-specification-has-been-removed)
 - [Miscellaneous Features of C++20](#miscellaneous-features-of-c--20)
-  * [1. [[no_unique_address]]](#1---no-unique-address--)
+  * [1. no_unique_address Attribute](#1-no-unique-address-attribute)
   * [2. Spaceship operator](#2-spaceship-operator)
-  * [3. [[likely]] and [[unlikely]]](#3---likely---and---unlikely--)
+  * [3. likely and unlikely Attribute](#3-likely-and-unlikely-attribute)
   * [4. std::format()](#4-std--format--)
   * [5. source_location::current()](#5-source-location--current--)
-  * [6. [[nodiscard(reason)]]](#6---nodiscard-reason---)
+  * [6. nodiscard(reason) Attribute](#6-nodiscard-reason--attribute)
   * [7. Only one Signed Integer Representation](#7-only-one-signed-integer-representation)
   * [8. Abbreviated Function Templates](#8-abbreviated-function-templates)
   * [9. Automatic generation of `!=` from `==`.](#9-automatic-generation-of------from-----)
@@ -2290,7 +2291,7 @@ int main() {
 ```
 Documentaion: [cpp reference details](https://docs.microsoft.com/en-us/cpp/cpp/user-defined-literals-cpp?view=vs-2019).
 
-## 9. [[noreturn]]
+## 9. noreturn Attribute
 Placing `[[noreturn]]` at the start of a function declaration indicates that the function is not expected to return. Example:
 
 ```cpp
@@ -2441,7 +2442,7 @@ Documentation: [cpp reference about explicit keyword](https://en.cppreference.co
 
 # Miscellaneous Features of C++14
 
-## 1. [[deprecated]] attribute
+## 1. deprecated Attribute
 This indicates that the use of the name or entity declared with this attribute is allowed but discouraged for some reason. Compilers typically issue warnings. For example:
 ```cpp
 [[deprecated]] void func(int);
@@ -2568,7 +2569,7 @@ C++17 introduces byte type to work directly with bytes `std::byte` defined in `<
 Documentation: [cpp reference details about std::byte](https://en.cppreference.com/w/cpp/types/byte).
 
 
-## 6. [[fallthrough]]
+## 6. fallthrough Attribute
 In C/C++ language in `switch` construction, if not explicitly use `break` instruction, instruction flow will fall through after the first `case` statement without reevaluating the predicate. The C++17 added a language feature to signal to the compiler and the person reading your code that you are intentionally using a fallthrough. Example:
 ```cpp
 switch (number)
@@ -2648,7 +2649,7 @@ Details: [Core Working Group about removing Deprecated Exception Specifications 
 
 # Miscellaneous Features of C++20
 
-## 1. [[no_unique_address]]
+## 1. no_unique_address Attribute
 The `[[no_unique_address]]` attribute allows empty non-static data members to share space with another subobject of a different type. Example based on materials from cpp reference:
 
 ```cpp
@@ -2690,7 +2691,7 @@ The `<=>` operator can return one of the following return types:
 
 Documentation: [cpp reference details about no_unique_address](https://en.cppreference.com/w/cpp/language/operator_comparison).
 
-## 3. [[likely]] and [[unlikely]]
+## 3. likely and unlikely Attribute
 
 The `[[likely]]` and `[[unlikely]]` attributes are applicable for `case` branches in the switch statement to give a compiler a hint to optimize certain branches.
 
@@ -2724,7 +2725,7 @@ Compile time information about current source file `source_location::current()`.
 
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/utility/source_location/current).
 
-## 6. [[nodiscard(reason)]]
+## 6. nodiscard(reason) Attribute
 
 Attribute `[[nodiscard(reason)]]` applied for function and described the consequence of discarding the return object from the function call. And the compiler is encouraged to issue a warning in case of discarding the return value. Example:
 ```cpp
