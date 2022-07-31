@@ -511,14 +511,13 @@ Sum is: 5e+13
 
 If you need to have a highly effective algorithm implementation in Python without using translation from Python to C++ (via such language as Cython), it's not easy to be better even than usual C++ code, even in simple things.
 
-> [Cython](https://cython.readthedocs.io/en/latest/index.html) is a Python language with C data types. While using Cython, the source code is translated from Python into C/C++, and finally, the code is compiled as Python extension module.
-> 
-> As you see, compilable languages bring an extremely significant speedup. Almost any piece of Python code is also valid Cython code (See [Cython limitations](https://cython.readthedocs.io/en/latest/src/userguide/limitations.html)). 
-> Cythons two primary use cases: 
+> [Cython](https://cython.readthedocs.io/en/latest/index.html) is a Python language with C data types. While using Cython, the source code is translated from Python into C/C++, and finally, the code is compiled as Python extension module. As you see, compilable languages bring an extremely significant speedup. Almost any piece of Python code is also valid Cython code (See [Cython limitations](https://cython.readthedocs.io/en/latest/src/userguide/limitations.html)). 
+>
+> Cythons has two primary use cases: 
 > 1. Extending the CPython interpreter with fast binary modules
 > 2. Interfacing Python code with external C libraries.
 > 
-> As we have observed, Cython provides a way to speed up at least simple Python code. But usage of Cython brings to a situation where you are not using an interpreter anymore.
+> As we have observed, Cython provides a way to speed up simple single-file Python code. But usage of Cython brings to a situation where you are not using an interpreter anymore. Nevertheless, It can be helpful to be aware of such a possibility.
 
 # Standards for the Language
 
