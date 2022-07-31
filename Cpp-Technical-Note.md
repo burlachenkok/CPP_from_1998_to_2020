@@ -3429,11 +3429,25 @@ return x.result();
 
 # Acknowledgements
 
-I want to acknowledge [Acronis](https://www.acronis.com/en-us/) company that, in 2011-2012, invited [Dr. B.Stroustroup](https://www.stroustrup.com/) to give a long one-day talk for Acronis, HQ and Parallels, HQ in Moscow employees. [Dr. B.Stroustroup](https://www.stroustrup.com/) gave an excellent and practical talk by appealing to everybody, which I highly appreciated. During that time, he described what to wait for in C++2011. Also, I was glad that Dr. B.Stroustroup subscribed Russian translation of his book [1] for me then.
+In the context of the C++ language itself, I want to acknowledge:
 
-I want to give my acknowledgment to [Yandex](https://yandex.ru/) company that, around 2014, invited [Dr. Scott Meyers](https://www.aristeia.com/) to [Yandex HQ](https://yandex.ru/) in Moscow. He gave a pretty sophisticated three days overview of several features of C++11 and some parts of C++14 for Yandex employees. Scott Meyers gave an excellent and practical talk. He demonstrated excellent communication skills. During that time, he described what to wait for in C++2011 with a pretty in-depth overview with many examples and live discussions.
+* [Acronis](https://www.acronis.com/en-us/) company in 2011-2012, invited [Dr. B.Stroustroup](https://www.stroustrup.com/) to give a long one-day talk for Acronis, HQ and Parallels, HQ in Moscow employees. [Dr. B.Stroustroup](https://www.stroustrup.com/) gave an excellent and practical talk by appealing to everybody, which I highly appreciated. 
 
-My enormous thanks are to [Dr. B.Stroustroup](https://www.stroustrup.com/). He created a language, C++ is used to create the most important software in that world. Also, the language created an artificial force that makes people think about hardware, computing, architecture design of computers, algorithms, and first principles. In my opinion, it's great from an educational point of view. My only concern is that I hope that [Dr. B.Stroustroup](https://www.stroustrup.com/) controls the process of the invention of C++23 and correctly assesses the need for change in language and standard library.
+* [Yandex](https://yandex.ru/) company that, around 2014, invited [Dr. Scott Meyers](https://www.aristeia.com/) to [Yandex HQ](https://yandex.ru/) in Moscow. He gave a pretty sophisticated three days overview of several features of C++11 and some parts of C++14 for Yandex employees.
+
+* Thanks for [NVIDIA](http://nvida.com/) and [HUAWEI](https://www.huawei.com/en/) - the places where I have used those languages a lot while creating complex systems for a software and hardware of that companies.
+
+* Thanks to Academic Universities for which I had affiliation in the past and now ([CV](https://burlachenkok.github.io/cv_kburlachenko.pdf)).
+
+* Between 2010 - 2020, I have created various short personal engineering notes, some of which are available here [old home page](https://sites.google.com/site/burlachenkok/articles). C++ relative materials from my senior technical notes have been used for that technical note. The original was less structured.
+
+Finally, the enormous thanks are to [Dr. B.Stroustroup](https://www.stroustrup.com/). He created a language that is used to create the most important software in that world. Also, the language created an artificial force that makes people to be better in all aspects of science and engineering. The quote that I have learned from [Tim Roughgarden](http://timroughgarden.org/) is the following:
+
+> Perhaps the most essential principle for the good algorithm designer is to refuse to be content - Aho, Hopcroft, Ulman, 1974
+
+The style of creating things in C++ forces you to be that person. 
+
+I hope that [Dr. B.Stroustroup](https://www.stroustrup.com/) controls the process of the invention of C++23 and correctly assesses the need for change in the language and standard library, i.e., add new features when they are needed almost for everybody.
 
 # References
 
