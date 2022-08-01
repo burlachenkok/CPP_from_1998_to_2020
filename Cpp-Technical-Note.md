@@ -793,8 +793,7 @@ int main() {
 
 ## Names Overloading
 
-In C and other programming languages, the same identifier can be associated with more than one object at a time. This situation is called *name overloading* or *name hiding*.
-In C++ ([6], chapter 13), this concept is introduced in the C language. 
+In C/C++ and other programming languages, the same identifier can be associated with more than one object at a given moment. This situation is called *name overloading* or *name hiding* ([6], chapter 13). 
 
 Next, creating two declarations of the same name in the same overload class in the same visibility block or at the top level is an error.
 
