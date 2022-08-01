@@ -917,19 +917,22 @@ Details about exceptions to the One Definition Rule are described in ([6], C++20
 
 ## Integer Arithmetic and Enumerations
 
-In C and C++98/03/11, there are three representations of signed integers of n bits that are allowed for implementation:
+In C and C++98/03/11, there are three allowable implementations for signed integers consisting of $n$ bits. 
+For details, we recommend looking at [2, p.125], but short information about them is presented below:
 
-* two's complement (twos-complement-notation) [-2**(n-1), +2**(n-1)-1]. Positive numbers are represented in the usual way. The most significant bit of the sign is set to 0
+* *Two's complement (or twos-complement-notation)*. Range is $[-2^{n-1}, 2^{n-1}-1]$. Positive numbers are represented in the usual way. The most significant bit of the sign is set to 0
 negative numbers are obtained as (reverse bits(number)+1) in ASM instruction notation for x86 sounds like a NEG operation
 1000000..000 is the maximum negative number that has no positive equivalent.
 
-* one's complement (ones-complement-notation) [-2**(n-1)+1, +2**(n-1)-1]
-Negative numbers are the complement of all bits of the corresponding positive number. In this representation, positive and negative zero are possible.
+* *One's complement (or ones-complement-notation)*. Range is  $[-2^{n-1}+1,2^{n-1}-1]$
+Negative numbers are the complement of all bits of the corresponding positive number. In this representation, positive and negative zero are possible. And that representation has one number less than *Two's complement*.
 
-* signed integer representation (sign-magnitude-notation) [-2**(n-1)+1, +2**(n-1)-1]
+* *Signed integer representation (or sign-magnitude-notation)*. Range is $[-2^{(n-1)}+1, +2^{(n-1)}-1]$
 The representation of the modulus of negative and positive numbers is identical. The sign of the number is stored in the most significant bit.
 
-**But starting from `C++20`, there is only one signed integer representation, and it's twos-complement-notation.**
+The most famous representation for signed integers by hardware vendors is *two's complement* notation.
+
+**Starting from `C++20`, there is only one signed integer representation, and it's twos-complement-notation.**
 
 A particular dedicated type for enumerating integer constants from C89/99/11 and C++98/03/11 is called `enum`. There are some subtleties with it:
 
