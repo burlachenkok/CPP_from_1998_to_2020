@@ -3443,21 +3443,15 @@ Me, Konstantin Burlachenko, would like to acknowledge:
 
 * [Yandex](https://yandex.ru/) company that, around 2014, invited [Dr. Scott Meyers](https://www.aristeia.com/) to [Yandex HQ](https://yandex.ru/) in Moscow. He gave a pretty sophisticated three days overview of several features of C++11 and some parts of C++14 for Yandex employees.
 
-* Thanks for [NVIDIA](http://nvida.com/) and [HUAWEI](https://www.huawei.com/en/) - the places where I have used those languages a lot while creating complex software systems for that companies.
+* Thanks for [NVIDIA](http://nvida.com/) and [HUAWEI](https://www.huawei.com/en/), the places where I have used those languages a lot while creating complex software systems.
 
-* Thanks to all colleagues and friends from the past for helpful joint steps in figuring out subtle details of C/C++.
+* Thanks to all colleagues and friends from the past with whom I went through various steps of figuring out subtle details of C/C++. Between 2010 and 2020, I have created personal engineering drafts, some of which are available here [(old home page K.Burlachenko)](https://sites.google.com/site/burlachenkok/articles). All C/C++ information from it has been evolved into that document.
 
-* Thanks to Academic Universities for which I had affiliations in the past and now ([CV](https://burlachenkok.github.io/cv_kburlachenko.pdf)).
-
-* Between 2010 - 2020, I have created various short personal (mostly engineering) notes, some of which are available here [old home page](https://sites.google.com/site/burlachenkok/articles). That blog (with slight exaggeration) evolved into that document.
-
-Finally, the enormous thanks are to [Dr. B.Stroustroup](https://www.stroustrup.com/). He created a language that is used to create the most important software in that world. His language has an artificial force that makes people better in all aspects of science and engineering. The quote that I have learned from [Tim Roughgarden](http://timroughgarden.org/) is the following:
+Thanks to [Dr. B.Stroustroup](https://www.stroustrup.com/). He created a language that is used to create the most important software in that world. Interestingly, this language has an artificial force that makes people better in all aspects of science and engineering. The quote that I have learned from [Tim Roughgarden](http://timroughgarden.org/) is the following:
 
 > Perhaps the most essential principle for the good algorithm designer is to refuse to be content - Aho, Hopcroft, Ulman, 1974
 
-The style of creating things in C++ forces you to be that person. 
-
-Also, I hope that [Dr. B.Stroustroup](https://www.stroustrup.com/) controls the process of the invention of C++23 and correctly assesses the need for change in the language and standard library, i.e., add new features when they are needed by almost everybody.
+The mindset that C++ is shaping, I think, helps to look into details and elements of the parties and abstract more information when needed. The language that does not teach to look into details does not have such exciting properties. But that kind of mindset can not be obtained for free, so it's a part of why C++ is complicated. I believe such a mindset is one of many reasons that helped me join the Laboratory of [Prof. Peter Richtarik](https://richtarik.org/) and helping me in producing research. The Lab conducts world-level research in Math Optimization and Machine Learning. The Lab is a part of the [KAUST AI Initiative](https://cemse.kaust.edu.sa/ai) leaded by [Jürgen Schmidhuber](https://people.idsia.ch/~juergen/) and looking into subtle details of Algorithms is a part of our daily life.
 
 # References
 
