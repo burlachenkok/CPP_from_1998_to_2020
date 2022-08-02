@@ -8,7 +8,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision: Draft / Last Update: August 02, 2022
+Revision: Draft / Last Update: Aug 2, 2022
 
 © 2022 Konstantin Burlachenko, all rights reserved.
 
@@ -740,7 +740,7 @@ For the C/C++ preprocessor, any undefined identifiers that appear after the cond
 
 ## Include Search Order
 
-The original C specification says that the actual directory in which the compiled source file is located is used to look for a user-defined include file. But the reality is that it is necessary to clarify the rules according to the specification of the toolchain used. Or understand the essence of the experiments.
+The original C specification says that the actual directory in which the compiled source file is located is used to look for a user-defined include file. But nowadays an enumeration order of include paths varies between compiler toolchains, so you may figure it out for a particular toolchain by experiment.
 
 ## Include Files Naming
 
@@ -3479,4 +3479,4 @@ Also, I hope that [Dr. B.Stroustroup](https://www.stroustrup.com/) controls the 
 
 [9] [Bjarne Stroustrup's C++11 FAQ](https://www.stroustrup.com/C++11FAQ.html)
 
-[10] [Useful catalog of resources from CppReference: Standards, ABI](https://en.cppreference.com/w/cpp/links)
+[10] [Useful catalog of resources from CppReference: Standarts, ABI](https://en.cppreference.com/w/cpp/links)
