@@ -525,13 +525,13 @@ If you need to have a highly effective algorithm implementation in Python withou
 # Standards for the Language
 
 Both compilers writers and people who use the C++ language as writers should obey the international standard ISO/IEC for the language. C++ Standardization has a long history:
-* [C\+\+1998 standard - ISO/IEC 14882-1998](https://www.iso.org/ru/standard/25845.html)
-* [C\+\+2003 standard - ISO/IEC 14882:2003](https://www.iso.org/standard/38110.html) 
-* [Technical Report on C++ Library Extensions - ISO/IEC TR 19768:2007](https://www.iso.org/standard/43289.html)
-* [C\+\+ 2011 standard - ISO C\+\+ standard (ISO/IEC 14882-2011)](https://www.iso.org/standard/50372.html)
-* [C\+\+ 2014 standard - ISO C\+\+ standard (ISO/IEC 14882:2014)](https://www.iso.org/standard/64029.html)
-* [C\+\+ 2017 standard - ISO C\+\+ standard (ISO/IEC 14882:2017)](https://www.iso.org/standard/68564.html)
-* [С\+\+ 2020 standard - ISO C\+\+ standard (ISO/IEC 14882:2020)](https://www.iso.org/standard/79358.html)
+* [C\+\+1998 standard - ISO/IEC 14882-1998](https://www.iso.org/ru/standard/25845.html). Draft of C++1998: [link](https://open-std.org/JTC1/SC22/WG21/docs/wp/pdf/nov97-2/).
+* [C\+\+2003 standard - ISO/IEC 14882:2003](https://www.iso.org/standard/38110.html). Standard C++2003: [link](http://staff.ustc.edu.cn/~zhuang/cpp/specs/ISO_IEC%2014882%202003.pdf).
+* [Technical Report on C++ Library Extensions - ISO/IEC TR 19768:2007](https://www.iso.org/standard/43289.html).
+* [C\+\+ 2011 standard- ISO C\+\+ standard (ISO/IEC 14882-2011)](https://www.iso.org/standard/50372.html). Draft of C++2011: [link](https://open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3337.pdf).
+* [C\+\+ 2014 standard - ISO C\+\+ standard (ISO/IEC 14882:2014)](https://www.iso.org/standard/64029.html). Draft of C++2014: [link](https://timsong-cpp.github.io/cppwp/n4140/draft.pdf).
+* [C\+\+ 2017 standard - ISO C\+\+ standard (ISO/IEC 14882:2017)](https://www.iso.org/standard/68564.html). Draft of C++2017: [link](https://open-std.org/jtc1/sc22/wg21/docs/papers/2017/n4659.pdf).
+* [С\+\+ 2020 standard - ISO C\+\+ standard (ISO/IEC 14882:2020)](https://www.iso.org/standard/79358.html). Draft of C++2020: [link](https://open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf).
 
 [Scott Meyers](https://en.wikipedia.org/wiki/Scott_Meyers) gave a presentation about C in YANDEX back in 2014. His point of view was that C++03 can be considered a bug fix release of C++98, and C++14 completes C++11.
 
@@ -543,10 +543,10 @@ Fundamental code guarantees of C++ :
 
 All containers in C++98 provide a fundamental guarantee. And some operations (for example, `std::vector<T>::push_back`) give a strong guarantee.
 
-# Stages of Processing Source Code in C++
-A source code for C/C++ consists of source files. Each source file is processed through the following sequence of steps.
+# Stages of Source Code Translation in C++
+A source code for C/C++ consists of source files. Each source file is translated (or processed) through the following sequence of steps.
 
-## Preprocessing and initial textual source code processing
+## Initial Textual Source Code Processing and C Preprocessing
 1. The input file is read into memory and broken into lines.
 
 2. Processing trigrams. For all trigrams, please check [2,p.15].
@@ -3461,20 +3461,22 @@ Also, I hope that [Dr. B.Stroustroup](https://www.stroustrup.com/) controls the 
 
 # References
 
-[1] The C++ Programming Language Special Edition, B.Stroustrup
+[1] [The C++ Programming Language: Special Edition, B.Stroustrup](https://www.amazon.com/Programming-Language-Special-3rd/dp/0201700735)
 
-[2] C: A Reference Manual, 5th Edition. Samuel Harbison, Guy Steele Jr.
+[2] [C: A Reference Manual, 5th Edition. Samuel Harbison, Guy Steele Jr.](https://www.amazon.com/Reference-Manual-Samuel-P-Harbison/dp/013089592X)
 
-[3] The continuing evolution of C++. Bjarne Stroustrup https://www.youtube.com/watch?v=ooehrkYkGdA
+[3] [The continuing evolution of C++. Bjarne Stroustrup. Presentation](https://www.youtube.com/watch?v=ooehrkYkGdA)
 
-[4] Beginning C++20. From Novice to Professional. Sixth Edition. Ivor Horton, Peter Van Weert.
+[4] [Beginning C++20. From Novice to Professional. Sixth Edition. Ivor Horton, Peter Van Weert](https://www.amazon.com/Beginning-C-20-Novice-Professional-ebook/dp/B08KP34XTS)
 
-[5] C++17 Standard Library Quick Reference. Peter Van Weert and Marc Gregoire.
+[5] [C++17 Standard Library Quick Reference. Peter Van Weert and Marc Gregoire](https://www.amazon.com/Standard-Library-Quick-Reference-Structures/dp/1484249224)
 
-[6] ISO/IEC 14882:2003 Programming languages — C++
+[6] [ISO/IEC 14882:2003 Programming languages — C++](http://staff.ustc.edu.cn/~zhuang/cpp/specs/ISO_IEC%2014882%202003.pdf)
 
 [7] [C++ language Reference. cppreference.](https://en.cppreference.com/w/cpp/language)
 
 [8] [Bjarne Stroustrup's C++ Style and Technique FAQ](https://www.stroustrup.com/bs_faq2.html)
 
 [9] [Bjarne Stroustrup's C++11 FAQ](https://www.stroustrup.com/C++11FAQ.html)
+
+[10] [Useful catalog of resources from CppReference: Standards, ABI](https://en.cppreference.com/w/cpp/links)
