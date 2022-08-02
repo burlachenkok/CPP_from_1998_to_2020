@@ -8,7 +8,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision: Draft / Last Update: July 31, 2022
+Revision: Draft / Last Update: August 02, 2022
 
 © 2022 Konstantin Burlachenko, all rights reserved.
 
@@ -26,8 +26,8 @@ Revision: Draft / Last Update: July 31, 2022
 - [Why learn C++ if I know Python (Toy Example)](#why-learn-c---if-i-know-python--toy-example-)
 - [Standards for the Language](#standards-for-the-language)
 - [Language Guarantees](#language-guarantees)
-- [Stages of Processing Source Code in C++](#stages-of-processing-source-code-in-c--)
-  * [Preprocessing and initial textual source code processing](#preprocessing-and-initial-textual-source-code-processing)
+- [Stages of Source Code Translation in C++](#stages-of-source-code-translation-in-c--)
+  * [Initial Textual Source Code Processing and C Preprocessing](#initial-textual-source-code-processing-and-c-preprocessing)
   * [The Compiler and Linker. Briefly.](#the-compiler-and-linker-briefly)
   * [The Compiler and Linker. Details.](#the-compiler-and-linker-details)
     + [Lexical Analysis](#lexical-analysis)
@@ -50,7 +50,7 @@ Revision: Draft / Last Update: July 31, 2022
   * [Function Call Nuances](#function-call-nuances)
   * [Requirements for C++ Expressions](#requirements-for-c---expressions)
   * [Exceptions to the One Definition Rule](#exceptions-to-the-one-definition-rule)
-  * [Integer Arithmetics and Enumerations](#integer-arithmetics-and-enumerations)
+  * [Integer Arithmetic and Enumerations](#integer-arithmetic-and-enumerations)
   * [Integer Types Nuances](#integer-types-nuances)
   * [Auto Type Deduction](#auto-type-deduction)
   * [Range-Based For Loop](#range-based-for-loop)
@@ -64,7 +64,7 @@ Revision: Draft / Last Update: July 31, 2022
   * [Aggregates](#aggregates)
   * [POD or Plain Old Datatype (C++03)](#pod-or-plain-old-datatype--c--03-)
   * [Standard Layout (From C++11)](#standard-layout--from-c--11-)
-- [Builtin Type Conversion](#builtin-type-conversion)
+- [Built-in Type Conversion](#built-in-type-conversion)
   * [Prohibited Conversions](#prohibited-conversions)
   * [The Sequence of Type Conversions Rules in C/C++](#the-sequence-of-type-conversions-rules-in-c-c--)
 - [Namespaces](#namespaces)
@@ -111,10 +111,10 @@ Revision: Draft / Last Update: July 31, 2022
 - [Miscellaneous Features of C++11](#miscellaneous-features-of-c--11)
   * [1. emplace_back](#1-emplace-back)
   * [2. vector::shrink_to_fit](#2-vector--shrink-to-fit)
-  * [3. noexcept](#3-noexcept)
-  * [4. static_assert](#4-static-assert)
-  * [5. alignas](#5-alignas)
-  * [6. alignof](#6-alignof)
+  * [3. noexcept function specification](#3-noexcept-function-specification)
+  * [4. static_assert expression](#4-static-assert-expression)
+  * [5. alignas operator](#5-alignas-operator)
+  * [6. alignof operator](#6-alignof-operator)
   * [7. Default Member Initializers (C++11)](#7-default-member-initializers--c--11-)
   * [8. User-Defined Literals (UDL)](#8-user-defined-literals--udl-)
   * [9. noreturn Attribute](#9-noreturn-attribute)
@@ -168,7 +168,7 @@ Revision: Draft / Last Update: July 31, 2022
 - [Templates](#templates)
   * [Template Syntax Remarks](#template-syntax-remarks)
   * [Variadic Templates](#variadic-templates)
-  * [Reference Collapsing Rules and Universal Rerefence](#reference-collapsing-rules-and-universal-rerefence)
+  * [Reference Collapsing Rules and Universal Reference](#reference-collapsing-rules-and-universal-reference)
 - [Variants of Casting](#variants-of-casting)
 - [Concepts (from C++20)](#concepts--from-c--20-)
   * [Define Concepts](#define-concepts)
