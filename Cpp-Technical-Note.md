@@ -8,7 +8,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision: Draft / Last Update: Aug 2, 2022
+Revision: Draft / Last Update: Aug 7, 2022
 
 © 2022 Konstantin Burlachenko, all rights reserved.
 
@@ -183,7 +183,7 @@ Revision: Draft / Last Update: Aug 2, 2022
 
 # Introduction
 
-On that technical note, we would like to share complete information regarding C programming language and all primary C++ programming language standards: C++03(98),C++11,C++14,C++17,C++20. If you do not know C/C++, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it a bit. Here "know" has a weak sense. We have also tried to appeal in that note to people with a not-so-big background in C/C++.
+On that technical note, we would like to share complete information regarding C programming language and all primary C++ programming language standards: C++03/98, C++11, C++14, C++17, C++20. If you do not know C/C++, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it a bit. Here "know" has a weak sense. We have also tried to appeal in that note to people with a not-so-big background in C/C++.
 
 Do not get us wrong. If you have never seen the C/C++ language to obtain knowledge, we recommend first dedicating some time to reading original books by Bjarne Stroustrup. It would be only more effective for you. In recent years, Bjarne Stroustrup has made a lot of effort by providing easy-to-read books such as: ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend for whom that language is new firstly read any of that books.
 
@@ -247,24 +247,24 @@ public:
 
 ----
 
-*XValue*. Something that would be destroyed very soon and an object for which it is reasonable to use move semantics to take data via `T&&` notation from C++11.
+*XValue*. Something that would be destroyed very soon. It's an object for which it is reasonable to use move semantics to take data via `T&&` notation from C++11.
 
-*LValue Reference (for all C++)* - Typically, an LValue reference is an alias for another variable. Lvalue object may be bound to the LValue reference through syntax `X&x = obj;` where `X` is the datatype of `obj`.
+*LValue Reference (for all C++)*. Typically, an LValue reference is an alias for another variable. Lvalue object may be bound to the LValue reference through syntax `X&x = obj;` where `X` is the datatype of `obj`.
 
-*RValue Reference (only for C++98/03)* - In C++03, it is a usual const regular reference to a temporary object or expression that can be used from the right-hand side of the operator `=`.
+*RValue Reference (only for C++98/03)*. In C++03, it is a usual const regular reference to a temporary object or expression that can be used from the right-hand side of the operator `=`.
 
-*RValue Reference (starting from C++11)* - The goal of an RValue reference is to have a moving candidate for functions like `void f(T&&)`. In practice, RValue reference is either:
+*RValue Reference (starting from C++11)*. The goal of an RValue reference is to have a moving candidate for functions like `void f(T&&)`. In practice, RValue reference is either:
 
 * A reference to an object that soon will be deleted (xvalue expression) 
 * Explicitly unconditionally casted reference to the object through `std::move` to an RValue reference. The last option explicitly allows to reuse of memory of that object and, after moving, brings it to a valid but undefined state. 
 
 ----
 
-**Comment:** Reusing an object after moving from it is legal and valid. In that case, you should reinitialize the object using class API or the logic behind the class.
+**Comment:** Reusing an object after moving from it is *legal* and *valid* (In one of the talks in CppCon [Nicolai M. Josuttis](https://www.josuttis.com/) member of C++ Standard Committee, explicitly highlighted it). In that case, you should reinitialize the object using class API or the logic behind the class.
 
 ----
 
-**Important:** What was known in C++03/98 as *RValue Reference* starting from C++11 has been renamed into  *Const LValue Reference*.
+**Important:** What was known in C++03/98 as *RValue Reference* starting from C++11 has been renamed into *Const LValue Reference*.
 
 ----
 
