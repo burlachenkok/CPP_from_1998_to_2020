@@ -8,7 +8,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision: Draft / Last Update: Aug 7, 2022
+Revision: Draft / Last Update: Aug 10, 2022
 
 © 2022 Konstantin Burlachenko, all rights reserved.
 
@@ -274,11 +274,11 @@ The C/C++ programming language represents a pretty thin abstraction over the und
 
 Why computing is critical is excellently motivated by Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/) from MIT, in his undergraduate course about [Algorithms and Data structures](https://ocw.mit.edu/courses/6-046j-introduction-to-algorithms-sma-5503-fall-2005/) in the first lecture. 
 
-Nowadays, in 2022 due to [Tobex Index July 2022](https://www.tiobe.com/tiobe-index/), the interpretable programming language [Python](https://www.python.org/) is the most popular in that world. From the graphics, you can observe that Python is slightly beyond C in terms of popularity. Interestingly, Python has been designed originally only as a replacement for Bash (See that [blogpost](https://l.facebook.com/l.php?u=https%3A%2F%2Fpython-history.blogspot.com%2F2009%2F01%2Fpersonal-history-part-1-cwi.html%3Ffbclid%3DIwAR1v3C4KHiJtBbG4NYVY2o__lMchCNVKQGe2ozoI-gcxnwCYNvcdxzD_sHU&h=AT1quzeQEvwmfgFXMnWscdzCzWIJrbgoyQKX22c6w2yzVSaUt9LBMdrL66UgpJaz3rh_-BLBa8FVu3sdV_NzuiuSTU4XPZ5zADu4wGoASMxLcRR-n7Emwogq664lszQUbTZM&__tn__=-UK-R&c[0]=AT3TC-zKWleGu9UDUQg6mUKEWZ-El56OnANy8jfnUXLhGPAIHIfrXp6ZVEhtbJztlbUu_3OhD9sRJ7JA_F3ETiL3BsR0dKi58KfhLRwPsHtyRauqYQXDGtxnIeFWRyAxyop0WlHBapKPdoYnVar9DUy3pudNCdWdZ1c4wlxvNA3qoA) written by Guido van Rossum):
+Nowadays, in 2022 due to [Tobex Index July 2022](https://www.tiobe.com/tiobe-index/), the interpretable programming language [Python](https://www.python.org/) is the most popular in that world. From the graphics, you can observe that Python is slightly beyond C in terms of popularity. Interestingly, Python has been designed originally only as a replacement for Bash (See that [Blog Post](https://l.facebook.com/l.php?u=https%3A%2F%2Fpython-history.blogspot.com%2F2009%2F01%2Fpersonal-history-part-1-cwi.html%3Ffbclid%3DIwAR1v3C4KHiJtBbG4NYVY2o__lMchCNVKQGe2ozoI-gcxnwCYNvcdxzD_sHU&h=AT1quzeQEvwmfgFXMnWscdzCzWIJrbgoyQKX22c6w2yzVSaUt9LBMdrL66UgpJaz3rh_-BLBa8FVu3sdV_NzuiuSTU4XPZ5zADu4wGoASMxLcRR-n7Emwogq664lszQUbTZM&__tn__=-UK-R&c[0]=AT3TC-zKWleGu9UDUQg6mUKEWZ-El56OnANy8jfnUXLhGPAIHIfrXp6ZVEhtbJztlbUu_3OhD9sRJ7JA_F3ETiL3BsR0dKi58KfhLRwPsHtyRauqYQXDGtxnIeFWRyAxyop0WlHBapKPdoYnVar9DUy3pudNCdWdZ1c4wlxvNA3qoA) written by author of Python Programming Language - [Guido van Rossum](https://en.wikipedia.org/wiki/Guido_van_Rossum)):
 
-> "...My original motivation for creating Python was the perceived need for a higher level language in the Amoeba project. I realized that the development of system administration utilities in C was taking too long. Moreover, doing these in the Bourne shell wouldn't work for a variety of reasons. The most important one was that as a distributed micro-kernel system with a radically new design, Amoeba's primitive operations were very different (and finer-grain) than the traditional primitive operations available in the Bourne shell. So there was a need for a language that would "bridge the gap between C and the shell"...", said Guido van Rossum.
+> "...My original motivation for creating Python was the perceived need for a higher level language in the Amoeba project. I realized that the development of system administration utilities in C was taking too long. Moreover, doing these in the Bourne shell wouldn't work for a variety of reasons. The most important one was that as a distributed micro-kernel system with a radically new design, Amoeba's primitive operations were very different (and finer-grain) than the traditional primitive operations available in the Bourne shell. So there was a need for a language that would "bridge the gap between C and the shell..." - Guido van Rossum.
 
-It is not a secret that today people try to apply Python beyond launching scripts but creating other user space applications. Sometimes, when many underlying Algorithms are implemented in C++ or inside Hardware, and they are available via Python bindings, and the overhead of Python is negligible, it may be a choice.
+It is not a secret that today people try to apply Python beyond launching scripts but creating other user space applications. Sometimes, when underlying Algorithms that you need are implemented in C++ or even inside Hardware, and they are available via Python bindings, and the overhead of Python is negligible - it may be a choice to use Python.
 
 We think the main reason popularity of Python is primarily due to the fast learning curve measured by three days (only Language, no external libraries, frameworks, or middleware). At the same time, it's impossible to learn C++ in 3 days. We think the C++ community should think about it for its survival.
 
@@ -286,7 +286,7 @@ But any interpretable languages are not a choice when actual time matters or sub
 
 ## Downsides of Interpretable Languages
 
-1. The interpreter parses the program's text line by line (that represented or in text form or extremely high-level instructions), which is highly inefficient. As a consequence, Interpretable languages provide algorithms that are up to 50'000 times slower in computing than highly optimized C/C++/ASM code.
+1. The interpreter parses the program's text (source code) line by line (that represented or in text form or extremely high-level instructions), which is highly inefficient. As a consequence, Interpretable languages provide algorithms that can be even up to 50'000 times slower in computing than highly optimized C/C++/ASM code. 
 
 For a concrete example, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). The overview of that course is also available here [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
 
@@ -294,16 +294,15 @@ For a concrete example, please look at Lecture 1 from [6-172. Performance Engine
 
 3. To some extent, interpreters provide portability in the source code for user space applications. Still, it comes with the cost of reducing the number of possible calls to OS. Creating portability at the source code level between different OS is a big thing, and people thought about that in the past. That problem was brought to the creation of [POSIX](https://en.wikipedia.org/wiki/POSIX), which was a way to provide portability via standardization of many everyday routines for OS API. If the goal is portability between different OS, more correctly is to solve it via standardization of API to OS. Creating extra software layers, especially in the form of interpreters, is a suboptimal decision if speed or memory matters.
 
-4. During work with interpretable languages, you don't have an interface to work with the devices' memory inside the computer.
+4. During work with interpretable languages, you don't have a real  interface to work with the devices' memory inside the computer. In fact you do not even in fact have enough tools even to precisely handle memory aspects even in your program.
 
-5. Make correct multithreading implementation is suboptimal or just impossible at the level of the interpreter. During creating multithread implementation you should be careful about: *memory fences*, *synchronization*, *data races*, *atomic operations*, *absence of storing some objects in registers*. Implementation of interpreters is typically highly leveraged into existing C/C++ libraries. It is not true that all C/C++ libraries are thread-safe. For example, if you want to learn more about how really Concurrency in Python is implemented (and want to know more about what is known as Global Interpreter Lock) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html).
+5. Make correct multithreading implementation is suboptimal or just impossible at the level of the interpreter. During creating multithread implementation you should be careful about: *memory fences*, *synchronization*, *data races*, *atomic operations*, *absence of storing some objects in registers*. Implementation of interpreters is typically highly leveraged into existing C/C++ libraries, because create such modules of functionality in interpreter by itself is not effective enough. But it is not true that all C/C++ libraries are thread-safe. So create true multithreading inside interpreter in out opinion is already tricky. If you want to learn more about how really Concurrency in Python is implemented (and want to know more about what is known as Global Interpreter Lock) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html).  Developers of Python interpreter did their best, but problem is not so easy.
 
 6. Garbage Collector(GC) brings various limitations to any programming language. For example, GC disallows any pointer arithmetics. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
 
-7. Some subtleties exist with implementing function calls(referred to as functions linkage in Assembly language books) in specific hardware. It can not be done effectively at the level of an interpreter if it is not compilable language. Specifically, function inlining or passing arguments via registers or global program optimization is problematic to implement in interpreters due to the high-level design of interpreters.
+7. Some subtleties exist with implementing function calls (referred to as functions linkage in Assembly language books) in specific hardware. Function calls can not be effectively organized at the level of an interpreter if it is not compilable language. Specifically, function inlining or passing arguments via registers or global program optimization is problematic to implement in interpreters due to the high-level design of interpreters.
 
-8. The implementation of an interpreter (for example, CPython) is a collection of C/C++ libraries wrapped up into the program that can execute the command and therefore called an interpreter. So interpreter as a computer program adds an extra level of abstraction. 
-The standard implementation Python interpreter is CPython. It is called CPython because it has been implemented in C/C++. Such software as an interpreter improves the time for completing the project type, but implementation is suboptimal.
+8. The implementation of an interpreter (for example, CPython) is a collection of C/C++ libraries wrapped up into the program that can execute the command and therefore called an interpreter. So interpreter as a computer program adds an extra level of abstraction.  The standard implementation Python interpreter is CPython. It is called CPython because it has been implemented in C/C++. Such software as an interpreter improves the time for completing the project type, but implementation is suboptimal.
 
 9. The absence of a compiler has *pros* - you do not spend time on a compilation, but there are *cons* - now, the compiler will not tell you about errors in the code because there is no compiler.
 
@@ -311,7 +310,7 @@ The standard implementation Python interpreter is CPython. It is called CPython 
 
 11. Uncontrollable memory allocations in a program that should work for a long time and during runtime require extra memory allocation may lead to memory fragmentation and other problems.
 
-The interpretable language is excellent for prototyping, and the project, in that case, interpreter infrastructure will leverage into C/C++ libraries implicitly. But any interpreter, any user space algorithm in it, can be beaten by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
+The interpretable language is excellent for prototyping, and the project, in that case, interpreter infrastructure will leverage into C/C++ libraries implicitly. But any interpreter, any most user space algorithm in it, can be beaten already by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
 
 ## Downsides of C/C++
 
