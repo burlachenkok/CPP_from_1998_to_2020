@@ -8,7 +8,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision: Draft / Last Update: Aug 10, 2022
+Revision: Draft / Last Update: Aug 11, 2022
 
 © 2022 Konstantin Burlachenko, all rights reserved.
 
@@ -183,7 +183,7 @@ Revision: Draft / Last Update: Aug 10, 2022
 
 # Introduction
 
-On that technical note, we would like to share complete information regarding C programming language and all primary C++ programming language standards: C++03/98, C++11, C++14, C++17, C++20. If you do not know C/C++, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it a bit. Here "know" has a weak sense. We have also tried to appeal in that note to people with a not-so-big background in C/C++.
+On that technical note, we would like to share complete information regarding the C programming language and all primary C++ programming language standards: C++03/98, C++11, C++14, C++17, and C++20. If you do not know C/C++, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it a bit. Here "know" has a weak sense. We have also tried to appeal in that note to people with a not-so-big background in C/C++.
 
 Do not get us wrong. If you have never seen the C/C++ language to obtain knowledge, we recommend first dedicating some time to reading original books by Bjarne Stroustrup. It would be only more effective for you. In recent years, Bjarne Stroustrup has made a lot of effort by providing easy-to-read books such as: ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend for whom that language is new firstly read any of that books.
 
@@ -198,23 +198,23 @@ Finally, we welcome anybody who wants to make this note cleaner. We appreciate t
 
 # Glossary
 
-*A Shallow Copy.* A shallow copy contains copies of all members of an object one by one. If the copied members are pointers to dynamic memory, then only pointers by themselves are copied.
+**A Shallow Copy.** A shallow copy contains copies of all members of an object one by one. If the copied members are pointers to dynamic memory, then only pointers by themselves are copied.
 
-*A Deep Copy.* A deep copy copies all dynamic memory objects referred to by any pointer members.
+**A Deep Copy.** A deep copy copies all dynamic memory objects referred to by any pointer members.
 
-*Upcast.* Casting object to its base class
+**Upcast.** Casting object to its base class
 
-*Downcast.* Casting object to the derived class.
+**Downcast.** Casting object to the derived class.
 
-*Function Signature.* The combination of the function name and the parameter list is called the signature of a function.
+**Function Signature.** The combination of the function name and the parameter list is called the signature of a function.
 
-*Function Prototype (function declaration).* A function prototype is a statement that describes a function sufficiently for the compiler to be able to compile calls to it.
+**Function Prototype (function declaration).** A function prototype is a statement that describes a function sufficiently for the compiler to be able to compile calls to it.
 
-*Template Type Parameter.* Type placeholder used in class or function template, typically denoted by T. `template <class T> class MyClass{};`
+**Template Type Parameter.** Type placeholder used in class or function template, typically denoted by T. `template <class T> class MyClass{};`
 
-*Template Type Argument.* The type assigned to a type parameter T during instantiation.
+**Template Type Argument.** The type assigned to a type parameter T during instantiation.
 
-*Function Object.* A function object or functor is an object of a class that overloads the function call operator. Example:
+**Function Object.** A function object or functor is an object of a class that overloads the function call operator. Example:
 
 ```cpp
 class Area {
@@ -225,7 +225,7 @@ public:
 };
 ```
 
-*Pure Virtual Function.* The purpose of a pure virtual function is to enable the derived class versions of the function to be called polymorphically, but the implementation of that function in the base class is absent. Example:
+**Pure Virtual Function.** The purpose of a pure virtual function is to enable the derived class versions of the function to be called polymorphically, but the implementation of that function in the base class is absent. Example:
 ```cpp
 class Shape {
 public:
@@ -233,52 +233,44 @@ public:
 };
 ```
 
-*Abstract Class.* A class that contains at least one pure virtual function.
+**Abstract Class.** A class that contains at least one pure virtual function.
 
-*C/C++*. By C/C++, we mean C or C++ programming languages.
+**C/C++**. By C/C++, we mean C or C++ programming languages.
 
-*LValue*. An `LValue` evaluates during compile time to some persistent value with an address in memory where you can store something. Informally that is something to the left of the operator equals. Each value is implicitly converted to an RValue.
+**LValue**. An `LValue` evaluates during compile time to some persistent value with an address in memory where you can store something. Informally that is something to the left of the operator equals. Each value is implicitly converted to an RValue.
 
-*RValue*. An RValue evaluates a result that is stored only transiently. Expression from which the address cannot be taken. This is something that, at least in principle, can be encoded in the code of generated instructions for the processor. (in 99% of cases, these are unnamed temporary variables. A good counterexample of something that is an *RValue* but has the name `this.`
+**RValue**. An RValue evaluates a result that is stored only transiently. Expression from which the address cannot be taken. This is something that, at least in principle, can be encoded in the code of generated instructions for the processor. (in 99% of cases, these are unnamed temporary variables. A good counterexample of something that is an *RValue* but has the name `this.`
 
-----
+> Unfortunately, starting from C++11, the *object type* and *reference type* do not match each other due to a more complicated picture with values(expressions) and references.
 
-**Important:** Unfortunately, starting from C++11, the *object type* and *reference type* do not match each other due to a more complicated picture with values(expressions) and references.
+**XValue**. Something that would be destroyed very soon. It's an object for which it is reasonable to use move semantics to take data via `T&&` notation from C++11.
 
-----
+**LValue Reference (for all C++)**. Typically, an LValue reference is an alias for another variable. Lvalue object may be bound to the LValue reference through syntax `X&x = obj;` where `X` is the datatype of `obj`.
 
-*XValue*. Something that would be destroyed very soon. It's an object for which it is reasonable to use move semantics to take data via `T&&` notation from C++11.
+**RValue Reference (only for C++98/03)**. In C++03, it is a usual const regular reference to a temporary object or expression that can be used from the right-hand side of the operator `=`.
 
-*LValue Reference (for all C++)*. Typically, an LValue reference is an alias for another variable. Lvalue object may be bound to the LValue reference through syntax `X&x = obj;` where `X` is the datatype of `obj`.
-
-*RValue Reference (only for C++98/03)*. In C++03, it is a usual const regular reference to a temporary object or expression that can be used from the right-hand side of the operator `=`.
-
-*RValue Reference (starting from C++11)*. The goal of an RValue reference is to have a moving candidate for functions like `void f(T&&)`. In practice, RValue reference is either:
+**RValue Reference (starting from C++11)**. The goal of an RValue reference is to have a moving candidate for functions like `void f(T&&)`. In practice, RValue reference is either:
 
 * A reference to an object that soon will be deleted (xvalue expression) 
 * Explicitly unconditionally casted reference to the object through `std::move` to an RValue reference. The last option explicitly allows to reuse of memory of that object and, after moving, brings it to a valid but undefined state. 
 
-----
+> Reusing an object after moving from it is *legal* and *valid* (In one of the talks in CppCon [Nicolai M. Josuttis](https://www.josuttis.com/) member of C++ Standard Committee, explicitly highlighted it). In that case, you should reinitialize the object using class API or the logic behind the class.
 
-**Comment:** Reusing an object after moving from it is *legal* and *valid* (In one of the talks in CppCon [Nicolai M. Josuttis](https://www.josuttis.com/) member of C++ Standard Committee, explicitly highlighted it). In that case, you should reinitialize the object using class API or the logic behind the class.
+> What was known in C++03/98 as *RValue Reference* starting from C++11 has been renamed into *Const LValue Reference*.
 
-----
-
-**Important:** What was known in C++03/98 as *RValue Reference* starting from C++11 has been renamed into *Const LValue Reference*.
+**Token**. In the terminology of Programming Languages, tokens are separate words of a program text. One easy case is when such words (tokens) are split between each other by spaces. The more hard case is to identify tokens when there are no whitespaces and typically such thing is allowable for Programming Languages, but it can bring some problems.
 
 ----
 
 # Motivation
 
-The C/C++ programming language represents a pretty thin abstraction over the underlying hardware. The software level below C/C++ is Assembly Language for your computing device.
+The C/C++ programming language represents a pretty thin abstraction over the underlying hardware. The software level below C/C++ is Assembly Language for your computing device. Why computing is critical is excellently motivated by Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/) from MIT, in his undergraduate course about [Algorithms and Data structures](https://ocw.mit.edu/courses/6-046j-introduction-to-algorithms-sma-5503-fall-2005/) in the first lecture. 
 
-Why computing is critical is excellently motivated by Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/) from MIT, in his undergraduate course about [Algorithms and Data structures](https://ocw.mit.edu/courses/6-046j-introduction-to-algorithms-sma-5503-fall-2005/) in the first lecture. 
+Nowadays, in 2022 due to [Tobex Index July 2022](https://www.tiobe.com/tiobe-index/), the interpretable programming language [Python](https://www.python.org/) is the most popular in that world. From the graphics, you can observe that Python is slightly beyond C in terms of popularity. Interestingly, Python has been designed originally only as a replacement for Bash. That has been described in that [Blog Post](https://l.facebook.com/l.php?u=https%3A%2F%2Fpython-history.blogspot.com%2F2009%2F01%2Fpersonal-history-part-1-cwi.html%3Ffbclid%3DIwAR1v3C4KHiJtBbG4NYVY2o__lMchCNVKQGe2ozoI-gcxnwCYNvcdxzD_sHU&h=AT1quzeQEvwmfgFXMnWscdzCzWIJrbgoyQKX22c6w2yzVSaUt9LBMdrL66UgpJaz3rh_-BLBa8FVu3sdV_NzuiuSTU4XPZ5zADu4wGoASMxLcRR-n7Emwogq664lszQUbTZM&__tn__=-UK-R&c[0]=AT3TC-zKWleGu9UDUQg6mUKEWZ-El56OnANy8jfnUXLhGPAIHIfrXp6ZVEhtbJztlbUu_3OhD9sRJ7JA_F3ETiL3BsR0dKi58KfhLRwPsHtyRauqYQXDGtxnIeFWRyAxyop0WlHBapKPdoYnVar9DUy3pudNCdWdZ1c4wlxvNA3qoA) written by author of Python Programming Language:
 
-Nowadays, in 2022 due to [Tobex Index July 2022](https://www.tiobe.com/tiobe-index/), the interpretable programming language [Python](https://www.python.org/) is the most popular in that world. From the graphics, you can observe that Python is slightly beyond C in terms of popularity. Interestingly, Python has been designed originally only as a replacement for Bash (See that [Blog Post](https://l.facebook.com/l.php?u=https%3A%2F%2Fpython-history.blogspot.com%2F2009%2F01%2Fpersonal-history-part-1-cwi.html%3Ffbclid%3DIwAR1v3C4KHiJtBbG4NYVY2o__lMchCNVKQGe2ozoI-gcxnwCYNvcdxzD_sHU&h=AT1quzeQEvwmfgFXMnWscdzCzWIJrbgoyQKX22c6w2yzVSaUt9LBMdrL66UgpJaz3rh_-BLBa8FVu3sdV_NzuiuSTU4XPZ5zADu4wGoASMxLcRR-n7Emwogq664lszQUbTZM&__tn__=-UK-R&c[0]=AT3TC-zKWleGu9UDUQg6mUKEWZ-El56OnANy8jfnUXLhGPAIHIfrXp6ZVEhtbJztlbUu_3OhD9sRJ7JA_F3ETiL3BsR0dKi58KfhLRwPsHtyRauqYQXDGtxnIeFWRyAxyop0WlHBapKPdoYnVar9DUy3pudNCdWdZ1c4wlxvNA3qoA) written by author of Python Programming Language - [Guido van Rossum](https://en.wikipedia.org/wiki/Guido_van_Rossum)):
+> "...My original motivation for creating Python was the perceived need for a higher level language in the Amoeba project. I realized that the development of system administration utilities in C was taking too long. Moreover, doing these in the Bourne shell wouldn't work for a variety of reasons. The most important one was that as a distributed micro-kernel system with a radically new design, Amoeba's primitive operations were very different (and finer-grain) than the traditional primitive operations available in the Bourne shell. So there was a need for a language that would "bridge the gap between C and the shell..." - [Guido van Rossum](https://en.wikipedia.org/wiki/Guido_van_Rossum).
 
-> "...My original motivation for creating Python was the perceived need for a higher level language in the Amoeba project. I realized that the development of system administration utilities in C was taking too long. Moreover, doing these in the Bourne shell wouldn't work for a variety of reasons. The most important one was that as a distributed micro-kernel system with a radically new design, Amoeba's primitive operations were very different (and finer-grain) than the traditional primitive operations available in the Bourne shell. So there was a need for a language that would "bridge the gap between C and the shell..." - Guido van Rossum.
-
-It is not a secret that today people try to apply Python beyond launching scripts but creating other user space applications. Sometimes, when underlying Algorithms that you need are implemented in C++ or even inside Hardware, and they are available via Python bindings, and the overhead of Python is negligible - it may be a choice to use Python.
+It is not a secret that today people try to apply [Python](https://www.python.org/) beyond launching scripts but creating other user space applications. When (a) Underlying Algorithms that you need are implemented in C++ or inside Hardware; (b) They are available via Python bindings; (c) The overhead of Python is negligible; (d) There is a big part of the system implemented in Python - It may be a choice to use Python in that case.
 
 We think the main reason popularity of Python is primarily due to the fast learning curve measured by three days (only Language, no external libraries, frameworks, or middleware). At the same time, it's impossible to learn C++ in 3 days. We think the C++ community should think about it for its survival.
 
@@ -286,31 +278,36 @@ But any interpretable languages are not a choice when actual time matters or sub
 
 ## Downsides of Interpretable Languages
 
-1. The interpreter parses the program's text (source code) line by line (that represented or in text form or extremely high-level instructions), which is highly inefficient. As a consequence, Interpretable languages provide algorithms that can be even up to 50'000 times slower in computing than highly optimized C/C++/ASM code. 
+1. The interpreter parses the program's text (source code) line by line (that is represented or in text form or extremely high-level instructions), which is highly inefficient. As a consequence, Interpretable languages provide algorithms that can be even up to 50'000 times slower in computing than highly optimized C/C++/ASM code. The interpreter is the worst possible that can be for execution time from all possible three choices for converting source code into the program: (Interpreter, Just In Time compiler, Compilers).
 
-For a concrete example, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). The overview of that course is also available here [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
+> For a concrete example, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). The overview of that course is also available here [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
 
-2. Interpretable languages do not provide subtle interfaces to Operation Systems such as [POSIX API](https://pubs.opengroup.org/onlinepubs/009695399/idx/index.html), [Windows API](https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list), or other OS-dependent APIs. It provides bindings for API that the team that developed the interpreter had time to finish, and they are provided in highly simplified form.
+2. Interpretable languages do not provide subtle interfaces to Operation Systems such as [POSIX API](https://pubs.opengroup.org/onlinepubs/009695399/idx/index.html), [Windows API](https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list) or other OS-dependent APIs. It provides bindings for API that the team that developed the interpreter had time to finish, and they are provided in highly simplified form.
 
-3. To some extent, interpreters provide portability in the source code for user space applications. Still, it comes with the cost of reducing the number of possible calls to OS. Creating portability at the source code level between different OS is a big thing, and people thought about that in the past. That problem was brought to the creation of [POSIX](https://en.wikipedia.org/wiki/POSIX), which was a way to provide portability via standardization of many everyday routines for OS API. If the goal is portability between different OS, more correctly is to solve it via standardization of API to OS. Creating extra software layers, especially in the form of interpreters, is a suboptimal decision if speed or memory matters.
+3. To some extent, interpreters provide portability in the source code for user space applications. Still, it comes with the cost of reducing the number of possible calls to OS. Creating portability at the source code level between different OS is a big thing, and people thought about that in the past. That problem was brought to the creation of [POSIX](https://en.wikipedia.org/wiki/POSIX), which was a way to provide portability via the standardization of many everyday routines for OS API. If the goal is portability between different OS, more correctly is to solve it via standardization of API to OS. Creating extra software layers, especially in the form of interpreters, is a suboptimal decision if speed or memory matters.
 
-4. During work with interpretable languages, you don't have a real  interface to work with the devices' memory inside the computer. In fact you do not even in fact have enough tools even to precisely handle memory aspects even in your program.
+4. During work with interpretable languages, you don't have a real interface to work with the devices' memory inside the computer. You do not even, in fact, have enough tools even to precisely handle memory aspects even in your program.
 
-5. Make correct multithreading implementation is suboptimal or just impossible at the level of the interpreter. During creating multithread implementation you should be careful about: *memory fences*, *synchronization*, *data races*, *atomic operations*, *absence of storing some objects in registers*. Implementation of interpreters is typically highly leveraged into existing C/C++ libraries, because create such modules of functionality in interpreter by itself is not effective enough. But it is not true that all C/C++ libraries are thread-safe. So create true multithreading inside interpreter in out opinion is already tricky. If you want to learn more about how really Concurrency in Python is implemented (and want to know more about what is known as Global Interpreter Lock) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html).  Developers of Python interpreter did their best, but problem is not so easy.
+5. The interpreter as a computer program adds an extra level of abstraction. The standard implementation Python interpreter is CPython. It is called CPython because it has been implemented in C/C++. Such software as an interpreter improves the time for completing the project type, but implementation is suboptimal.
 
-6. Garbage Collector(GC) brings various limitations to any programming language. For example, GC disallows any pointer arithmetics. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
+6. The absence of a compiler has *pros* - you do not spend time on a compilation, but there are *cons* - now, the compiler will not tell you about errors in the code because there is no compiler.
 
-7. Some subtleties exist with implementing function calls (referred to as functions linkage in Assembly language books) in specific hardware. Function calls can not be effectively organized at the level of an interpreter if it is not compilable language. Specifically, function inlining or passing arguments via registers or global program optimization is problematic to implement in interpreters due to the high-level design of interpreters.
+7. Uncontrollable memory allocations in a program that should work for a long time and during runtime require extra memory allocation may lead to memory fragmentation and other memory problems.
 
-8. The implementation of an interpreter (for example, CPython) is a collection of C/C++ libraries wrapped up into the program that can execute the command and therefore called an interpreter. So interpreter as a computer program adds an extra level of abstraction.  The standard implementation Python interpreter is CPython. It is called CPython because it has been implemented in C/C++. Such software as an interpreter improves the time for completing the project type, but implementation is suboptimal.
+8. Compiler optimization tricks such as code inlining are out of the scope of any interpretable language because for performing such optimization you should have a compiler. The elimination of the compiler stage will make such optimizations impossible.
 
-9. The absence of a compiler has *pros* - you do not spend time on a compilation, but there are *cons* - now, the compiler will not tell you about errors in the code because there is no compiler.
+9. During creating multithread implementation you should be careful about memory fences, synchronization, data races, atomic operations, absence of storing some objects in registers. But implementation of interpreters is typically highly leveraged into existing C/C++ libraries because creating such modules of functionality in an interpreter by itself is not effective enough. But it is not true that all C/C++ libraries are thread-safe. Creating a true multithreading environment inside an interpreter can be tricky. If you want to learn more about how really Concurrency in Python is implemented (and want to know more about Global Interpreter Lock (GIL)) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html). (Developers of the Python interpreter did their best, but the problem is not so easy).
 
-10. Due to high abstraction, Interpretable Languages violate memory locality principles because almost every object is allocated on the heap. Memory Locality is essential because on that principle all memory caches in all levels of various memory storage are working inside modern computing devices.
+10. Garbage Collector (GC) brings various limitations to any programming language. For example, GC disallows any pointer arithmetics. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
 
-11. Uncontrollable memory allocations in a program that should work for a long time and during runtime require extra memory allocation may lead to memory fragmentation and other problems.
+11. Due to high abstraction, Interpretable Languages violate memory locality principles because almost every object is allocated on the heap. Memory Locality is an essential principle because on that principle all memory caches in all levels of various memory storage are working inside modern computing devices.
+
+12. Processors have a limited number of registers. If you have too many objects with too many wrappers around them the useful load for a real final compute device is smaller and degrades.
+
+13. There is no way to use special registers or special instructions of the processor from typical interpretable language (Bash, Python)
 
 The interpretable language is excellent for prototyping, and the project, in that case, interpreter infrastructure will leverage into C/C++ libraries implicitly. But any interpreter, any most user space algorithm in it, can be beaten already by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
+
 
 ## Downsides of C/C++
 
@@ -343,7 +340,7 @@ The Language started as a project in Bell Labs in 1979 ([3]). The principles of 
 
 Some language decisions due to B.Stroustoup:
 
-- *" C++ does not have a universal class Object. It's so because, in C++, we don't need one: generic programming provides statically type safe alternatives in most cases. Also, there is no valid universal class; in fact, using a universal base class implies the cost."*
+- *"C++ does not have a universal class Object. It's so because, in C++, we don't need one: generic programming provides statically type safe alternatives in most cases. Also, there is no valid universal class; in fact, using a universal base class implies the cost."*
 
 - *"Templates are not Generics (from C# or Java). Generics are primarily syntactic sugar for abstract classes. With generics (whether Java or C# generics), You program against precisely defined interfaces and typically pay the cost of virtual function calls and/or dynamic casts to use arguments."*
 
@@ -422,7 +419,7 @@ Sum is 5e+13
 
 ```python
 #!/usr/bin/env python
-# setup.py
+# filename: setup.py
 # Cython version 0.29.24
 # pip install Cython
 
@@ -438,6 +435,7 @@ setup(
 
 ```python
 #!/usr/bin/env python3
+# filename: test_cython.pyx
 import time
 
 start = time.time()
@@ -548,7 +546,7 @@ A source code for C/C++ consists of source files. Each source file is translated
 ## Initial Textual Source Code Processing and C Preprocessing
 1. The input file is read into memory and broken into lines.
 
-2. Processing trigrams. For all trigrams, please check [2,p.15].
+2. Processing trigrams. All available C trigrams can be obtained from [2,p.15].
 
 ```cpp
 #include <iostream>
@@ -562,8 +560,7 @@ int main() {
 
 4. Replace comments with white space.
 
-5. Split program text by preprocessor tokens. Tokens are separate words of a program text. One easy case is that words (or tokens) are split between each other by spaces. The more hard case is to identify tokens when there are no whitespaces.
- The tokens for the C preprocessor are mainly like the tokens used by the C compiler, except for some differences. Example: Token `##` is a concatenation operator for words in a source code. It is the valid operator for the C preprocessor, but it is an invalid token for the operator in a proper C/C++ program.
+5. Split program text by preprocessor tokens. The tokens for the C preprocessor are mainly like the tokens used by the C compiler, except for some differences. Example: Token `##` is a concatenation operator for words in a source code. It is the valid operator for the C preprocessor, but it is an invalid token for the operator in a proper C/C++ program.
 
 6. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program. For details about available preprocessor language, please read [2, p.43] or documentation for any de-facto standard toolchain like [GCC](https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros).
 
@@ -571,15 +568,19 @@ The output of preprocessing of the source file is named as *preprocessed source*
 
 ## The Compiler and Linker. Briefly.
 
-The compiler converts text in a high-level language into instructions for a specific Instruction Set Architecture (ISA) of Computing Device or another machine-dependent representation. It saves the results of processing each source file into a correspondent object file. Compiled object files augmented with another binary file from static libraries are linked into the final executable. The language does not specify the internal details of the compilation or linkage - it's under the responsibility of the creators of toolchains. The final binary format (ELF for Linux and PE for Windows) is also not under the obligation of a Language; it's under the responsibility of the creators of the Operation System. There are situations when the target device in which the program will be executed has no operating system. The case of launching program on target device with no Operation System sometimes is denoted as "Launching on Bare Metal". In that later case the format of binary files is typically under the Device Vendor's responsibility (example: PTX, SASS for NVIDIA GPU is provided by NVIDIA).
+The compiler converts text in a high-level language into instructions for a specific Instruction Set Architecture (ISA) of Computing Device or another machine-dependent representation. It saves the results of processing each source file into a correspondent *compiled object file*. 
+
+*Compiled object files* augmented with another binary file from static libraries are linked into the final executable. The language does not specify the internal details of the compilation or linkage - it's under the responsibility of the creators of toolchains. 
+
+The final binary format ([ELF](https://refspecs.linuxfoundation.org/elf/elf.pdf) for Linux and [PE](https://docs.microsoft.com/en-us/windows/win32/debug/pe-format) for Windows) is also not under the obligation of creators of Language or userspace developers. It's under the responsibility of the creators of the Operation System. There are situations when the target device in which the program will be executed has no operating system. The case of launching program on target device with no Operation System sometimes is denoted as *"Launching on Bare Metal"*. In that later case the format of binary files is typically under the Device Vendor's responsibility (example: [PTX](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html), [SASS](https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html) for NVIDIA GPU is provided by NVIDIA).
 
 > ## The Compiler and Linker. Details.
 > 
-> A high-level overview is presented below if you are curious about how a compiler compiles source code. It's possible to be ultimately productive even without the knowledge below. If you want to know how things are working and you have that curiosity - you're welcome to read the text below. In another case - skip that section.
->
+> A high-level overview is presented below if you are curious about how a compiler compiles source code. It's possible to be productive even without the knowledge below especially during creating only userspace applications. If you want to know how things are working and you have that curiosity - you're welcome to read the text below. In another case - just skip it.
+
 > ### Lexical Analysis
 >
-> The essence of Lexical analysis of the program is in splitting the program text into tokens. Separate words or atoms of a program text are some work of source text that cannot be divided further.
+> The essence of Lexical analysis of the program is in splitting the program source code text into tokens. Separate words or atoms of a program source code text are some words of source text that cannot be divided further.
 >
 > An important part is that the C/C++ compiler always tries to assemble the longest valid token (in terms of the number of single characters) by processing the text from left to right character by character, even if the result is an unbuildable program. Example from [2, p.20]:
 > ```cpp
@@ -590,9 +591,7 @@ The compiler converts text in a high-level language into instructions for a spec
 > // but C/C++ compiler does not do that
 > c = b - -a;   
 > ```
-> The white space forces the end of the token because whitespace is not part of any token. The concept of whitespace in C/C++ includes different keyboard spaces and comments. 
->
->In C++ and most programming languages, the tokens fundamentally can be one of the following types:
+> The concept of whitespace in C/C++ includes different keyboard spaces and comments. In C/C++ and most programming languages, the tokens fundamentally can be one of the following types:
 >* a. Operators
 >* b. Separators
 > * c. Identifiers
@@ -600,21 +599,24 @@ The compiler converts text in a high-level language into instructions for a spec
 > * e. Literal constants
 >
 > After finishing, the Lexical analysis, the program consists of a sequence of tokens. 
->
+
 > ### Syntax Analysis
-> The compiler is based on the language rules typically described by Backus – Naur forms for context-free - grammars(the grammars by themselves are studied in a mathematic area called *Formal Languages and Grammars* *Theory*. And it is essential for Compiler Theory). Based on the grammar of the C or C++ programming language, the syntax analyzer constructs the Abstract Syntax Tree (AST) for the program's source text.  The exact Grammar rules can be found in the Appendices of corresponding Language Standards.
+> The compiler is based on the language rules typically described by Backus–Naur forms for Context-Free-Grammars (CFG). The Grammars by themselves are studied in a mathematic area called *Formal Languages and Grammars Theory*. That area of mathematics is essential for Compiler fundamental aspects.
+>
+> Based on the grammar of the C or C++ programming language, the syntax analyzer constructs the Abstract Syntax Tree (AST) for the program's source text.  The exact Grammar rules can be found in the Appendices of corresponding Language Standards.
 
 >### Semantic Analysis
-> Some rules of the language can not be expressed only by using Grammar. Examples: Multiple declarations of a variable in one scope, usage of not yet declared variables, access to a plain C array via an index that is out of range, etc. For handling that analysis, the Semantic analyzer inside the compiler is used.
-> 
+> Some rules of the language can not be expressed only by using CFG. Examples: Multiple declarations of a variable in one scope, usage of not yet declared variables, access to a plain C array via an index that is out of range, etc. For handling that analysis, the Semantic analyzer inside the compiler is used.
+
 >### Code Optimization
 > 
->At that moment, we constructed AST for a program and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and translate that code into more low-level construction expressed as Assembly Language or Intermediate Representation (IR). But before that stage, there is a stage of code Optimization.
-> Some optimization technics are brilliant innovations for people working under compilers. Compilers' innovations that mainly bring considerable speedup are exploited in that stage. Typically compilers perform
+> At that moment, we have constructed AST for a program and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and translate that code into more low-level construction expressed as Assembly Language or Intermediate Representation (IR).
+> 
+> Before that stage, the stage of code Optimization is occurred. Compilers' innovations based on various fields of science and engineering that mainly bring considerable speedup are exploited in that stage. 
+>
+> Typically compilers perform
 > a sequence of transformation passes. Each transformation pass
-analyzes and edits the code to optimize performance. A transformation pass might run multiple times. Keys run in a predetermined order that usually seems to work well. 
-
->Some examples of optimization technics that happens at that moment:
+analyzes and edits the code to optimize performance. A transformation pass might run multiple times. Keys run in a predetermined order that usually seems to work well. Some examples of optimization technics that happens at that moment:
 > * Convert one arithmetic operation into more cheap operations via using bit tricks and logic/arithmetic shifts.
 >  * Replace stack allocation storage with storing variables in the processor's register.
 > * Optimization for structure/class memory layout.
@@ -627,34 +629,31 @@ analyzes and edits the code to optimize performance. A transformation pass might
 > * Loops optimization: unrolling; loop fusion (also known as jamming) to combine multiple loops over the same index range; eliminating wasted iterations in the loop.
 > * Figure out with Memory Aliasing and apply optimization for non-aliased pointed expression. For details please check [Compute Optimization Relative Information](#compute-optimization-relative-information.
 > Various things of optimization are out of the scope of the compiler. And can only be solved by the creator of the Algorithm/Method. Even we think there is a possibility of research to provide that information for the compiler.
-> 
+
 >### Code Emitting
-> In the end, at least conceptually, the compiler emits final instructions for the target assembler. How exactly emit code is under the decision of the compiler.
+> In the end, at least conceptually, the compiler emits final instructions for the target assembler. How exactly emit code is under the decision of the compiler and toolchain creators.
 > 
 >However, in reality it's possible to have three different scenarios what exactly compilers emit:
-> 1. Compiler emit the final binary code for target Instruction Set Architecture (ISA). (Example: Microsoft Visual C compiler.)
-> 2. Compiler emit the program text written in Assembly and producing final binary code is under responsibility of Assembler program. (See next section). You can obtain such assembly source from preprocessed file manually for [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S -o -`.
-> 3. With the coming [LLVM](https://llvm.org/) project there is in fact intermediate layer with Intermediate Representation (IR) of the compiled source code. At the first stage - the input preprocessed code is converted into pseudo-assembly called [LLVM-IR](https://llvm.org/docs/LangRef.html) producing files with extensions "*.ll". At the second stage - LLVM-Optimizer works under that representation and produces optimized "*.ll" source code. In the third stage - the **LLVM code generator** generates real Assembly representation.
-> 
->You can obtain such an intermediate source from the [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S emit-llvm -o -`.
-> 
+> 1. Compiler emits the final binary code for target Instruction Set Architecture (ISA). (Example: Microsoft Visual C compiler emits that.)
+> 2. Compiler emits the program text written in Assembly and producing final binary code is under responsibility of Assembler program. You can obtain such assembly source from preprocessed file manually for [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S -o -`.
+> 3. With the coming [LLVM](https://llvm.org/) project there is in fact intermediate layer between High Level Language(C++) and ASM for target ISA. That layer is called Intermediate Representation (IR). And contains tree stages conversion:
+> * At the *first stage* the input preprocessed code is converted into pseudo-assembly called [LLVM-IR](https://llvm.org/docs/LangRef.html) producing files with extensions "*.ll". You can obtain unoptimized LLVM-IR code in [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S emit-llvm -o -`.
+> * At the *second stage* LLVM-Optimizer works under that representation and produces optimized "*.ll" source code. 
+> * At the *third stage* the **LLVM code generator** generates real Assembly representation.
+>
 >For further study as an introduction to LLVM-IR, we recommend [Lecture 5](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/resources/mit6_172f18_lec5/) from MIT course [6.172 Performance Engineering of Software Systems](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
-> 
->### Calling Assembler Program
-> Assembler(ASM) Language is the lowest possible level that can still be readable, but understanding it is not easy in a big program. ASM language has a close relation to a family of target compute devices. One instruction in C++ code can correspond to several(1,2,3,...) ASM code instructions. On the other hand, the same instruction in C/C++ can be emitted/materialized/generated into different instructions in ASM Language.
-> 
->An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code for the target device.
-> That machine instruction emitted by ASM is called Instruction Set Architecture (ISA). 
-
+ 
+> ### Calling Assembler Program
+> Assembler(ASM) Language is the lowest possible level that can still be readable, but understanding it is not easy in a big program without extra documenation. ASM language has a close relation to a family of target compute devices. One instruction in C++ code can correspond to several( 1,2,3,...) ASM code instructions. On the other hand, the same instruction in C/C++ can be emitted/materialized/generated into different instructions in ASM Language. An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code for the target device.
+> That machine instruction emitted by ASM is called Instruction Set Architecture (ISA). In Assembly literature, the process of converting ASM instructions into machine code is named `encoding.` An inverse process of reconstructing ASM code from binary code is called `decoding` or `disassembly.` 
+>
 > The ISA specified instruction, register, memory architecture, and data types. The ISA connects physical Hardware designed by Electrical Engineering (EE) with the Software constructed mainly through Computer Science. The particular implementation of ISA is called Microarchitecture in EE. Different vendors can provide the support of the same ISA, but Microarchitecture is typically under NDA.
 > 
 >For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the standard de-facto Assembler is [GAS](https://www.gnu.org/software/binutils/). The output of Assembler is saved into *object files*. 
-> 
-> In Assembly literature, the process of converting ASM instructions into machine code is named `encoding.` An inverse process of reconstructing ASM code from binary code is called `decoding` or `disassembly.` 
-> 
+ 
 ># Linkage
 > 
-> The linker constructs the final program or dynamic(shared) library from compiled source files in the form of *object files*, obtains additional input archives of object files (called static libraries), obtains information about used dynamic library dependencies, performs other semantic checks (for example via finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links. The name of linkage program typically has a name in toolchains as [ld](https://linux.die.net/man/1/ld) or [link](https://docs.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170).
+> The linker constructs the final program or dynamic (shared) library from compiled source files in the form of *object files*, obtains additional input archives of object files (called static libraries), obtains information about used dynamic library dependencies, performs other semantic checks (for example via finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links. The name of linkage program typically has a name in toolchains as [ld](https://linux.die.net/man/1/ld) or [link](https://docs.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170).
 > 
 >The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from the C compiler physically. In another toolchain, e.g., from Microsoft Visual C compiler, the translation to final binary code is inside their C compiler.
 
@@ -708,10 +707,10 @@ class that contains virtual functions. The only time you should even debate whet
 
 That names should not be used by not compiler writers both for C and C++ languages. With that rule for a long time, people escape conflicts between naming of compiler-specific entities and entities of the construct program.
 
-**a.** Sometimes compiler writers violate that principle.
+> Sometimes compiler writers violate that principle.
 For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.html) mentions standard predefined macro uses `unix` and `linux` during compilation for the Linux platform. That special names are not the names that follow C/C++ conventions to distinguish names used in the program and for compiler writers.
 
-**b.** **b.** Sometimes, it's possible to observe defined guards at the beginning of the buildable program's header files via `#ifndef/#define` that uses names starting with `__.` That special names are not the names that followed that rules.
+> Sometimes, it's possible to observe defined guards at the beginning of the buildable program's header files via `#ifndef/#define` that uses names starting with `__.` That special names are not the names that followed that rules.
 
 16. In C/C++, postfix operators have higher priority than unary operators.
 ```cpp
@@ -733,7 +732,9 @@ C++ 1998 and C++2003 use the C89 preprocessor, although the C language also has 
 Preprocessor macro extensions in C/C++ have the following property. Once an extension replaces a macro call, the macro call search process starts from the beginning of the expanded extension for further replacement.
 
 During this process, macros referenced in their own expansion are not re-expanded, and that preprocessor macro extension does not lead to infinite recursion.
-`#define sqrt(x) (x<0 ? sqrt(x) : sqrt(-x))`
+```cpp
+#define sqrt(x) (x<0 ? sqrt(x) : sqrt(-x))
+```
 
 For the C/C++ preprocessor, any undefined identifiers that appear after the conditional directives `#if` and `#elif` is replaced with the number 0.
 
