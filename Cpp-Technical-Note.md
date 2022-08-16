@@ -8,7 +8,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision: Working Draft 1.0 / Last Update: Aug 15, 2022
+Revision: Working Draft 1.0 / Last Update: Aug 16, 2022
 
 © 2022 Konstantin Burlachenko, all rights reserved.
 
@@ -16,7 +16,6 @@ Revision: Working Draft 1.0 / Last Update: Aug 15, 2022
 
 **Table of Content**
 
-- [Technical Note. From C++1998 to C++2020](#technical-note-from-c--1998-to-c--2020)
 - [Introduction](#introduction)
 - [Glossary](#glossary)
 - [Motivation](#motivation)
@@ -127,6 +126,7 @@ Revision: Working Draft 1.0 / Last Update: Aug 15, 2022
   * [16. Fixed Width Integer Types](#16-fixed-width-integer-types)
   * [17. Concurrency Support](#17-concurrency-support)
   * [18. Explicit Conversion Functions](#18-explicit-conversion-functions)
+  * [19. Current Exception. Internal Details.](#19-current-exception-internal-details)
 - [Miscellaneous Features of C++14](#miscellaneous-features-of-c--14)
   * [1. deprecated Attribute](#1-deprecated-attribute)
   * [2. Return Type Deduction](#2-return-type-deduction)
@@ -154,9 +154,9 @@ Revision: Working Draft 1.0 / Last Update: Aug 15, 2022
   * [5. source_location::current()](#5-source-location--current--)
   * [6. nodiscard(reason) Attribute](#6-nodiscard-reason--attribute)
   * [7. Only one Signed Integer Representation](#7-only-one-signed-integer-representation)
-  * [8. Abbreviated Function Templates](#8-abbreviated-function-templates)
-  * [9. Automatic generation of `!=` from `==`.](#9-automatic-generation-of------from-----)
-  * [10. Right Shift is Arithmetic Right Shift](#10-right-shift-is-arithmetic-right-shift)
+  * [8. Right Shift is Arithmetic Right Shift](#8-right-shift-is-arithmetic-right-shift)
+  * [9. Abbreviated Function Templates](#9-abbreviated-function-templates)
+  * [10. Automatic generation of `!=` from `==`.](#10-automatic-generation-of------from-----)
   * [11. Designated initializers](#11-designated-initializers)
 - [Modules (from C++20)](#modules--from-c--20-)
   * [Single Module Interface File/Module Unit](#single-module-interface-file-module-unit)
@@ -1486,7 +1486,13 @@ appropriately with an object. (Escape from a block by throwing an exception clea
 {T e; throw e;}
 ```
 * Exiting a destructor by throwing an exception is against the requirements of the standard library.
-* The process of calling destructors for automatic objects constructed on the path from a try block to a throw expression is called "stack unwinding."
+* The process of calling destructors for automatic objects constructed on the path from a try block to a throw expression is called **"stack unwinding"**.
+> *How memory for exception object is allocated?*
+> 
+> Unfortunately answer for it is pretty vague and it depends on the toolchain (see that [cppreference note](https://en.cppreference.com/w/cpp/error/current_exception)):
+*"On the implementations that follow Itanium C++ ABI (GCC, Clang, etc.), exceptions are allocated on the heap when thrown (except for bad_alloc in some cases), and this function creates the smart pointer referencing the previously-allocated object,
+On MSVC, exceptions are allocated on the stack when thrown, and this function performs the heap allocation and copies the exception object."*
+
 * If a destructor called during stack unwinding exits with an exception, terminate is called (C++2003, 15.5.1). So destructors should generally catch exceptions and not let them propagate out of the destructor.
 * If an exception is thrown but not caught, `std::terminate` is called. You can set your behavior with `std::set_terminate`.
 * It is possible to rethrow an exception with `throw;`.
@@ -2230,12 +2236,12 @@ If you call the function through a base pointer, you will always get the default
 
 The `emplace_back` construct object is directly in place in the memory of the container.
 
-Documentation: [cpp reference details about emplace_back](https://en.cppreference.com/w/cpp/container/vector/emplace_back).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/container/vector/emplace_back).
 
 ## 2. vector::shrink_to_fit
 vector::shrink_to_fit method requests the removal of unused capacity from reserved memory of std::vector that encapsulates dynamic linear array.
 
-Documentation: [cpp reference details about shrink_to_fit](https://en.cppreference.com/w/cpp/container/vector/shrink_to_fit).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/container/vector/shrink_to_fit).
 
 ## 3. noexcept function specification
 The `noexcept` specification - like `throw()` specification for functions from C++98/03, but it allows more optimization. And also, `throw()` is an explicit exception specification. The exception specification has been deprecated in C++11 and removed from C++17.
@@ -2251,7 +2257,12 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/languag
 ## 4. static_assert expression
 The syntax for `static_assert` is the following: `static_assert(expr)`. A special declaration that results in a compilation error if the constant expression expr evaluates to false.
 
-The `static_assert` valid anywhere: Global/namespace scope,Class scope, Function/block scope. Example:
+The `static_assert` valid anywhere: 
+* Global/namespace scope
+* Class scope
+*  Function/block scope. 
+
+Example:
 
 ```cpp
 static_assert(sizeof(void*) == sizeof(int), 
@@ -2291,7 +2302,8 @@ Unsurprisingly, literals with user-defined suffixes are called user-defined lite
 ```cpp
 long double operator "" _w(long double);
 int main() {
-    1.2w; // calls operator "" _w(1.2L)
+    double z = 1.2w; // calls operator "" _w(1.2L)
+    return 0;
 }
 ```
 Documentaion: [cpp reference details](https://docs.microsoft.com/en-us/cpp/cpp/user-defined-literals-cpp?view=vs-2019).
@@ -2320,7 +2332,9 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/languag
 Documentation: [cpp reference details](https://en.wikipedia.org/wiki/Union_type#Anonymous_union).
 
 ## 11. Type Alias
-Starting from C++11, there are "Alias Templates" or "Smart Typedefs". Using declarations can now be used for "partially bound" templates:
+Starting from C++11, there are *"Alias Templates"* or *"Smart Typedefs"*. 
+
+Using declarations can now be used for "partially bound" templates:
 
 ```cpp
 // Usual namespace alias from C++98.
@@ -2347,7 +2361,7 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/languag
 
 ## 12. Static Variables are Always Initialized Thread Safe
 
-Interestingly, that `static` local variable in C++11 guarantees thread-safe initialization. It was not the case in C++03. So static variables and local variables are guaranteed to be initialized only once.
+Interestingly, that `static` local variable in C++11 guarantees thread-safe initialization. It was not the case in C++03. But since C++11 static variables and local variables are guaranteed to be initialized only once.
 
 ## 13. Delegating constructors
 A constructor can call another constructor in the initialization list. In that way, initialization is delegated to another constructor.
@@ -2365,9 +2379,9 @@ private:
   double h;
 };
 ```
-There is one extra thing regarding delegating constructors. Once you have decided to delegate construction work to another constructor, you can not initialize any member inside the function.
+There is one extra thing regarding delegating constructors. Once you have decided to delegate construction work to another constructor, you can not initialize any member in initializer list of constructor.
 
-And if you will add member initialization into the previous code snippet, it will lead to compile error:
+If you will add member initialization into the previous code snippet, it will lead to compile error:
 
 ```cpp
 //...
@@ -2445,6 +2459,9 @@ std::string s = static_cast<std::string>(w)); // ok
 ```
 
 Documentation: [cpp reference about explicit keyword](https://en.cppreference.com/w/cpp/language/explicit).
+
+## 19. Current Exception. Internal Details.
+The construction in the standard library devoted for for concept of current exception object called *"Exception Pointer"*.  Starrting from C++11, it's possible to get it object via: [std::current_exception](https://en.cppreference.com/w/cpp/error/current_exception) and [std::exception_ptr](https://en.cppreference.com/w/cpp/error/exception_ptr).
 
 # Miscellaneous Features of C++14
 
@@ -2535,9 +2552,18 @@ public:
     }
 };
 ```
-Starting from C++17 it's possible to just write `A a(123);` instead of `A<int> a(123)`. Before C++17, such a feature was supported only for template functions but not for template classes. That feature is called Class Template Argument Deduction.
+Starting from C++17 it's possible to just write:
+```cpp
+A a(123); // from C++17
+```
+ instead of
+ ```cpp
+`A<int> a(123); // correct syntax in C++98/03/11/14
+ ```
 
-Documentation: [cpp reference details about class template deduction](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction).
+Before C++17, such a feature was supported only for template functions but not for template classes. That feature is called *Class Template Argument Deduction*.
+
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction).
 
 ## 3. Compile Time if 
 
@@ -2572,7 +2598,7 @@ Documentation: [cpp reference details about feature test](https://en.cppreferenc
 ## 5. std::byte
 C++17 introduces byte type to work directly with bytes `std::byte` defined in `<cstddef>`.
 
-Documentation: [cpp reference details about std::byte](https://en.cppreference.com/w/cpp/types/byte).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/types/byte).
 
 
 ## 6. fallthrough Attribute
@@ -2636,8 +2662,9 @@ class Objects {
     static inline size_t s_object_count {};
 };
 ```
-Before inline variables, it was possible to use static variables, but the burden to add static variables into compilable/ and finally, the linkable unit is under your responsibility.
+Before inline variables, it was possible to use static variables, but the burden to add static variables into compilable and finally, the linkable unit is under your responsibility.
 ```cpp
+// somewhere in some header file
 class ObjectsOld {
     static size_t s_object_count;
 };
@@ -2683,7 +2710,7 @@ The three-way comparison operator denoted `<=>` is a new comparison operator. It
 The term "spaceship operator" was coined by Randal L.Schwartz because it reminded him of the spaceship in the 1970s text-based strategy video game Star Trek. [4,p.100].
 
 ```cpp
-operator <=>(const Y&)
+operator <=> (const Y&)
 ```
 After defining what is called spaceship operator compiler generates based on that various s (<, >, <=, >=), comparison operators automatically.
 
@@ -2745,9 +2772,14 @@ Starting from `C++20`, there is only one signed integer representation, and it's
 
 Documentation: [cpp reference details about fundamental types](https://en.cppreference.com/w/cpp/language/types).
 
+## 8. Right Shift is Arithmetic Right Shift
+
+From C++20 the right-shift on signed integral types is an arithmetic right shift, which performs sign-extension. It's not an undefined behaviour.
+
+Documentation: [cpp reference arithmetic operations details](https://en.cppreference.com/w/cpp/language/operator_arithmetic).
 
 
-## 8. Abbreviated Function Templates
+## 9. Abbreviated Function Templates
 
 Staring from C++20, the template function can be written a bit shorter. That syntax is called "Abbreviated Function Templates". If you want your template to instantiate functions where multiple parameters have the same type or related
 types, you still have to use the old syntax. It is so because every occurrence of `auto` in the function parameter list of an abbreviated function template introduces an implicit, unnamed template type parameter. Example:
@@ -2763,15 +2795,9 @@ auto sqrNew(auto x) { return x * x; }
 
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/function_template).
 
-## 9. Automatic generation of `!=` from `==`.
+## 10. Automatic generation of `!=` from `==`.
 
 If you overload `operator ==` C++20 compiler automatically generates `operator !=`.
-
-## 10. Right Shift is Arithmetic Right Shift
-
-From C++20 the right-shift on signed integral types is an arithmetic right shift, which performs sign-extension. It's not an undefined behaviour.
-
-Documentation: [cpp reference arithmetic operations details](https://en.cppreference.com/w/cpp/language/operator_arithmetic).
 
 ## 11. Designated initializers
 
@@ -2787,7 +2813,7 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/languag
 
 Standard `#include` preprocessor directive helps organize project but at a considerable cost. The desirability of modules due to B.Stroustroup was already well known in 1980.
 
-Modules have come with C++20 to upgrade the understanding of header files. And there are reasons to include it in standards that B.Stroustrup mentioned in his talks:
+Modules have come with C++20 to upgrade the understanding of header files. The reasons to include it in standards that B.Stroustrup mentioned in his talks is mostly about improving compilation time:
 - Google reports x2-4 improvements in compile-time
 - Microsoft reports x5-x50 times improvements in compile time
 
@@ -2795,8 +2821,7 @@ Result of applying modules:
 * Reduce compilation time. 
 * The order in which you import modules never matters.
 
-The C++20 has introduced that mechanism to form a self-contained
-subcomponents of related functionality and called it a *module*. 
+So the C++20 has introduced that mechanism to form a self-contained subcomponents of related functionality and called it a *module*. 
 
 Before technical details, let's take a look into several critical conceptual things:
 
@@ -2805,15 +2830,16 @@ Before technical details, let's take a look into several critical conceptual thi
 * A module can **export entire other modules**. 
 * The combination of all entities that a module export is called the **module interface**.
 
-In real life, compilers are not yet fully supported modules (At the moment of 2022), so please be careful if you're going to use them in 2022 and check that your toolchain supports it.
+In real life, compilers are not yet fully supported modules (at the moment of August, 2022), so please be careful if you're going to use them. At least check that your toolchain supports it.
 
-We will go example by example to open all features.
+We will go example by example to open all features of *modules*.
 
 ## Single Module Interface File/Module Unit
 
 ```cpp
 // math.cppm.
 // There is no consensus yet on what file extension to use for module files.
+
 // *.cppm is c++ module file/module unit.
 
 // 1. At the start of every module file is a module declaration
@@ -2868,10 +2894,7 @@ auto square(const auto& x) { return x * x; }
 ```
 ## Module Interface File With Separate Implementation
 
-The module interface file then includes the prototypes of all exported functions. Their definitions, along with any
-module-local entities can be moved to one or more **module implementation files**.
-
-In a **module interface file**, all import declarations must appear after the module declaration only.
+The module interface file then includes the prototypes of all exported functions. In a **module interface file**, all import declarations must appear after the module declaration only.
 
 ```cpp
 // mymodule.cppm – Interface test file
@@ -2879,6 +2902,9 @@ export module mymodule;
 import <string>;
 export std::string to_string(unsigned int i);
 ```
+
+But their definitions, along with any
+module-local entities can also be moved to one or more **module implementation files**.
 
 ```cpp
 // mymodule.cpp – Interface implementation file
@@ -2924,7 +2950,11 @@ int main() {
 
 When you import a module into a file not part of the same module, you do not implicitly inherit all imports from the module interface file. In other words, when you import a module, you do not implicitly gain complete access to all other modules that that module relies on.
 
-If you add export in front of an import declaration in module interface files (E.g. `export import <string>;`), then any file that imports a module implicitly inherits all import declarations that are exported from that module as well.
+If you add export in front of an import declaration in module interface files e.g. in the following way:
+```cpp
+export import <string>;
+```
+Then any file that imports a module implicitly inherits all import declarations that are exported from that module as well.
 
 ## Splitting Modules
 
@@ -3110,7 +3140,7 @@ int main() {
 
 Default template arguments type must occur at the end for class or variable template. However, for function templates, it's not a requirement because, for functions, there is a rich type deduction template mechanism.
 
-For compilation purposes, you may want to request explicit template instantiation. Explicit instantiation of a class template instantiates all members. It's possible to instantiate only individual template class member functions too.
+For compilation purposes, you may want to request **explicit template instantiation**. Explicit instantiation of a class template instantiates all members. It's possible to instantiate only individual template class member functions too.
 
 Example of syntax:
 ```cpp
