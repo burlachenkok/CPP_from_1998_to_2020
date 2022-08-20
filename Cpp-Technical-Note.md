@@ -3477,7 +3477,7 @@ Me, Konstantin Burlachenko, would like to acknowledge:
 
 * Thanks to all colleagues and friends from the past with whom I went through various steps of figuring out subtle details of C/C++. Between 2010 and 2020, I have created personal engineering drafts, some of which are available here [(old home page K.Burlachenko)](https://sites.google.com/site/burlachenkok/articles). All C/C++ information from it has been evolved into that document.
 
-* Thanks to [Mikhail Filimonov](https://github.com/dosvidos) from [NVIDIA](http://nvida.com/), and [Vadim Sofin](https://github.com/sovadim) ex-[HUAWEI](https://www.huawei.ru/) / ex-[Yandex](https://yandex.ru/) Software Engineer for providing concerete suggestions to improve this document.
+* Thanks to [Mikhail Filimonov](https://github.com/dosvidos) from [NVIDIA](http://nvida.com/), and [Vadim Sofin](https://github.com/sovadim) ex-[HUAWEI](https://www.huawei.ru/) / ex-[Yandex](https://yandex.ru/) Software Engineer for providing specific suggestions to improve this document.
 
 Thanks to [Dr. B.Stroustroup](https://www.stroustrup.com/). He created a language that is used to create the most important software in that world. Interestingly, this language has an artificial force that makes people better in all aspects of science and engineering. The quote that I have learned from [Tim Roughgarden](http://timroughgarden.org/) is the following:
 
