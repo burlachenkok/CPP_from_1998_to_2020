@@ -198,6 +198,8 @@ Finally, we welcome anybody who wants to make this note cleaner. We appreciate t
 
 # Glossary
 
+**C/C++**. By C/C++, we mean C or C++ programming languages.
+
 **A Shallow Copy.** A shallow copy contains copies of all members of an object one by one. If the copied members are pointers to dynamic memory, then only pointers by themselves are copied.
 
 **A Deep Copy.** A deep copy copies all dynamic memory objects referred to by any pointer members.
@@ -208,13 +210,17 @@ Finally, we welcome anybody who wants to make this note cleaner. We appreciate t
 
 **Function Signature.** The combination of the function name and the parameter list is called the signature of a function.
 
-**Function Prototype (function declaration).** A function prototype is a statement that describes a function sufficiently for the compiler to be able to compile calls to it.
+**Function Prototype (function declaration).** The language statement that describes a function sufficiently for the compiler to be able to compile calls to it.
 
-**Template Type Parameter.** Type placeholder used in class or function template, typically denoted by T. `template <class T> class MyClass{};`
+**Template Type Parameter.** Type placeholder used in class or function template, typically denoted by T. Example:
+```cpp
+template <class T> 
+class MyClass{};
+```
 
-**Template Type Argument.** The type assigned to a type parameter T during instantiation.
+**Template Type Argument.** The type assigned to a template type parameter T during template class/function instantiation.
 
-**Function Object.** A function object or functor is an object of a class that overloads the function call operator. Example:
+**Function Object (functor).** Object of a class that overloads the function call operator. Example:
 
 ```cpp
 class Area {
@@ -225,7 +231,7 @@ public:
 };
 ```
 
-**Pure Virtual Function.** The purpose of a pure virtual function is to enable the derived class versions of the function to be called polymorphically, but the implementation of that function in the base class is absent. Example:
+**Pure Virtual Function.** The purpose of virtual function is to enable the derived class versions of the function to be called polymorphically. The purpose of a pure virtual function is have polymorphically bahaviour in case when the implementation of that function in the base class is absent. Example:
 ```cpp
 class Shape {
 public:
@@ -235,30 +241,31 @@ public:
 
 **Abstract Class.** A class that contains at least one pure virtual function.
 
-**C/C++**. By C/C++, we mean C or C++ programming languages.
+**LValue (expression)**. An `LValue` evaluates during compile time to some persistent value with an address in memory where you can store something. Informally that is something to the left of the operator equals. Each value is implicitly converted to an RValue.
 
-**LValue**. An `LValue` evaluates during compile time to some persistent value with an address in memory where you can store something. Informally that is something to the left of the operator equals. Each value is implicitly converted to an RValue.
-
-**RValue**. An RValue evaluates a result that is stored only transiently. Expression from which the address cannot be taken. This is something that, at least in principle, can be encoded in the code of generated instructions for the processor. (in 99% of cases, these are unnamed temporary variables. A good counterexample of something that is an *RValue* but has the name `this.`
+**RValue (expression)**. An RValue evaluates a result that is stored only transiently. An expression from which the address cannot be taken. Also, this is something that, at least in principle, can be encoded in the code of generated instructions for the processor. In 99% of cases, these are unnamed temporary variables. But a good counterexample of something that is an *RValue* but has the name `this.`
 
 > Unfortunately, starting from C++11, the *object type* and *reference type* do not match each other due to a more complicated picture with values(expressions) and references.
 
-**XValue**. Something that would be destroyed very soon. It's an object for which it is reasonable to use move semantics to take data via `T&&` notation from C++11.
+**XValue (expression)**. Something that would be destroyed very soon. It's an object for which it is reasonable to use move semantics to take data via `T&&` notation from C++11.
 
-**LValue Reference (for all C++)**. Typically, an LValue reference is an alias for another variable. Lvalue object may be bound to the LValue reference through syntax `X&x = obj;` where `X` is the datatype of `obj`.
+**LValue Reference (for all C++)**. Typically, an LValue reference is an alias for another variable. Lvalue object may be bound to the LValue reference through syntax:
+```cpp
+X&x = obj; // X is the datatype of obj
+```
 
 **RValue Reference (only for C++98/03)**. In C++03, it is a usual const regular reference to a temporary object or expression that can be used from the right-hand side of the operator `=`.
 
 **RValue Reference (starting from C++11)**. The goal of an RValue reference is to have a moving candidate for functions like `void f(T&&)`. In practice, RValue reference is either:
 
 * A reference to an object that soon will be deleted (xvalue expression) 
-* Explicitly unconditionally casted reference to the object through `std::move` to an RValue reference. The last option explicitly allows to reuse of memory of that object and, after moving, brings it to a valid but undefined state. 
+* Explicitly unconditionally casted reference to the object through `std::move` to an RValue reference. The `std::move` after moving, brings object for moving is applied to a valid but undefined state.
 
-> Reusing an object after moving from it is *legal* and *valid* (In one of the talks in CppCon [Nicolai M. Josuttis](https://www.josuttis.com/) member of C++ Standard Committee, explicitly highlighted it). In that case, you should reinitialize the object using class API or the logic behind the class.
+> Reusing an object after moving from is *legal* and *valid*.In one of the talks in CppCon [Nicolai M. Josuttis](https://www.josuttis.com/ member of C++ Standard Committee, explicitly highlighted it. In that case, you should reinitialize the object using class API or the logic behind the class.
 
 > What was known in C++03/98 as *RValue Reference* starting from C++11 has been renamed into *Const LValue Reference*.
 
-**Token**. In the terminology of Programming Languages, tokens are separate words of a program text. One easy case is when such words (tokens) are split between each other by spaces. The more hard case is to identify tokens when there are no whitespaces and typically such thing is allowable for Programming Languages, but it can bring some problems.
+**Token**. In the terminology of Programming Languages, tokens are separate words of a program text. One easy case is when such words (tokens) are split between each other by spaces. A more hard case is to identify tokens when there are no whitespaces.
 
 ----
 
@@ -270,7 +277,7 @@ Nowadays, in 2022 due to [Tobex Index July 2022](https://www.tiobe.com/tiobe-ind
 
 > "...My original motivation for creating Python was the perceived need for a higher level language in the Amoeba project. I realized that the development of system administration utilities in C was taking too long. Moreover, doing these in the Bourne shell wouldn't work for a variety of reasons. The most important one was that as a distributed micro-kernel system with a radically new design, Amoeba's primitive operations were very different (and finer-grain) than the traditional primitive operations available in the Bourne shell. So there was a need for a language that would "bridge the gap between C and the shell..." - [Guido van Rossum](https://en.wikipedia.org/wiki/Guido_van_Rossum).
 
-It is not a secret that today people try to apply [Python](https://www.python.org/) beyond launching scripts but creating other user space applications. When (a) Underlying Algorithms that you need are implemented in C++ or inside Hardware; (b) They are available via Python bindings; (c) The overhead of Python is negligible; (d) There is a big part of the system implemented in Python - It may be a choice to use Python in that case.
+It is not a secret that today people try to apply [Python](https://www.python.org/) beyond launching scripts but creating other user space applications. When (a) Underlying Algorithms that you need are implemented in C++ or inside Hardware; (b) They are available via Python bindings; (c) The overhead of Python Interepreter is negligible; (d) There is a big part of the system has already  been implemented in Python - It may be a choice to use Python in that case.
 
 We think the main reason popularity of Python is primarily due to the fast learning curve measured by three days (only Language, no external libraries, frameworks, or middleware). At the same time, it's impossible to learn C++ in 3 days. We think the C++ community should think about it for its survival.
 
@@ -284,11 +291,12 @@ But any interpretable languages are not a choice when actual time matters or sub
 
 2. Interpretable languages do not provide subtle interfaces to Operation Systems such as [POSIX API](https://pubs.opengroup.org/onlinepubs/009695399/idx/index.html), [Windows API](https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list) or other OS-dependent APIs. It provides bindings for API that the team that developed the interpreter had time to finish, and they are provided in highly simplified form.
 
-3. To some extent, interpreters provide portability in the source code for user space applications. Still, it comes with the cost of reducing the number of possible calls to OS. Creating portability at the source code level between different OS is a big thing, and people thought about that in the past. That problem was brought to the creation of [POSIX](https://en.wikipedia.org/wiki/POSIX), which was a way to provide portability via the standardization of many everyday routines for OS API. If the goal is portability between different OS, more correctly is to solve it via standardization of API to OS. Creating extra software layers, especially in the form of interpreters, is a suboptimal decision if speed or memory matters.
+3. To some extent, interpreters provide portability in the source code for user space applications. Still, it comes with the cost of reducing the number of possible calls to OS. Creating portability at the source code level between different OS is a big thing, and people thought about that in the past. The problem understanding led to the creation of [POSIX](https://en.wikipedia.org/wiki/POSIX), which was a way to provide portability between different OS via the standardization of many everyday routines for OS API. If the goal is portability between different OS, more correctly is to solve it via standardization of API to OS. Creating extra software layers, especially in the form of interpreters, is a suboptimal decision if speed or memory matters.
 
-4. During work with interpretable languages, you don't have a real interface to work with the devices' memory inside the computer. You do not even, in fact, have enough tools even to precisely handle memory aspects even in your program.
 
-5. The interpreter as a computer program adds an extra level of abstraction. The standard implementation Python interpreter is CPython. It is called CPython because it has been implemented in C/C++. Such software as an interpreter improves the time for completing the project type, but implementation is suboptimal.
+4. During work with interpretable languages, you don't have a real interface to work with the devices' memory inside the computer. In fact, you do not even have enough tools to precisely handle just usual Virtual memory in your process.
+
+5. The interpreter as a computer program adds an extra level of abstraction. The standard implementation Python interpreter is CPython. It is called CPython because it has been implemented in C/C++. Such software as an interpreter improves the time for completing the project from social point of view, but implementation is suboptimal.
 
 6. The absence of a compiler has *pros* - you do not spend time on a compilation, but there are *cons* - now, the compiler will not tell you about errors in the code because there is no compiler.
 
@@ -296,7 +304,7 @@ But any interpretable languages are not a choice when actual time matters or sub
 
 8. Compiler optimization tricks such as code inlining are out of the scope of any interpretable language because for performing such optimization you should have a compiler. The elimination of the compiler stage will make such optimizations impossible.
 
-9. During creating multithread implementation you should be careful about memory fences, synchronization, data races, atomic operations, absence of storing some objects in registers. But implementation of interpreters is typically highly leveraged into existing C/C++ libraries because creating such modules of functionality in an interpreter by itself is not effective enough. But it is not true that all C/C++ libraries are thread-safe. Creating a true multithreading environment inside an interpreter can be tricky. If you want to learn more about how really Concurrency in Python is implemented (and want to know more about Global Interpreter Lock (GIL)) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html). (Developers of the Python interpreter did their best, but the problem is not so easy).
+9. During creating multithread implementation you should be careful about memory fences, synchronization, data races, atomic operations, absence of storing some objects in registers. In reality, implementation of interpreters is typically highly leveraged into existing C/C++ libraries because creating such modules of functionality in an interpreter by itself is not effective enough. But it is not true that all C/C++ libraries are thread-safe. And so creating a true multithreading environment inside an interpreter can be tricky. If you want to learn more about how really Concurrency in Python is implemented (and want to know more about Global Interpreter Lock (GIL)) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html). (Do not get us wrong. Developers of the Python interpreter did their best, but the problem is not so easy).
 
 10. Garbage Collector (GC) brings various limitations to any programming language. For example, GC disallows any pointer arithmetics. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
 
@@ -306,7 +314,7 @@ But any interpretable languages are not a choice when actual time matters or sub
 
 13. There is no way to use special registers or special instructions of the processor from typical interpretable language (Bash, Python)
 
-The interpretable language is excellent for prototyping, and the project, in that case, interpreter infrastructure will leverage into C/C++ libraries implicitly. But any interpreter, any most user space algorithm in it, can be beaten already by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
+The interpretable language is excellent for prototyping. But any interpreter, any user space algorithm in it, can be beaten already by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
 
 
 ## Downsides of C/C++
@@ -315,11 +323,11 @@ The interpretable language is excellent for prototyping, and the project, in tha
 
 2. Powerful expressivity of C++ is a technical power. At the same time, it's its weakness for obtaining new adepts. Without new adepts, any concept will die. 
 
-3. Due to the high entry level for C++ in Academia, high momentum belongs to Python, not to C++ at all. And C++ is used only when necessary (E.g., you need to work with the hardware directly, or you need to have algorithms/mathematical model that operates in real-time or be careful in terms of consumed memory).
+3. Due to the high entry level for C++ in Academia, high momentum belongs to Python, not to C++ at all. And C++ is used only when necessary (E.g., you need to work with the hardware directly; you need to have algorithms/mathematical model that operates in real-time; you need to be careful in terms of consumed memory).
 
-4. The speed of development of the prototype is faster in Python.
+4. The speed of development of the prototype is faster in Python for typically user space applications.
 
-5. C++, to some extent, forces you to be aware of hardware level. It's not clear whether it is good or bad. 
+5. C++, to some extent, forces you to be aware of hardware level. It's not clear whether it is good or bad: 
 
 * On one side, when you want to try an idea, interpretable language provides a fast way to do that. 
 * On another side, widespread usage of interpretable languages will lead to situations in which many people will not know how the computer works. You will lose the ability to distinguish a big lie from a small lie and truth in the context of computing machines.
