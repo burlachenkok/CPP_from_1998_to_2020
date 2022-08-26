@@ -296,7 +296,7 @@ But any interpretable languages are not a choice when actual time matters or sub
 
 1. The interpreter parses the program's text (source code) line by line (that is represented or in text form or extremely high-level instructions), which is highly inefficient. As a consequence, Interpretable languages provide algorithms that can be even up to 50'000 times slower in computing than highly optimized C/C++/ASM code. The interpreter is the worst possible that can be for execution time from all possible three choices for converting source code into the program: (Interpreter, Just In Time compiler, Compilers).
 
-> For a concrete example, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). The overview of that course is also available here [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
+    > For a concrete example, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). The overview of that course is also available here [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
 
 2. Interpretable languages do not provide subtle interfaces to Operation Systems such as [POSIX API](https://pubs.opengroup.org/onlinepubs/009695399/idx/index.html), [Windows API](https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list) or other OS-dependent APIs. It provides bindings for API that the team that developed the interpreter had time to finish, and they are provided in highly simplified form.
 
@@ -338,8 +338,8 @@ The interpretable language is excellent for prototyping. But any interpreter, an
 
 5. C++, to some extent, forces you to be aware of hardware level. It's not clear whether it is good or bad:
 
-* On one side, when you want to try an idea, interpretable language provides a fast way to do that.
-* On another side, widespread usage of interpretable languages will lead to situations in which many people will not know how the computer works. You will lose the ability to distinguish a big lie from a small lie and truth in the context of computing machines.
+   * On one side, when you want to try an idea, interpretable language provides a fast way to do that.
+   * On another side, widespread usage of interpretable languages will lead to situations in which many people will not know how the computer works. You will lose the ability to distinguish a big lie from a small lie and truth in the context of computing machines.
 
 People continue to predict that C++ will die. It's an ongoing three decades process, but it is not happening. It seems that the fundamental things of the language make it immortal, even though the language tends to be more and more complex.
 
@@ -351,9 +351,8 @@ The Language started as a project in Bell Labs in 1979 ([3]). The principles of 
 3. The locality of memory access patterns for variables and arrays is suitable for hardware in the long term.
 4. Zero-Overhead principle:
 
-    a. What you don't use, you should not pay for.
-
-    b. If something is built-in in the Language, it's impossible to write it better by hand.
+    * a. What you don't use, you should not pay for.
+    * b. If something is built-in in the Language, it's impossible to write it better by hand.
 
 Some language decisions due to B.Stroustoup:
 
@@ -364,16 +363,19 @@ Some language decisions due to B.Stroustoup:
 # Why learn C++ if I know Python (Toy Example)
 
 Sometimes while making programs in Python, you need to write programs directly in Python, not only call external C++ libraries from it. Possible reasons why you can implement the algorithm in Python:
+
 * Algorithm is short and suitable for CPU.
 * Library does not exist, or Library exists but does not provide Python bindings.
 * Library does not provide enough configuration
 * You need to change something fundamental inside C++ Library, and you don't know C++.
 
 Creating a CPU-effective algorithm in Python is difficult when wall clock time matters. As a concrete example, Let's compare the wall clock time of two programs written in C++11 and Python3 under the following assumptions:
+
 * Both programs use single-core CPU
 * C++ program does not use any special optimization techniques. It's usual C++ code.
 
 The test compares wall clock time of the following:
+
 1. Python with native Python lists
 2. Python implementation with NumPy arrays
 3. Cython(a programming language that mixes C and Python)
@@ -522,6 +524,7 @@ Sum is: 5e+13
 ----
 
 **Results.** From that benchmark, we see that the C++ implementation:
+
 * works *x137* times faster than plain Python implementation
 * works *x65* times faster than Python implementation that uses Numpy
 * works *x1.18* faster compare to [Cython](https://cython.readthedocs.io/en/latest/index.html) implementation
@@ -539,6 +542,7 @@ If you need to have a highly effective algorithm implementation in Python withou
 # Standards for the Language
 
 Both compilers writers and people who use the C++ language as writers should obey the international standard ISO/IEC for the language. C++ Standardization has a long history:
+
 * [C\+\+1998 standard - ISO/IEC 14882-1998](https://www.iso.org/ru/standard/25845.html). Draft of C++1998: [link](https://open-std.org/JTC1/SC22/WG21/docs/wp/pdf/nov97-2/).
 * [C\+\+2003 standard - ISO/IEC 14882:2003](https://www.iso.org/standard/38110.html). Standard C++2003: [link](http://staff.ustc.edu.cn/~zhuang/cpp/specs/ISO_IEC%2014882%202003.pdf).
 * [Technical Report on C++ Library Extensions - ISO/IEC TR 19768:2007](https://www.iso.org/standard/43289.html).
@@ -552,6 +556,7 @@ Both compilers writers and people who use the C++ language as writers should obe
 # Language Guarantees
 
 Fundamental code guarantees of C++ :
+
 1. **Basic guarantees** - no leaks and standard libraries supported.
 2. **Strong guarantees** - operation is fulfilled completely or not.
 
@@ -565,13 +570,13 @@ A source code for C/C++ consists of source files. Each source file is translated
 
 2. Processing trigrams. All available C trigrams can be obtained from [2,p.15].
 
-```cpp
-#include <iostream>
-int main() {
-  std::cout << "Do you know C++? Are you sure ??)";
-  return 0;
-}
-```
+  ```cpp
+  #include <iostream>
+  int main() {
+    std::cout << "Do you know C++? Are you sure ??)";
+    return 0;
+  }
+  ```
 
 3. Line splicing. Joining strings through the backslash character.
 
@@ -633,6 +638,7 @@ Before that stage, the stage of code Optimization is occurred. Compilers' innova
 
 Typically compilers perform a sequence of transformation passes. Each transformation pass
 analyzes and edits the code to optimize performance. A transformation pass might run multiple times. Keys run in a predetermined order that usually seems to work well. Some examples of optimization technics that happens at that moment:
+
 * Convert one arithmetic operation into more cheap operations via using bit tricks and logic/arithmetic shifts.
 * Replace stack allocation storage with storing variables in the processor's register.
 * Optimization for structure/class memory layout.
@@ -656,9 +662,10 @@ However, in reality it's possible to have three different scenarios what exactly
 2. Compiler emits the program text written in Assembly. But in fact the process of producing final binary code is under responsibility of Assembler program. You can obtain such assembly source from preprocessed file manually for [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S -o -`.
 
 3. With the coming [LLVM](https://llvm.org/) project there is in fact intermediate layer between High Level Language(C++) and ASM for target ISA. That layer is called Intermediate Representation (IR). And contains tree stages conversion:
-* At the *first stage* the input preprocessed code is converted into pseudo-assembly called [LLVM-IR](https://llvm.org/docs/LangRef.html) producing files with extensions "*.ll". You can obtain unoptimized LLVM-IR code in [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S emit-llvm -o -`.
-* At the *second stage* LLVM-Optimizer works under that representation and produces optimized "*.ll" source code.
-* At the *third stage* the **LLVM code generator** generates real Assembly representation.
+
+    * At the *first stage* the input preprocessed code is converted into pseudo-assembly called [LLVM-IR](https://llvm.org/docs/LangRef.html) producing files with extensions "*.ll". You can obtain unoptimized LLVM-IR code in [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S emit-llvm -o -`.
+    * At the *second stage* LLVM-Optimizer works under that representation and produces optimized "*.ll" source code.
+    * At the *third stage* the **LLVM code generator** generates real Assembly representation.
 
 For further study as an introduction to LLVM-IR, we recommend [Lecture 5](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/resources/mit6_172f18_lec5/) from MIT course [6.172 Performance Engineering of Software Systems](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
 
@@ -726,8 +733,8 @@ class that contains virtual functions. The only time you should even debate whet
 
 15. There are names reserved for the compiler implementations. It's all names that:
 
-* Starting with a double underscore `__`
-* Names that start with a single underscore followed by an uppercase letter `_[A-Z]`, e.g., _Foo.
+    * Starting with a double underscore `__`
+    * Names that start with a single underscore followed by an uppercase letter `_[A-Z]`, e.g., _Foo.
 
 That names should not be used by not compiler writers both for C and C++ languages. With that rule for a long time, people escape conflicts between naming of compiler-specific entities and entities of the construct program.
 
@@ -737,9 +744,10 @@ For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.htm
 > Sometimes, it's possible to observe defined guards at the beginning of the buildable program's header files via `#ifndef/#define` that uses names starting with `__.` That special names are not the names that followed that rules.
 
 16. In C/C++, postfix operators have higher priority than unary operators.
-```cpp
-*p++; // *(p++)
-```
+
+    ```cpp
+    *p++; // *(p++)
+    ```
 
 17. In C/C++ unary operators have higher priority than binary operators.
 
@@ -875,9 +883,9 @@ The UTF-8 and UTF-16 are variable width encodings for characters. Not all letter
 ## Function Call Nuances
 
 1. There are only two kinds of function and function calls in C++:
-* *Ordinary function call.*
-A static member function is an ordinary function ([6], 9.4).
-* *Member function call*.
+    * *Ordinary function call.*
+    A static member function is an ordinary function ([6], 9.4).
+    * *Member function call*.
 
 2. In functions with `void` return types or when the return type is absent, e.g., in constructors/destructors, you can have the absence of a ```return``` statement in a function body. It is equivalent to an explicit ```return;``` at the end of the function body.
 
@@ -887,23 +895,25 @@ A static member function is an ordinary function ([6], 9.4).
 
 5. Starting from C++11, there is a suffix syntax for the function return type. It is not primarily about templates and type deduction; it is about scope. One more example of when it was useful [C++11 Far from B.Stroustroup](http://www.stroustrup.com/C++11FAQ.html) ([9]).
 
-```cpp
-template<class T, class U>
-auto mul(T x, U y) -> decltype(x*y) {
-  return x*y;
-}
-```
-The notation of auto means *"return type to be deduced or specified later."*.
+    ```cpp
+    template<class T, class U>
+    auto mul(T x, U y) -> decltype(x*y) {
+      return x*y;
+    }
+    ```
+
+    The notation of auto means *"return type to be deduced or specified later"*.
 
 6. A non-constant reference cannot refer to a temporary variable.
 
 7. Although temporary objects can only be passed as `const T&` or `T.` However, calling non-const methods on temporary objects is allowed. The initializer for `const T&` does not need to be an LValue and even be of type T. In such cases, a temporary variable is created to hold the initializer, lasting until the end of the scope of the reference.
 
 8. Linkage rules cover name mangling and the call convention. Due to ([6], 7.5.3), there is the following requirement for the linkage aspect of functions:
-*Every implementation shall provide for linkage to functions written in the C programming language, "C," and linkage to C++ functions, "C++."* To link functions in C++ style:
-```cpp
-extern "C++" void f()
-```
+
+    *Every implementation shall provide for linkage to functions written in the C programming language, "C," and linkage to C++ functions, "C++"*. To link functions in C++ style:
+    ```cpp
+    extern "C++" void f()
+    ```
 
 ## Requirements for C++ Expressions
 
@@ -922,6 +932,7 @@ k = k++ + 5; // Valid from C++17
 ## Exceptions to the One Definition Rule
 
 You can read about that in detail in ([1], 9.2.3 p. 248) There can be more than one definition of the following things in different translation units (cpp source files):
+
 1. class type
 2. enumeration type
 3. inline function with external linkage
@@ -932,6 +943,7 @@ You can read about that in detail in ([1], 9.2.3 p. 248) There can be more than 
 8. template specialization for which some template parameters are not specified
 
 That same definitions are acceptable when:
+
 1. They are in different translation units
 2. They are identical token by token
 3. The meaning of token is the same in both translation units (Checking this is not included in the capabilities of the programming language itself but is assigned to the toolkit)
