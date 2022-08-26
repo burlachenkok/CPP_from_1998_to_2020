@@ -190,6 +190,7 @@ Do not get us wrong. If you have never seen the C/C++ language to obtain knowled
 If you're unsure whether you should learn C++ or not, then maybe the example presented in section *"Why learn C++ if I know Python (Toy Example)"* of this document will bring some consideration to your mind. C++ is complex, but currently, it's the fastest  (in terms of execution speed in CPU) high-level, general-purpose programming language in the world.
 
 That note is mainly based on materials from the Reference section and personal experience. We think that information can be helpful for three categories of people:
+
 * People who want to refresh or go deep into several language constructions of C++.
 * Obtain a pretty in-depth overview of new features from C++11/14/17/20.
 * People who need to support (legacy) C++03 or C99 code base.
