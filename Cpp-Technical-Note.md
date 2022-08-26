@@ -262,7 +262,7 @@ X&x = obj; // X is the datatype of obj
 * A reference to an object that soon will be deleted (xvalue expression)
 * Explicitly unconditionally casted reference to the object through `std::move` to an RValue reference. The `std::move` after moving, brings object for moving is applied to a valid but undefined state.
 
-> Reusing an object after moving from is *legal* and *valid*.In one of the talks in CppCon [Nicolai M. Josuttis](https://www.josuttis.com/ member of C++ Standard Committee, explicitly highlighted it. In that case, you should reinitialize the object using class API or the logic behind the class.
+> Reusing an object after moving from is *legal* and *valid*. In one of the talks in CppCon [Nicolai M. Josuttis](https://www.josuttis.com/ member of C++ Standard Committee, explicitly highlighted it. In that case, you should reinitialize the object using class API or the logic behind the class.
 
 > What was known in C++03/98 as *RValue Reference* starting from C++11 has been renamed into *Const LValue Reference*.
 
