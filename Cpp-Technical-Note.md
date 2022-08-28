@@ -8,7 +8,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision: Working Draft 1.0 / Last Update: Aug 16, 2022
+Revision: Working Draft 1.1 / Last Update: Aug 28, 2022
 
 © 2022 Konstantin Burlachenko, all rights reserved.
 
@@ -16,6 +16,7 @@ Revision: Working Draft 1.0 / Last Update: Aug 16, 2022
 
 **Table of Content**
 
+- [Technical Note. From C++1998 to C++2020](#technical-note-from-c--1998-to-c--2020)
 - [Introduction](#introduction)
 - [Glossary](#glossary)
 - [Motivation](#motivation)
@@ -263,7 +264,7 @@ X&x = obj; // X is the datatype of obj
 * Explicitly unconditionally casted reference to the object through `std::move` to an RValue reference. The `std::move` after moving, brings object for moving is applied to a valid but undefined state.
 
 > Reusing an object after moving from is *legal* and *valid*. In one of the talks in CppCon [Nicolai M. Josuttis](https://www.josuttis.com/) member of C++ Standard Committee, explicitly highlighted it. In that case, you should reinitialize the object using class API or the logic behind the class.
-
+>
 > What was known in C++03/98 as *RValue Reference* starting from C++11 has been renamed into *Const LValue Reference*.
 
 **Token**. In the terminology of Programming Languages, tokens are separate words of a program text. One easy case is when such words (tokens) are split between each other by spaces. A more hard case is to identify tokens when there are no whitespaces.
@@ -583,88 +584,94 @@ The compiler converts text in a high-level language into instructions for a spec
 
 The final binary format ([ELF](https://refspecs.linuxfoundation.org/elf/elf.pdf) for Linux and [PE](https://docs.microsoft.com/en-us/windows/win32/debug/pe-format) for Windows) is also not under the obligation of creators of Language or userspace developers. It's under the responsibility of the creators of the Operation System. There are situations when the target device in which the program will be executed has no operating system. The case of launching program on target device with no Operation System sometimes is denoted as *"Launching on Bare Metal"*. In that later case the format of binary files is typically under the Device Vendor's responsibility (example: [PTX](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html), [SASS](https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html) for NVIDIA GPU is provided by NVIDIA).
 
-> ## The Compiler and Linker. Details.
->
-> A high-level overview is presented below if you are curious about how a compiler compiles source code. It's possible to be productive even without the knowledge below especially during creating only userspace applications. If you want to know how things are working and you have that curiosity - you're welcome to read the text below. In another case - just skip it.
+## The Compiler and Linker. Details.
 
-> ### Lexical Analysis
->
-> The essence of Lexical analysis of the program is in splitting the program source code text into tokens. Separate words or atoms of a program source code text are some words of source text that cannot be divided further.
->
-> An important part is that the C/C++ compiler always tries to assemble the longest valid token (in terms of the number of single characters) by processing the text from left to right character by character, even if the result is an unbuildable program. Example from [2, p.20]:
-> ```cpp
-> int a = 1, b = 1, c = 3;
-> // invalid tokenization: tokens (b, --, a)
-> c = b--a;
-> // valid tokenization:tokens(b, -, -, a)
-> // but C/C++ compiler does not do that
-> c = b - -a;
-> ```
-> The concept of whitespace in C/C++ includes different keyboard spaces and comments. In C/C++ and most programming languages, the tokens fundamentally can be one of the following types:
->* a. Operators
->* b. Separators
-> * c. Identifiers
-> * d. Keywords
-> * e. Literal constants
->
-> After finishing, the Lexical analysis, the program consists of a sequence of tokens.
+A high-level overview is presented below if you are curious about how a compiler compiles source code. It's possible to be productive even without the knowledge below especially during creating only userspace applications. If you want to know how things are working and you have that curiosity - you're welcome to read the text below. In another case - just skip it.
 
-> ### Syntax Analysis
-> The compiler is based on the language rules typically described by Backus–Naur forms for Context-Free-Grammars (CFG). The Grammars by themselves are studied in a mathematic area called *Formal Languages and Grammars Theory*. That area of mathematics is essential for Compiler fundamental aspects.
->
-> Based on the grammar of the C or C++ programming language, the syntax analyzer constructs the Abstract Syntax Tree (AST) for the program's source text.  The exact Grammar rules can be found in the Appendices of corresponding Language Standards.
+### Lexical Analysis
 
->### Semantic Analysis
-> Some rules of the language can not be expressed only by using CFG. Examples: Multiple declarations of a variable in one scope, usage of not yet declared variables, access to a plain C array via an index that is out of range, etc. For handling that analysis, the Semantic analyzer inside the compiler is used.
+The essence of Lexical analysis of the program is in splitting the program source code text into tokens. Separate words or atoms of a program source code text are some words of source text that cannot be divided further.
 
->### Code Optimization
->
-> At that moment, we have constructed AST for a program and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and translate that code into more low-level construction expressed as Assembly Language or Intermediate Representation (IR).
->
-> Before that stage, the stage of code Optimization is occurred. Compilers' innovations based on various fields of science and engineering that mainly bring considerable speedup are exploited in that stage.
->
-> Typically compilers perform
-> a sequence of transformation passes. Each transformation pass
+An important part is that the C/C++ compiler always tries to assemble the longest valid token (in terms of the number of single characters) by processing the text from left to right character by character, even if the result is an unbuildable program. Example from [2, p.20]:
+```cpp
+int a = 1, b = 1, c = 3;
+// invalid tokenization: tokens (b, --, a)
+c = b--a;
+// valid tokenization:tokens(b, -, -, a)
+// but C/C++ compiler does not do that
+c = b - -a;
+```
+The concept of whitespace in C/C++ includes different keyboard spaces and comments. In C/C++ and most programming languages, the tokens fundamentally can be one of the following types:
+* a. Operators
+* b. Separators
+* c. Identifiers
+* d. Keywords
+* e. Literal constants
+
+After finishing, the Lexical analysis, the program consists of a sequence of tokens.
+
+### Syntax Analysis
+The compiler is based on the language rules typically described by Backus–Naur forms for Context-Free-Grammars (CFG). The Grammars by themselves are studied in a mathematic area called *Formal Languages and Grammars Theory*. That area of mathematics is essential for Compiler fundamental aspects.
+
+Based on the grammar of the C or C++ programming language, the syntax analyzer constructs the Abstract Syntax Tree (AST) for the program's source text.  The exact Grammar rules can be found in the Appendices of corresponding Language Standards.
+
+### Semantic Analysis
+Some rules of the language can not be expressed only by using CFG. Examples: Multiple declarations of a variable in one scope, usage of not yet declared variables, access to a plain C array via an index that is out of range, etc. For handling that analysis, the Semantic analyzer inside the compiler is used.
+
+### Code Optimization
+
+At that moment, we have constructed AST for a program and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and translate that code into more low-level construction expressed as Assembly Language or Intermediate Representation (IR).
+
+Before that stage, the stage of code Optimization is occurred. Compilers' innovations based on various fields of science and engineering that mainly bring considerable speedup are exploited in that stage.
+
+Typically compilers perform a sequence of transformation passes. Each transformation pass
 analyzes and edits the code to optimize performance. A transformation pass might run multiple times. Keys run in a predetermined order that usually seems to work well. Some examples of optimization technics that happens at that moment:
-> * Convert one arithmetic operation into more cheap operations via using bit tricks and logic/arithmetic shifts.
->  * Replace stack allocation storage with storing variables in the processor's register.
-> * Optimization for structure/class memory layout.
-> * Transform data structures to have the ability to store elements of it as much as possible in CPU registers when some function obtains input in the form of pointer/reference of an object of the structure/class type.
-> * Remove dead-end code never executed in the program's control flow across as compiled source files.
-> * Function inlining. The compiler uses its heuristics to decide what to inline and what to not. Sometimes there is a toolchain extension that forces that.
-> * In case of using global program optimization compiler and linker jointly may want to try inline even function definition from another compilation unit.
-> * Remove Hoisting (also known as loop-invariant code). Try to remove recomputing loop-invariant code inside the loop.
-> * Vectorization. Leverage into vector registers (like SSE2, Arm Neon) when possible.
-> * Loops optimization: unrolling; loop fusion (also known as jamming) to combine multiple loops over the same index range; eliminating wasted iterations in the loop.
-> * Figure out with Memory Aliasing and apply optimization for non-aliased pointed expression. For details please check [Compute Optimization Relative Information](#compute-optimization-relative-information.
-> Various things of optimization are out of the scope of the compiler. And can only be solved by the creator of the Algorithm/Method. Even we think there is a possibility of research to provide that information for the compiler.
+* Convert one arithmetic operation into more cheap operations via using bit tricks and logic/arithmetic shifts.
+* Replace stack allocation storage with storing variables in the processor's register.
+* Optimization for structure/class memory layout.
+* Transform data structures to have the ability to store elements of it as much as possible in CPU registers when some function obtains input in the form of pointer/reference of an object of the structure/class type.
+* Remove dead-end code never executed in the program's control flow across as compiled source files.
+* Function inlining. The compiler uses its heuristics to decide what to inline and what to not. Sometimes there is a toolchain extension that forces that.
+* In case of using global program optimization compiler and linker jointly may want to try inline even function definition from another compilation unit.
+* Remove Hoisting (also known as loop-invariant code). Try to remove recomputing loop-invariant code inside the loop.
+* Vectorization. Leverage into vector registers (like SSE2, Arm Neon) when possible.
+* Loops optimization: unrolling; loop fusion (also known as jamming) to combine multiple loops over the same index range; eliminating wasted iterations in the loop.
+* Figure out with Memory Aliasing and apply optimization for non-aliased pointed expression. For details please check [Compute Optimization Relative Information](#compute-optimization-relative-information.
+Various things of optimization are out of the scope of the compiler. And can only be solved by the creator of the Algorithm/Method. Even we think there is a possibility of research to provide that information for the compiler.
 
->### Code Emitting
-> In the end, at least conceptually, the compiler emits final instructions for the target assembler. How exactly emit code is under the decision of the compiler and toolchain creators.
->
->However, in reality it's possible to have three different scenarios what exactly compilers emit:
-> 1. Compiler emits the final binary code for target Instruction Set Architecture (ISA). (Example: Microsoft Visual C compiler emits that.)
-> 2. Compiler emits the program text written in Assembly and producing final binary code is under responsibility of Assembler program. You can obtain such assembly source from preprocessed file manually for [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S -o -`.
-> 3. With the coming [LLVM](https://llvm.org/) project there is in fact intermediate layer between High Level Language(C++) and ASM for target ISA. That layer is called Intermediate Representation (IR). And contains tree stages conversion:
-> * At the *first stage* the input preprocessed code is converted into pseudo-assembly called [LLVM-IR](https://llvm.org/docs/LangRef.html) producing files with extensions "*.ll". You can obtain unoptimized LLVM-IR code in [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S emit-llvm -o -`.
-> * At the *second stage* LLVM-Optimizer works under that representation and produces optimized "*.ll" source code.
-> * At the *third stage* the **LLVM code generator** generates real Assembly representation.
->
->For further study as an introduction to LLVM-IR, we recommend [Lecture 5](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/resources/mit6_172f18_lec5/) from MIT course [6.172 Performance Engineering of Software Systems](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
+### Code Emitting
+In the end, at least conceptually, the compiler emits final instructions for the target Assembler. How exactly emit code is under the decision of the compiler and toolchain creators.
 
-> ### Calling Assembler Program
-> Assembler(ASM) Language is the lowest possible level that can still be readable, but understanding it is not easy in a big program without extra documenation. ASM language has a close relation to a family of target compute devices. One instruction in C++ code can correspond to several( 1,2,3,...) ASM code instructions. On the other hand, the same instruction in C/C++ can be emitted/materialized/generated into different instructions in ASM Language. An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code for the target device.
-> That machine instruction emitted by ASM is called Instruction Set Architecture (ISA). In Assembly literature, the process of converting ASM instructions into machine code is named `encoding.` An inverse process of reconstructing ASM code from binary code is called `decoding` or `disassembly.`
->
-> The ISA specified instruction, register, memory architecture, and data types. The ISA connects physical Hardware designed by Electrical Engineering (EE) with the Software constructed mainly through Computer Science. The particular implementation of ISA is called Microarchitecture in EE. Different vendors can provide the support of the same ISA, but Microarchitecture is typically under NDA.
->
->For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the standard de-facto Assembler is [GAS](https://www.gnu.org/software/binutils/). The output of Assembler is saved into *object files*.
+However, in reality it's possible to have three different scenarios what exactly compilers emit:
+1. Compiler emits the final binary code for target Instruction Set Architecture (ISA). (Example: Microsoft Visual C compiler do that.)
 
-># Linkage
->
-> The linker constructs the final program or dynamic (shared) library from compiled source files in the form of *object files*, obtains additional input archives of object files (called static libraries), obtains information about used dynamic library dependencies, performs other semantic checks (for example via finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links. The name of linkage program typically has a name in toolchains as [ld](https://linux.die.net/man/1/ld) or [link](https://docs.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170).
->
->The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from the C compiler physically. In another toolchain, e.g., from Microsoft Visual C compiler, the translation to final binary code is inside their C compiler.
+2. Compiler emits the program text written in Assembly. But in fact the process of producing final binary code is under responsibility of Assembler program. You can obtain such assembly source from preprocessed file manually for [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S -o -`.
+
+3. With the coming [LLVM](https://llvm.org/) project there is in fact intermediate layer between High Level Language(C++) and ASM for target ISA. That layer is called Intermediate Representation (IR). And contains tree stages conversion:
+* At the *first stage* the input preprocessed code is converted into pseudo-assembly called [LLVM-IR](https://llvm.org/docs/LangRef.html) producing files with extensions "*.ll". You can obtain unoptimized LLVM-IR code in [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S emit-llvm -o -`.
+* At the *second stage* LLVM-Optimizer works under that representation and produces optimized "*.ll" source code.
+* At the *third stage* the **LLVM code generator** generates real Assembly representation.
+
+For further study as an introduction to LLVM-IR, we recommend [Lecture 5](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/resources/mit6_172f18_lec5/) from MIT course [6.172 Performance Engineering of Software Systems](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
+
+### Calling Assembler Program
+Assembler(ASM) Language is the lowest possible level that can still be readable, but understanding it (without extra tools and extra documentation) is not easy in a big programs. ASM language has a close relation to target compute devices. 
+
+One instruction in C++ code can correspond to several( 1,2,3,etc.) ASM code instructions. On the other hand, the same instruction in C/C++ can be emitted (materialized or generated) into different instructions in ASM Language. 
+
+An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code for the target device. The machine instruction emitted by ASM is described by the target Instruction Set Architecture (ISA). In Assembly literature, the process of converting ASM instructions into machine code is named `encoding.` An inverse process of reconstructing ASM code from binary code is called `decoding` or `disassembly.`
+
+For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the standard de-facto Assembler is [GAS](https://www.gnu.org/software/binutils/). The output of Assembler is saved into *object files*.
+
+The *ISA* specifies instructions, register, memory architecture, data types, and control flow mechanisms. The ISA connects physical Hardware designed by Electrical Engineering (EE) with the Software constructed by Computer Science (CS). The particular implementation of ISA is called Microarchitecture in Electrical Engineering(EE) terminology. Different vendors can provide the support of the same ISA, but Microarchitecture is typically under NDA.
+
+# Linkage
+
+The linker constructs the final program or dynamic (shared) library from compiled source files in the form of *object files*, obtains additional input archives of object files (called static libraries), obtains information about used dynamic library dependencies, performs other semantic checks (for example via finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links. 
+
+The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from the C compiler physically. In another toolchain, e.g., from Microsoft Visual C compiler, the translation to final binary code is inside their C compiler.
+
+The name of linkage program typically in toolchains has a name  as [ld](https://linux.die.net/man/1/ld) or [link](https://docs.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170).
 
 ----
 
@@ -1881,9 +1888,9 @@ constexpr int sum(int a, int b) { return a + b; }
 ```
 Also, `constexpr` is implicitly thread-safe. But the `constexpr` function can still run in runtime.
 
-In C++20 there is a way to distinguish between compile time and runtime via using `std::is_constant_evaluated()` inside function with `constexpr` modifer.
+In C++20 there is a way to distinguish between compile time and runtime via using `std::is_constant_evaluated()` inside function with `constexpr` modifier.
 
-The `constexpr` functions reuirements:
+The `constexpr` functions requirements:
 
 * Must resolve dependency at compile time
 * Can not have `static` or `thread_local` variables inside
@@ -1891,21 +1898,22 @@ The `constexpr` functions reuirements:
 * Have *the potential* to be run at compile time
 
 ### consteval (C++20)
-The `consteval` expressions generated an immediate function. It can only be run in compile time. If `consteval` function can not be run during compile time, it leads to compile time error Every call to `consteval` generates constant expression that is executed at compile time. The `consteval` has the same requirements as `constexpr` functions:
-The `constexpr` functions requirements:
+The `consteval` expressions generated an immediate function. It can only be run in compile time. If `consteval` function can not be run during compile time, it leads to compile time error Every call to `consteval` generates constant expression that is executed at compile time. The `consteval` functions has the same requirements as `constexpr` functions:
 
 * Must resolve dependency at compile time
 * Can not have `static` or `thread_local` variables inside
 * Function should not have side effects (pure in mathematical sense)
 
 ### constinit (C++20)
-The `constinit` guarantees that a variable with static storage duration is initialized at compile time. The variable is mutable, but initialization must be performed in compile time.
+The `constinit` guarantees that a variable with static storage duration (global variables and static variables inside the functions) is initialized at *compile time*. The variable is mutable and is not nessesary a const, but initialization must be performed in compile time.
 
 The order of initialization of usual `static` variables from different translation units in C++03/11 is no garantees.
 ```cpp
 int sqrRuntime(int x){return x*x;}
-consteval int sqrCompileTime(int x){return x*x;}
 constexpr int sqrCompileOrRunTime(int x){return x*x;}
+consteval int sqrCompileTime(int x){return x*x;}
+
+static constinit double kPi = 3.14159256;
 ```
 
 # Compute Optimization Relative Information
