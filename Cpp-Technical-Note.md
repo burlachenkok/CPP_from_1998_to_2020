@@ -269,6 +269,13 @@ X&x = obj; // X is the datatype of obj
 
 **Token**. In the terminology of Programming Languages, tokens are separate words of a program text. One easy case is when such words (tokens) are split between each other by spaces. A more hard case is to identify tokens when there are no whitespaces.
 
+**Pure Function**. The pure function is type of function (used in case of using `constexpr`) in C++ when function implementation make C++ function conincident with matematical function. Specifically we can name function as pure if the following holds:
+
+1. Function produce the same output if call it with the same arguments in future.
+2. There are no side - effects in program environment.
+3. The function does not change the state of the program.
+
+
 ----
 
 # Motivation
@@ -1871,43 +1878,59 @@ type. If and only if you do so, you need to declare this member once somewhere."
 ## Various Constants Flavors
 
 ### const (C++03)
-The keyword `const` prevent `const` objects from getting mutated. But `const` - can be initialized by something that is not a constant expression. Const member function functions cannot change the state of the object.
+The keyword `const` prevent `const` objects from getting mutated. But `const` - can be initialized by something that is not a constant expression. The `const` member-function cannot change the state of the object.
 
 ### constexpr (C++11)
 
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/constexpr).
 
-`constexpr` - indicating that it *should be possible* to evaluate the function at compile time if given constant expressions as arguments. The main idea of B. Stroustrup is that it brings type-rich programming in compile-time. The deep reason that includes this into language is that many communities ask B. Stroustrup to have something which will make table-lookup easier in languages. And because it's near impossible to be faster than table lookup, this concept can make sense.
+`constexpr` - indicating that it *should be possible* to evaluate the function at compile time if given constant expressions as arguments.
+
+**It can be run in compile time and in runtime.** 
+
+The main idea of B. Stroustrup is that it brings type-rich programming in compile-time. The deep reason that includes this into language is that many communities ask B. Stroustrup to have something which will make table-lookup easier in languages. And because it's near impossible to be faster than table lookup, this concept can make sense.
 
 C++11 `constexpr` functions had to put everything in a single return statement. C++14 `constexpr` functions, not necessarily had to put everything in a single return statement. Example:
-`constexpr int sum(int a, int b) {    return a + b; }`
+```cpp
+constexpr int sum(int a, int b) 
+{  
+    return a + b; 
+}
+```
 
 ```cpp
 constexpr int a = 12;
 constexpr int sum(int a, int b) { return a + b; }
 ```
-Also, `constexpr` is implicitly thread-safe. But the `constexpr` function can still run in runtime.
+Also, `constexpr` is implicitly thread-safe.
 
-In C++20 there is a way to distinguish between compile time and runtime via using `std::is_constant_evaluated()` inside function with `constexpr` modifier.
+Function can be run in compile time and in runtime. In C++20 there is a way to distinguish between compile time and runtime via using `std::is_constant_evaluated()` inside function with `constexpr` modifier.
 
 The `constexpr` functions requirements:
 
-* Must resolve dependency at compile time
+* Must resolve dependency at compile time.
 * Can not have `static` or `thread_local` variables inside
-* Function should not have side effects (pure in mathematical sense)
-* Have *the potential* to be run at compile time
+* Function should not have side effects (pure in mathematical sense).
+* Have *the potential* to be run at compile time.
+* Function with `constexpr` modifier is **pure** function.
 
 ### consteval (C++20)
-The `consteval` expressions generated an immediate function. It can only be run in compile time. If `consteval` function can not be run during compile time, it leads to compile time error Every call to `consteval` generates constant expression that is executed at compile time. The `consteval` functions has the same requirements as `constexpr` functions:
+The `consteval` expressions generated an immediate function. 
+
+**It can only be run in compile time.** 
+
+If `consteval` function can not be run during compile time, it leads to compile time error Every call to `consteval` generates constant expression that is executed at compile time. The `consteval` functions has the same requirements as `constexpr` functions:
 
 * Must resolve dependency at compile time
 * Can not have `static` or `thread_local` variables inside
 * Function should not have side effects (pure in mathematical sense)
 
 ### constinit (C++20)
+The order of initialization of usual `static` variables from different translation units in C++03/11 is undefined. And even more in C++03/11 `static` variables initialization in fact can happen in *compile-time* or in *run-time*.
+
 The `constinit` guarantees that a variable with static storage duration (global variables and static variables inside the functions) is initialized at *compile time*. The variable is mutable and is not nessesary a const, but initialization must be performed in compile time.
 
-The order of initialization of usual `static` variables from different translation units in C++03/11 is no garantees.
+
 ```cpp
 int sqrRuntime(int x){return x*x;}
 constexpr int sqrCompileOrRunTime(int x){return x*x;}
