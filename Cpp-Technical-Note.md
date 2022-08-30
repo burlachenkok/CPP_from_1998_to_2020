@@ -643,7 +643,8 @@ analyzes and edits the code to optimize performance. A transformation pass might
 * Remove Hoisting (also known as loop-invariant code). Try to remove recomputing loop-invariant code inside the loop.
 * Vectorization. Leverage into vector registers (like SSE2, Arm Neon) when possible.
 * Loops optimization: unrolling; loop fusion (also known as jamming) to combine multiple loops over the same index range; eliminating wasted iterations in the loop.
-* Figure out with Memory Aliasing and apply optimization for non-aliased pointed expression. For details please check [Compute Optimization Relative Information](#compute-optimization-relative-information.
+* Figure out with Memory Aliasing and apply optimization for non-aliased pointed expression. For details please check [Compute Optimization Relative Information](#compute-optimization-relative-information).
+
 Various things of optimization are out of the scope of the compiler. And can only be solved by the creator of the Algorithm/Method. Even we think there is a possibility of research to provide that information for the compiler.
 
 ### Code Emitting
