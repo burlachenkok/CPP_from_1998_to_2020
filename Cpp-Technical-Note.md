@@ -758,7 +758,7 @@ class that contains virtual functions. The only time you should even debate whet
     * Starting with a double underscore `__`
     * Names that start with a single underscore followed by an uppercase letter `_[A-Z]`, e.g., _Foo.
 
-That names should not be used by not compiler writers both for C and C++ languages. With that rule for a long time, people escape conflicts between naming of compiler-specific entities and entities of the construct program.
+That names should not be used by non-compiler and non-STL writers both for C and C++ languages. With that rule for a long time, people escape conflicts between naming of compiler-specific entities and entities of the construct program.
 
 > Sometimes compiler writers violate that principle.
 For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.html) mentions standard predefined macro uses `unix` and `linux` during compilation for the Linux platform. That special names are not the names that follow C/C++ conventions to distinguish names used in the program and for compiler writers.
