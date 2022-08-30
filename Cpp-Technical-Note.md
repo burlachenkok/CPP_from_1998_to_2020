@@ -914,7 +914,7 @@ The UTF-8 and UTF-16 are variable width encodings for characters. Not all letter
     A static member function is an ordinary function ([6], 9.4).
     * *Member function call*.
 
-2. In functions with `void` return types or when the return type is absent, e.g., in constructors/destructors, you can have the absence of a ```return``` statement in a function body. It is equivalent to an explicit ```return;``` at the end of the function body.
+2. In functions with `void` return types or when the return type is absent (e.g., in constructors/destructors), you can have the absence of a ```return``` statement in a function body. It is equivalent to an explicit ```return;``` at the end of the function body.
 
 3. Due to ([6], 6.6.3) *"Flowing off the end of a function is equivalent to a return with no value; **this results in undefined behavior in a value-returning function**."*
 
