@@ -984,9 +984,10 @@ For details, we recommend looking at [2, p.125], but short information about the
 
 * *Two's complement (or twos-complement-notation)*. Range is $[-2^{n-1}, 2^{n-1}-1]$. Positive numbers are represented in the usual way. The most significant bit of the sign is set to 0
 negative numbers are obtained as (reverse bits(number)+1) in ASM instruction notation for x86 sounds like a NEG operation
-1000000..000 is the maximum negative number that has no positive equivalent.
 
-* *One's complement (or ones-complement-notation)*. Range is  $[-2^{n-1}+1,2^{n-1}-1]$
+    `1000 ... 0000 0000 (bin)` is the maximum negative number that has no positive equivalent.
+
+* *One's complement (or ones-complement-notation)*. Range is $[-2^{n-1}+1, 2^{n-1}-1]$.
 Negative numbers are the complement of all bits of the corresponding positive number. In this representation, positive and negative zero are possible. And that representation has one number less than *Two's complement*.
 
 * *Signed integer representation (or sign-magnitude-notation)*. Range is $[-2^{(n-1)}+1, +2^{(n-1)}-1]$
