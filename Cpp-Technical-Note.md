@@ -573,8 +573,9 @@ If you need to have a highly effective algorithm implementation in Python withou
 
 # Standards for the Language
 
-Both compilers writers and people who use the C++ language as writers should obey the international standard ISO/IEC for the language. C++ Standardization has a long history:
+Both compilers writers and people who use the C++ language as writers should obey the international standard ISO/IEC for the language. C/C++ Standardization has a long history:
 
+* [C ISO/IEC 9899:1999](https://www.iso.org/standard/29237.html). Standard C99: [link](https://www.dii.uchile.cl/~daespino/files/Iso_C_1999_definition.pdf)
 * [C\+\+1998 standard - ISO/IEC 14882-1998](https://www.iso.org/ru/standard/25845.html). Draft of C++1998: [link](https://open-std.org/JTC1/SC22/WG21/docs/wp/pdf/nov97-2/).
 * [C\+\+2003 standard - ISO/IEC 14882:2003](https://www.iso.org/standard/38110.html). Standard C++2003: [link](http://staff.ustc.edu.cn/~zhuang/cpp/specs/ISO_IEC%2014882%202003.pdf).
 * [Technical Report on C++ Library Extensions - ISO/IEC TR 19768:2007](https://www.iso.org/standard/43289.html).
@@ -841,7 +842,7 @@ int main() {
 
 #elif defined(__STDC__)
 #   if defined(__STDC_VERERSION__) && __STDC_VERERSION__ > 199901L
-  printf("C99 standart\n");
+  printf("C99 standard\n");
 
 #   elif defined(__STDC_VERERSION__) && __STDC_VERERSION__ > 199409L
   printf("C89 with additions 1\n");
@@ -1161,9 +1162,16 @@ Therefore, `struct n{}; typedef double n;` is correct in C but not in C++.
 
 8. C99 has pointer qualifier `restrict`, which is not in the official specification of C++98/03/.
 
-9. Support of `varying array` array. In C99, the last member of a structure can be a flexible array. In C++ it's possible as well.
+9. Support of **flexible array type** array. In C99 such concept is defined in (ISO/IEEC 9899 C99, 6.7.2.1). Essentially it's the situation when the last element of a structure has an incomplete array type.
+```cpp
+struct s { 
+  int n; 
+  double d[]; 
+};
+```
+In that case, the size of the structure's element *d* is omitted. However, it's possible to access elements of array `d` through the pointer or reference to structure `s`. In that case, you should understand what you're doing - the structure has a memory layout that maps it into the underlying buffer correctly.
 
-10. In C99, but not in C++, there is a ` flexible arrays`. That arrays with a size specified via a non-const variable. In C99, to pass such arguments to a function, use the notation `void g(int pp[*], int k){}`.
+10. In C99, but not in C++, there is a support of `variable length array type` (Defined in ISO/IEEC 9899 C99, 6.7.2.1) That arrays with a size specified via a non-const variable. In C99, to pass such arguments to a function, use the notation `void g(int pp[*], int k){}`.
 
 11. Different initialization of the char array. In C++, the array must be of sufficient size to hold the "\0" character
 ```cpp
@@ -3618,4 +3626,4 @@ The mindset that C++ is shaping, helps to look into details and abstract when ne
 
 [9] [Bjarne Stroustrup's C++11 FAQ](https://www.stroustrup.com/C++11FAQ.html)
 
-[10] [Useful catalog of resources from CppReference: Standarts, ABI](https://en.cppreference.com/w/cpp/links)
+[10] [Useful catalog of resources from CppReference: Standards, ABI](https://en.cppreference.com/w/cpp/links)
