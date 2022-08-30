@@ -608,7 +608,7 @@ A source code for C/C++ consists of source files. Each source file is translated
 
 6. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program. For details about available preprocessor language, please read [2, p.43] or documentation for any de-facto standard toolchain like [GCC](https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros).
 
-The output of preprocessing of the source file is named as *preprocessed source* and typically has the extension "*.i." For example, obtaining such a source file from [clang](https://clang.llvm.org/get_started.html) can be achieved via `clang -E.`
+The output of preprocessing of the source file is named as *preprocessed source* and typically has the extension `*.i`. For example, obtaining such a source file from [clang](https://clang.llvm.org/get_started.html) can be achieved via `clang -E.`
 
 ## The Compiler and Linker. Briefly.
 
@@ -798,11 +798,11 @@ The original C specification says that the actual directory in which the compile
 
 ## Include Files Naming
 
-1. For each "C" standard library ```"X.h"``` header file, there is a corresponding C++ standard header file ```<cX>``` in C++. A standard header file whose name begins with the letter `c` is equivalent to a standard header file in the C library. (B. Stroustrup, Spec. Edition, p. 487, 16.1.2). Those headers files expose different behavior in terms of using their names from the global namespace.
+1. For each "C" standard library `<X.h>` header file, there is a corresponding C++ standard header file `<cX>` in C++. A standard header file whose name begins with the letter `c` is equivalent to a standard header file in the C library. (B. Stroustrup, Spec. Edition, p. 487, 16.1.2). Those headers files expose different behavior in terms of using their names from the global namespace.
 
-2. Standard headers with naming as "X.h" defines function names in the `std` namespace and also **imports those names into the global namespace**.
+2. Standard headers with naming as `<X.h>` define function names in the `std` namespace and also **import those names into the global namespace**.
 
-3. Standard headers with naming as "cX" defines function names only in the `std` namespace. ([1], 9.2.2, page 247).
+3. Standard headers with naming as `<cX>` defines function names only in the `std` namespace. ([1], 9.2.2, page 247).
 
 ## Predefined Identifiers and Macros
 
@@ -1055,15 +1055,15 @@ auto x1 = {1,2,3,4}; // x1 is an initializer_list<int>
 // in the form of list initialization does not allow narrowing
 ```
 
-`Auto` can be used jointly with `constant` `volatile` type qualifiers (cv) and with reference and pointers. Examples:
+`auto` can be used jointly with constant volatile type qualifiers (cv) and with reference and pointers. Examples:
 
 ```cpp
 int ii= 1;
-const auto * p_ii = &ii;
+const auto* p_ii = &ii;
 const auto& p_ref = ii;
 ```
 
-The close by conception is `decltype`. It provides ability to derive type of expression without evaluating it.
+The close by conception is `decltype` keyword. It provides ability to derive type of expression without evaluating it.
 ```cpp
 int x;
 const int *p;
@@ -1083,8 +1083,8 @@ for (auto i : v)
   std::cout << i;
 ```
 Range-Based for Loops valid for any type supporting the notion of a range. One of the following constructions should be valid:
-* *obj.begin()* and *obj.end()*
-* *begin(obj)* and *end(obj)*
+* `obj.begin()` and `obj.end()`
+* `begin(obj)` and `end(obj)`
 
 # Technical Differences between C and C++
 Many times in the past, people aware of C/C++ talked that C++ and C are different. Let's take a look at what it means concretely. All differences are pretty subtle, but there are plenty of them. The text below covers the difference between C99 and classical C++03.
