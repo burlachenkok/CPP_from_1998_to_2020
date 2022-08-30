@@ -8,7 +8,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision: Working Draft 1.1 / Last Update: Aug 28, 2022
+Revision: Working Draft 1.2 / Last Update: Aug 30, 2022
 
 © 2022 Konstantin Burlachenko, all rights reserved.
 
@@ -1063,13 +1063,34 @@ const auto* p_ii = &ii;
 const auto& p_ref = ii;
 ```
 
-The close by conception is `decltype` keyword. It provides ability to derive type of expression without evaluating it.
 ```cpp
-int x;
-const int *ptr;
-decltype(x) x1;     // x1: int
-decltype(ptr) p1;   // p1: const int*
-decltype((ptr)) p2; // p2: const int* &
+int main()
+{
+    double z = 1.0;
+    struct Point 
+    {
+        double x;
+        double y;
+    };
+    const Point a = {10.0, 11.0};
+
+
+    decltype(a.x) x4;     // type is double; decltype(expression) is the type of the expression
+                          
+    decltype((a.x)) x5=z; // type is const double&
+       
+    x4 = 123.0;
+    // x5 = 567.0; // compile-time error
+    
+    int x;
+    const int *ptr = &x;
+    decltype(x) x1 = 1;       // x1: int
+    decltype(ptr) p1 = 0;     // p1: const int*
+    //decltype((ptr)) p2 = 0; // p2: const int*& compile-time error
+    decltype((ptr)) p3 = ptr; // p3: const int*& 
+
+    return 0;
+}
 ```
 Extra parentheses are used to preserve `const` property for the type of expression.
 
