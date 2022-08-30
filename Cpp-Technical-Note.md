@@ -8,7 +8,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision: Working Draft 1.2 / Last Update: Aug 30, 2022
+Revision: Working Draft 1.3 / Last Update: Aug 30, 2022
 
 © 2022 Konstantin Burlachenko, all rights reserved.
 
