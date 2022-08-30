@@ -824,19 +824,24 @@ Example of checking the version of C/C++ compiler  mostly based on [2, p.53]:
 
 ```cpp
 #include <stdio.h>
+
 int main() {
 #ifdef __cplusplus
- printf("C++ version %li\n", __cplusplus);
+  printf("C++ version %li\n", __cplusplus);
+
 #elif defined(__STDC__)
-#if defined(__STDC_VERERSION__) &&__STDC_VERERSION__ > 199901L
- printf("C99 standart\n");
-#elif defined(__STDC_VERERSION__) &&__STDC_VERERSION__ > 199409L
- printf("C89 with additions 1\n");
+#   if defined(__STDC_VERERSION__) && __STDC_VERERSION__ > 199901L
+  printf("C99 standart\n");
+
+#   elif defined(__STDC_VERERSION__) && __STDC_VERERSION__ > 199409L
+  printf("C89 with additions 1\n");
+
+#   else
+  printf("C89\n");
+
+#   endif
 #else
- printf("C89\n");
-#endif
-#else
- printf("C not standartizied\n");
+  printf("C not standartizied\n");
 #endif
 
   return 0;
