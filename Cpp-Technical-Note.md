@@ -1194,9 +1194,9 @@ char a[3]="123";                     // Ok in C, but not in C++
 
 13. The definition of `struct` and `union` in C++ have block scope.
 
-14. `const` declarations are `static` by default in C++, but `extern` in C (Appendix C. C++2003)
-7.11.6, C++2003:
-*"A name declared in a namespace scope without a storage-class-specifier has external linkage unless it has internal linkage because of a previous declaration and provided it is not declared const. Objects declared `const` and not explicitly declared extern have internal linkage."* It also follows from this paragraph that declarations of non-const variables declared on namespace level have extern linkage by default in C++.
+14. `const` declarations are `static` by default in C++, but `extern` in C (Appendix C. C++2003) 7.11.6, C++2003:
+
+    *"A name declared in a namespace scope without a storage-class-specifier has external linkage unless it has internal linkage because of a previous declaration and provided it is not declared const. Objects declared `const` and not explicitly declared extern have internal linkage."* It also follows from this paragraph that declarations of non-const variables declared on namespace level have extern linkage by default in C++.
 
 15. C++ declaration `void f()` is equivalent to void `f(void)` in C. The declaration in C `void f()` state that function has an indefinite number of arguments.
 
@@ -1204,7 +1204,9 @@ char a[3]="123";                     // Ok in C, but not in C++
 
 17. In C, but not in C++, you can write, although this is strange: `sizeof(struct S{int a;});`
 
-18. Implicit cast from integer type to `enum` is allowed in C but not in C++. ([6], p. 113. 7.2.5): *"The type of an `enum` is an integer type that must support all underlying values. In C, enum has a synonym for int."*
+18. Implicit cast from integer type to `enum` is allowed in C but not in C++. ([6], p. 113. 7.2.5):
+
+    *"The type of an `enum` is an integer type that must support all underlying values. In C, enum has a synonym for int."*
 
 19. In C++, converting a void pointer to any reference type requires an explicit cast operation. And in C, this is done implicitly.
 
@@ -1215,9 +1217,10 @@ char a[3]="123";                     // Ok in C, but not in C++
 22. In C++, an `inline` function, in terms of code, can have an address and static variables inside. In C, it is not allowed.
 
 23. In C99, the compiler must see the function definition, i.e., the function should be defined so that it is `inline` in `*.h`. The compiler can choose to actually what to do:
-* inline calls
-* not inline
-* partially inline.
+
+    * inline calls
+    * not inline
+    * partially inline.
 
 24. C++ allows declaration in conditions, and it's not allowed in C.
 
