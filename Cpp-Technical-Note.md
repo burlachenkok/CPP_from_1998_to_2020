@@ -860,13 +860,13 @@ Next, creating two declarations of the same name in the same overload class in t
 |---|-----------------------------------|----------------------------------------------------------------------------------------------------------------|
 | 1 | Preprocessor Macro Names          | The names used by the preprocessor are independent of any other identifiers.                |
 | 2 | Operator labels/tags              | The labels used immediately follow the `goto` statement.                                                          |
-| 3 | Structures, Union, and Enum tags | They are part of a structure, union, or enumeration and immediately follow the keywords: ```struct```, ```union```, ```enum```. |
+| 3 | Structures, Union, and Enum tags | They are part of a structure, union, or enumeration and immediately follow the keywords: `struct`, `union`, `enum`. |
 | 4 | Components namespace              | Defined in the namespace(or name scope) associated with the corresponding structure or union type.             |
 | 5 | Another namespace                 | Name of the following objects: *Variables*, *Functions*, *Typedef names*, *Enumeration constants*.                 |
 
 C++ introduces structure and union tags, and enumeration names are implicitly declared via `typedef` in the namespace *"Another"* where there are also usual variables.
 
-If you explicitly use a ``` typedef``` for a structure followed by a variable declaration, it will lead to an error.
+If you explicitly use a `typedef` for a structure followed by a variable declaration, it will lead to an error.
 
 However, tag names can be hidden by subsequent variable or function declarations or by an enumeration member of the same name in the same scope.
 
@@ -914,7 +914,7 @@ The UTF-8 and UTF-16 are variable width encodings for characters. Not all letter
     A static member function is an ordinary function ([6], 9.4).
     * *Member function call*.
 
-2. In functions with `void` return types or when the return type is absent (e.g., in constructors/destructors), you can have the absence of a ```return``` statement in a function body. It is equivalent to an explicit ```return;``` at the end of the function body.
+2. In functions with `void` return types or when the return type is absent (e.g., in constructors/destructors), you can have the absence of a `return` statement in a function body. It is equivalent to an explicit `return;` at the end of the function body.
 
 3. Due to ([6], 6.6.3) *"Flowing off the end of a function is equivalent to a return with no value; **this results in undefined behavior in a value-returning function**."*
 
@@ -1106,7 +1106,7 @@ double alt_style( a , real )
 
 3. C++ style comments `//` only appeared in C99.
 
-4. C++03 has new operations ```.*, ->*, ::``` which are not in C
+4. C++03 has new operations `.*, ->*, ::` which are not in C
 
 5. Different memory for char literal in C and in C++
 ```cpp
@@ -1122,15 +1122,15 @@ sizoef('a') == sizeof(int)  // C
 * typedef names
 * enum constants
 
-Therefore, ```struct n{}; typedef double n;``` is correct in C but not in C++.
+Therefore, `struct n{}; typedef double n;` is correct in C but not in C++.
 
 7. Although for C++ type tag names (struct, union, `enum`) are implicitly declared using `typedef`, they can still be hidden by variables in the same scope `S S;`.
 
 8. C99 has pointer qualifier `restrict`, which is not in the official specification of C++98/03/.
 
-9. Support of ```varying array``` array. In C99, the last member of a structure can be a flexible array. In C++ it's possible as well.
+9. Support of `varying array` array. In C99, the last member of a structure can be a flexible array. In C++ it's possible as well.
 
-10. In C99, but not in C++, there is a ``` flexible arrays```. That arrays with a size specified via a non-const variable. In C99, to pass such arguments to a function, use the notation `void g(int pp[*], int k){}`.
+10. In C99, but not in C++, there is a ` flexible arrays`. That arrays with a size specified via a non-const variable. In C99, to pass such arguments to a function, use the notation `void g(int pp[*], int k){}`.
 
 11. Different initialization of the char array. In C++, the array must be of sufficient size to hold the "\0" character
 ```cpp
@@ -1142,15 +1142,15 @@ char a[3]="123";                     // Ok in C, but not in C++
 
 13. The definition of `struct` and `union` in C++ have block scope.
 
-14. ```const``` declarations are ```static``` by default in C++, but ```extern``` in C (Appendix C. C++2003)
+14. `const` declarations are `static` by default in C++, but `extern` in C (Appendix C. C++2003)
 7.11.6, C++2003:
 *"A name declared in a namespace scope without a storage-class-specifier has external linkage unless it has internal linkage because of a previous declaration and provided it is not declared const. Objects declared `const` and not explicitly declared extern have internal linkage."* It also follows from this paragraph that declarations of non-const variables declared on namespace level have extern linkage by default in C++.
 
-15. C++ declaration ```void f()``` is equivalent to void ```f(void)``` in C. The declaration in C ```void f()``` state that function has an indefinite number of arguments.
+15. C++ declaration `void f()` is equivalent to void `f(void)` in C. The declaration in C `void f()` state that function has an indefinite number of arguments.
 
 16. If the array is multidimensional, then in all cases, only the leftmost index can be omitted to determine the array's size. Also, in C99, component-wise initialization is allowed, which is not permitted in C++98/03.
 
-17. In C, but not in C++, you can write, although this is strange: ```sizeof(struct S{int a;});```
+17. In C, but not in C++, you can write, although this is strange: `sizeof(struct S{int a;});`
 
 18. Implicit cast from integer type to `enum` is allowed in C but not in C++. ([6], p. 113. 7.2.5): *"The type of an `enum` is an integer type that must support all underlying values. In C, enum has a synonym for int."*
 
@@ -1162,7 +1162,7 @@ char a[3]="123";                     // Ok in C, but not in C++
 
 22. In C++, an `inline` function, in terms of code, can have an address and static variables inside. In C, it is not allowed.
 
-23. In C99, the compiler must see the function definition, i.e., the function should be defined so that it is `inline` in ```*.h```. The compiler can choose to actually what to do:
+23. In C99, the compiler must see the function definition, i.e., the function should be defined so that it is `inline` in `*.h`. The compiler can choose to actually what to do:
 * inline calls
 * not inline
 * partially inline.
@@ -1177,15 +1177,15 @@ char a[3]="123";                     // Ok in C, but not in C++
 
 28. In C++, there is a namespace mechanism with namespace, which does not exist in C.
 
-29. In C, you can use ```exit()``` and ```abort()``` with no problems, but in C++, the destructors of local objects are not called.
+29. In C, you can use `exit()` and `abort()` with no problems, but in C++, the destructors of local objects are not called.
 
 30. Overloading of operators and functions is allowed only in C++.
 
 31. C does not support General-Purpose-Programming with templates.
 
-32. C99 has a predefined identifier ```__func__```. This identifier is implicitly defined by the compiler at the beginning of the function body as static const char ```__func__[] = "function-name"```. Such identifier was absent in C++98/03.
+32. C99 has a predefined identifier `__func__`. This identifier is implicitly defined by the compiler at the beginning of the function body as static const char `__func__[] = "function-name"`. Such identifier was absent in C++98/03.
 
-33. In C++, operators not presented in C language usually have the highest precedence, except for ``` throw``` which is only above the comma operator ```,```.
+33. In C++, operators not presented in C language usually have the highest precedence, except for ` throw` which is only above the comma operator `,`.
 
 34. In C, there must be at least one element in the initialization list when a structure or array is initialized.
 
@@ -1204,7 +1204,7 @@ const int* pointer_to_const;
 ```
 
 3. Quite a lot of important information is contained in ([6],  5.3.3 `sizeof`) including the following:
-* ```sizeof(char)``` with all variations of char is always one byte.
+* `sizeof(char)` with all variations of char is always one byte.
 * `sizeof(bool)` is implementation-defined.
 * `sizeof(wchar_t)` is implementation-defined.
 
@@ -1226,7 +1226,7 @@ const int* pointer_to_const;
 
 4. In some computers, data can be located in memory at any address; in others, alignment conditions are imposed on certain types.
 
-5. A typical data type to store pointers to some object/data is a pointer. To store (or serialize the value of pointer) in some integer variable, you can use ```uintptr_t```. The ```uintptr_t``` integer type was introduced in C99. The ```uintptr_t``` is sufficient to store a pointer to any data, but formally not to a function.
+5. A typical data type to store pointers to some object/data is a pointer. To store (or serialize the value of pointer) in some integer variable, you can use `uintptr_t`. The `uintptr_t` integer type was introduced in C99. The `uintptr_t` is sufficient to store a pointer to any data, but formally not to a function.
 
 6. A special value in C/C++ called a null pointer equal to a null pointer constant. A null pointer can be converted to any other type of pointer.
 
@@ -1247,7 +1247,7 @@ const int *x = nullptr;
 
 8. When using `union` for a mixture of structures that start the same way, there is a guarantee in C/C++ of an identical physical mapping of components "from this beginning".
 
-9. In C and C++, the components of the variable of structure type ```struct``` has addressed. There are the following guarantees:
+9. In C and C++, the components of the variable of structure type `struct` has addressed. There are the following guarantees:
 * The component addresses are in ascending order.
 * The address of the first component is the same as the address of the beginning of the structure. And it is regardless of what endian the computer has where the program will run.
 
@@ -1258,7 +1258,7 @@ It's due to (7.11.6, C++2003):
 ```
 "A name declared in a namespace scope without a storage-class-specifier has external linkage unless it has internal linkage because of a previous declaration and provided it is not declared const. Objects declared const and not explicitly declared extern have internal linkage."
 ```
-It also follows from this paragraph that declarations of non-const variables declared on namespace level have ```extern``` linkage by default in C++.
+It also follows from this paragraph that declarations of non-const variables declared on namespace level have `extern` linkage by default in C++.
 
 12. A compile-time string literal in C/C++ is statically allocated so that it is safe to return one from a function.
 
@@ -1395,14 +1395,14 @@ Now let's go into technical details.
 
 8. Conversion from the type array of type T to a pointer to type T is performed by substituting the pointer for the first element of the array.
 
-9. A value of any type can be converted to ```void```.
+9. A value of any type can be converted to `void`.
 
-10. Conversion to ```void *``` and back guarantee the restoration of the original pointer value
+10. Conversion to `void *` and back guarantee the restoration of the original pointer value
 
-11. In C, ```void *``` can be **implicitly** converted to a pointer to any type. In C++, **an explicit cast** is required. (Appendix C, 4.10, C ++ 2003 standard)
+11. In C, `void *` can be **implicitly** converted to a pointer to any type. In C++, **an explicit cast** is required. (Appendix C, 4.10, C ++ 2003 standard)
 
 12. On the operands of unary operations, ordinary unary conversions are performed. The goal is to reduce the number of arithmetic types.
-   * An array of type T $\to$ pointer to the first element (not applied for arguments of ```operator &``` and ```sizeof``` operators).
+   * An array of type T $\to$ pointer to the first element (not applied for arguments of `operator &` and `sizeof` operators).
    * Function $\to$ function pointer.
    * Conversions from an integer type of rank below int $\to$ to `in`.
    * Conversions from unsigned integer types lower than `int`, `int` represent all values $\to$ values are cast ​​to integers.
@@ -3308,7 +3308,7 @@ void printf(const char *s, T value, Args... args)
 
 **First thing:** In variadic template for ellipses <`...`> you can put spaces anywhere around it. And construction <`...`> are used in fact, for various purposes in context of variadic templates.
 
-**Second thing:** the only way to get the next template argument is to recursively call a function whose template parameters are specified as ```<TExtractType, RestTypes...>```. So if you have ever seen functional programming languages, that construction looks pretty close to that.
+**Second thing:** the only way to get the next template argument is to recursively call a function whose template parameters are specified as `<TExtractType, RestTypes...>`. So if you have ever seen functional programming languages, that construction looks pretty close to that.
 
 Packing operations:
 * `class ...Args` - parameters **pack** in template parameters list with optional name. Non type template parameters can also be organized in the pack via similar syntax `int...`. Whitespace around <`...`> does not matter for compiler.
