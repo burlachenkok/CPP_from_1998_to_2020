@@ -16,165 +16,164 @@ Revision: Working Draft 1.2 / Last Update: Aug 30, 2022
 
 **Table of Content**
 
-- [Technical Note. From C++1998 to C++2020](#technical-note-from-c--1998-to-c--2020)
 - [Introduction](#introduction)
 - [Glossary](#glossary)
 - [Motivation](#motivation)
-  * [Downsides of Interpretable Languages](#downsides-of-interpretable-languages)
-  * [Downsides of C/C++](#downsides-of-c-c--)
+  - [Downsides of Interpretable Languages](#downsides-of-interpretable-languages)
+  - [Downsides of C/C++](#downsides-of-cc)
 - [Deep Principles of the Language](#deep-principles-of-the-language)
-- [Why learn C++ if I know Python (Toy Example)](#why-learn-c---if-i-know-python--toy-example-)
+- [Why learn C++ if I know Python (Toy Example)](#why-learn-c-if-i-know-python-toy-example)
 - [Standards for the Language](#standards-for-the-language)
 - [Language Guarantees](#language-guarantees)
-- [Stages of Source Code Translation in C++](#stages-of-source-code-translation-in-c--)
-  * [Initial Textual Source Code Processing and C Preprocessing](#initial-textual-source-code-processing-and-c-preprocessing)
-  * [The Compiler and Linker. Briefly.](#the-compiler-and-linker-briefly)
-  * [The Compiler and Linker. Details.](#the-compiler-and-linker-details)
-    + [Lexical Analysis](#lexical-analysis)
-    + [Syntax Analysis](#syntax-analysis)
-    + [Semantic Analysis](#semantic-analysis)
-    + [Code Optimization](#code-optimization)
-    + [Code Emitting](#code-emitting)
-    + [Calling Assembler Program](#calling-assembler-program)
+- [Stages of Source Code Translation in C++](#stages-of-source-code-translation-in-c)
+  - [Initial Textual Source Code Processing and C Preprocessing](#initial-textual-source-code-processing-and-c-preprocessing)
+  - [The Compiler and Linker. Briefly.](#the-compiler-and-linker-briefly)
+  - [The Compiler and Linker. Details.](#the-compiler-and-linker-details)
+    - [Lexical Analysis](#lexical-analysis)
+    - [Syntax Analysis](#syntax-analysis)
+    - [Semantic Analysis](#semantic-analysis)
+    - [Code Optimization](#code-optimization)
+    - [Code Emitting](#code-emitting)
+    - [Calling Assembler Program](#calling-assembler-program)
 - [Linkage](#linkage)
-- [What is Impossible Even in C/C++](#what-is-impossible-even-in-c-c--)
-- [For People New to C++](#for-people-new-to-c--)
-- [About C/C++ Preprocessor](#about-c-c---preprocessor)
-  * [Include Search Order](#include-search-order)
-  * [Include Files Naming](#include-files-naming)
-  * [Predefined Identifiers and Macros](#predefined-identifiers-and-macros)
+- [What is Impossible Even in C/C++](#what-is-impossible-even-in-cc)
+- [For People New to C++](#for-people-new-to-c)
+- [About C/C++ Preprocessor](#about-cc-preprocessor)
+  - [Include Search Order](#include-search-order)
+  - [Include Files Naming](#include-files-naming)
+  - [Predefined Identifiers and Macros](#predefined-identifiers-and-macros)
 - [Language Rules](#language-rules)
-  * [Names Overloading](#names-overloading)
-  * [Literal Constants](#literal-constants)
-  * [Prefixes for Strings from C++11](#prefixes-for-strings-from-c--11)
-  * [Function Call Nuances](#function-call-nuances)
-  * [Requirements for C++ Expressions](#requirements-for-c---expressions)
-  * [Exceptions to the One Definition Rule](#exceptions-to-the-one-definition-rule)
-  * [Integer Arithmetic and Enumerations](#integer-arithmetic-and-enumerations)
-  * [Integer Types Nuances](#integer-types-nuances)
-  * [Auto Type Deduction](#auto-type-deduction)
-  * [Range-Based For Loop](#range-based-for-loop)
-- [Technical Differences between C and C++](#technical-differences-between-c-and-c--)
+  - [Names Overloading](#names-overloading)
+  - [Literal Constants](#literal-constants)
+  - [Prefixes for Strings from C++11](#prefixes-for-strings-from-c11)
+  - [Function Call Nuances](#function-call-nuances)
+  - [Requirements for C++ Expressions](#requirements-for-c-expressions)
+  - [Exceptions to the One Definition Rule](#exceptions-to-the-one-definition-rule)
+  - [Integer Arithmetic and Enumerations](#integer-arithmetic-and-enumerations)
+  - [Integer Types Nuances](#integer-types-nuances)
+  - [Auto Type Deduction](#auto-type-deduction)
+  - [Range-Based For Loop](#range-based-for-loop)
+- [Technical Differences between C and C++](#technical-differences-between-c-and-c)
 - [Memory](#memory)
-  * [Memory Types and Pointers](#memory-types-and-pointers)
-  * [Used Memory for Types and Their Layout](#used-memory-for-types-and-their-layout)
-  * [New Operator](#new-operator)
-  * [Placement New](#placement-new)
-  * [Pseudo Destructor](#pseudo-destructor)
-  * [Aggregates](#aggregates)
-  * [POD or Plain Old Datatype (C++03)](#pod-or-plain-old-datatype--c--03-)
-  * [Standard Layout (From C++11)](#standard-layout--from-c--11-)
+  - [Memory Types and Pointers](#memory-types-and-pointers)
+  - [Used Memory for Types and Their Layout](#used-memory-for-types-and-their-layout)
+  - [New Operator](#new-operator)
+  - [Placement New](#placement-new)
+  - [Pseudo Destructor](#pseudo-destructor)
+  - [Aggregates](#aggregates)
+  - [POD or Plain Old Datatype (C++03)](#pod-or-plain-old-datatype-c03)
+  - [Standard Layout (From C++11)](#standard-layout-from-c11)
 - [Built-in Type Conversion](#built-in-type-conversion)
-  * [Prohibited Conversions](#prohibited-conversions)
-  * [The Sequence of Type Conversions Rules in C/C++](#the-sequence-of-type-conversions-rules-in-c-c--)
+  - [Prohibited Conversions](#prohibited-conversions)
+  - [The Sequence of Type Conversions Rules in C/C++](#the-sequence-of-type-conversions-rules-in-cc)
 - [Namespaces](#namespaces)
-  * [Basics about Namespaces](#basics-about-namespaces)
-  * [Namespace Lookup Rules](#namespace-lookup-rules)
-  * [Examples of Using Keyword using](#examples-of-using-keyword-using)
+  - [Basics about Namespaces](#basics-about-namespaces)
+  - [Namespace Lookup Rules](#namespace-lookup-rules)
+  - [Examples of Using Keyword using](#examples-of-using-keyword-using)
 - [Exceptions](#exceptions)
-  * [Basics about Exceptions](#basics-about-exceptions)
-  * [Extra about Exceptions](#extra-about-exceptions)
+  - [Basics about Exceptions](#basics-about-exceptions)
+  - [Extra about Exceptions](#extra-about-exceptions)
 - [Overloading](#overloading)
-  * [Functions and Operator Overloading Precedence](#functions-and-operator-overloading-precedence)
-  * [Template Function Overloading](#template-function-overloading)
-  * [Resolving the Overloaded Binary Operator for x(op)y.](#resolving-the-overloaded-binary-operator-for-x-op-y)
-  * [Operators Overloading Rules in C++](#operators-overloading-rules-in-c--)
+  - [Functions and Operator Overloading Precedence](#functions-and-operator-overloading-precedence)
+  - [Template Function Overloading](#template-function-overloading)
+  - [Resolving the Overloaded Binary Operator for x(op)y.](#resolving-the-overloaded-binary-operator-for-xopy)
+  - [Operators Overloading Rules in C++](#operators-overloading-rules-in-c)
 - [Keyword typename](#keyword-typename)
 - [Class Constructor and Destructors](#class-constructor-and-destructors)
-  * [Logic behind executing Constructors](#logic-behind-executing-constructors)
-  * [Logic behind Executing Destructors](#logic-behind-executing-destructors)
-  * [Deleting Object of Incomplete Type](#deleting-object-of-incomplete-type)
-  * [Generate/Suppress Generation of Special Class Members](#generate-suppress-generation-of-special-class-members)
-  * [Some Class Special Members (since C++11)](#some-class-special-members--since-c--11-)
+  - [Logic behind executing Constructors](#logic-behind-executing-constructors)
+  - [Logic behind Executing Destructors](#logic-behind-executing-destructors)
+  - [Deleting Object of Incomplete Type](#deleting-object-of-incomplete-type)
+  - [Generate/Suppress Generation of Special Class Members](#generatesuppress-generation-of-special-class-members)
+  - [Some Class Special Members (since C++11)](#some-class-special-members-since-c11)
 - [Initialization](#initialization)
-  * [C++ Variable Initialization](#c---variable-initialization)
-  * [std::initializer_list<T>](#std--initializer-list-t-)
-  * [Various Constants Flavors](#various-constants-flavors)
-    + [const (C++03)](#const--c--03-)
-    + [constexpr (C++11)](#constexpr--c--11-)
-    + [consteval (C++20)](#consteval--c--20-)
-    + [constinit (C++20)](#constinit--c--20-)
+  - [C++ Variable Initialization](#c-variable-initialization)
+  - [std::initializer_list<T>](#stdinitializer_listt)
+  - [Various Constants Flavors](#various-constants-flavors)
+    - [const (C++03)](#const-c03)
+    - [constexpr (C++11)](#constexpr-c11)
+    - [consteval (C++20)](#consteval-c20)
+    - [constinit (C++20)](#constinit-c20)
 - [Compute Optimization Relative Information](#compute-optimization-relative-information)
-  * [Return Value Optimization](#return-value-optimization)
-  * [Inline Function Call](#inline-function-call)
-  * [Allowable Reformulations](#allowable-reformulations)
-  * [Compiler Implementation Relative Questions](#compiler-implementation-relative-questions)
-  * [std::aligned_storage](#std--aligned-storage)
-  * [Memory Aliasing and restrict](#memory-aliasing-and-restrict)
+  - [Return Value Optimization](#return-value-optimization)
+  - [Inline Function Call](#inline-function-call)
+  - [Allowable Reformulations](#allowable-reformulations)
+  - [Compiler Implementation Relative Questions](#compiler-implementation-relative-questions)
+  - [std::aligned_storage](#stdaligned_storage)
+  - [Memory Aliasing and restrict](#memory-aliasing-and-restrict)
 - [Lambda Functions](#lambda-functions)
 - [Move Semantics](#move-semantics)
-- [Virtual and Polymorphism in C++](#virtual-and-polymorphism-in-c--)
-  * [General Rules from C++03](#general-rules-from-c--03)
-  * [Override Specification (from C++11)](#override-specification--from-c--11-)
-  * [Final Specification](#final-specification)
-  * [Connection of Virtual Function with Default Values](#connection-of-virtual-function-with-default-values)
-- [Miscellaneous Features of C++11](#miscellaneous-features-of-c--11)
-  * [1. emplace_back](#1-emplace-back)
-  * [2. vector::shrink_to_fit](#2-vector--shrink-to-fit)
-  * [3. noexcept function specification](#3-noexcept-function-specification)
-  * [4. static_assert expression](#4-static-assert-expression)
-  * [5. alignas operator](#5-alignas-operator)
-  * [6. alignof operator](#6-alignof-operator)
-  * [7. Default Member Initializers (C++11)](#7-default-member-initializers--c--11-)
-  * [8. User-Defined Literals (UDL)](#8-user-defined-literals--udl-)
-  * [9. noreturn Attribute](#9-noreturn-attribute)
-  * [10. Anonymous Unions](#10-anonymous-unions)
-  * [11. Type Alias](#11-type-alias)
-  * [12. Static Variables are Always Initialized Thread Safe](#12-static-variables-are-always-initialized-thread-safe)
-  * [13. Delegating constructors](#13-delegating-constructors)
-  * [14. Inheriting Constructors](#14-inheriting-constructors)
-  * [15. Destructors are Implicitly noexcept](#15-destructors-are-implicitly-noexcept)
-  * [16. Fixed Width Integer Types](#16-fixed-width-integer-types)
-  * [17. Concurrency Support](#17-concurrency-support)
-  * [18. Explicit Conversion Functions](#18-explicit-conversion-functions)
-  * [19. Current Exception. Internal Details.](#19-current-exception-internal-details)
-- [Miscellaneous Features of C++14](#miscellaneous-features-of-c--14)
-  * [1. deprecated Attribute](#1-deprecated-attribute)
-  * [2. Return Type Deduction](#2-return-type-deduction)
-  * [3. Binary Literals](#3-binary-literals)
-  * [4. Variable Templates](#4-variable-templates)
-  * [5. Delimiter Inside Numeric Literals](#5-delimiter-inside-numeric-literals)
-  * [6. std::make_unique<T>](#6-std--make-unique-t-)
-- [Miscellaneous Features of C++17](#miscellaneous-features-of-c--17)
-  * [1. Structured Binding](#1-structured-binding)
-  * [2. Deduce Template Parameters from Ctor. Arguments](#2-deduce-template-parameters-from-ctor-arguments)
-  * [3. Compile Time if](#3-compile-time-if)
-  * [4. __has_include Macro](#4---has-include-macro)
-  * [5. std::byte](#5-std--byte)
-  * [6. fallthrough Attribute](#6-fallthrough-attribute)
-  * [7. Initialization Statements in if/switch/for](#7-initialization-statements-in-if-switch-for)
-  * [8. std::optional](#8-std--optional)
-  * [9. std::string_view](#9-std--string-view)
-  * [10. Inline Variables](#10-inline-variables)
-  * [11. The Exception Specification has been Removed](#11-the-exception-specification-has-been-removed)
-- [Miscellaneous Features of C++20](#miscellaneous-features-of-c--20)
-  * [1. no_unique_address Attribute](#1-no-unique-address-attribute)
-  * [2. Spaceship operator](#2-spaceship-operator)
-  * [3. likely and unlikely Attribute](#3-likely-and-unlikely-attribute)
-  * [4. std::format()](#4-std--format--)
-  * [5. source_location::current()](#5-source-location--current--)
-  * [6. nodiscard(reason) Attribute](#6-nodiscard-reason--attribute)
-  * [7. Only one Signed Integer Representation](#7-only-one-signed-integer-representation)
-  * [8. Right Shift is Arithmetic Right Shift](#8-right-shift-is-arithmetic-right-shift)
-  * [9. Abbreviated Function Templates](#9-abbreviated-function-templates)
-  * [10. Automatic generation of `!=` from `==`.](#10-automatic-generation-of------from-----)
-  * [11. Designated initializers](#11-designated-initializers)
-- [Modules (from C++20)](#modules--from-c--20-)
-  * [Single Module Interface File/Module Unit](#single-module-interface-file-module-unit)
-  * [Module Interface File With Implementation inside it](#module-interface-file-with-implementation-inside-it)
-  * [Module Interface File With Separate Implementation](#module-interface-file-with-separate-implementation)
-  * [What you can not Define in a Module Implementation File](#what-you-can-not-define-in-a-module-implementation-file)
-  * [Using Modules](#using-modules)
-  * [Splitting Modules](#splitting-modules)
+- [Virtual and Polymorphism in C++](#virtual-and-polymorphism-in-c)
+  - [General Rules from C++03](#general-rules-from-c03)
+  - [Override Specification (from C++11)](#override-specification-from-c11)
+  - [Final Specification](#final-specification)
+  - [Connection of Virtual Function with Default Values](#connection-of-virtual-function-with-default-values)
+- [Miscellaneous Features of C++11](#miscellaneous-features-of-c11)
+  - [1. emplace_back](#1-emplace_back)
+  - [2. vector::shrink_to_fit](#2-vectorshrink_to_fit)
+  - [3. noexcept function specification](#3-noexcept-function-specification)
+  - [4. static_assert expression](#4-static_assert-expression)
+  - [5. alignas operator](#5-alignas-operator)
+  - [6. alignof operator](#6-alignof-operator)
+  - [7. Default Member Initializers (C++11)](#7-default-member-initializers-c11)
+  - [8. User-Defined Literals (UDL)](#8-user-defined-literals-udl)
+  - [9. noreturn Attribute](#9-noreturn-attribute)
+  - [10. Anonymous Unions](#10-anonymous-unions)
+  - [11. Type Alias](#11-type-alias)
+  - [12. Static Variables are Always Initialized Thread Safe](#12-static-variables-are-always-initialized-thread-safe)
+  - [13. Delegating constructors](#13-delegating-constructors)
+  - [14. Inheriting Constructors](#14-inheriting-constructors)
+  - [15. Destructors are Implicitly noexcept](#15-destructors-are-implicitly-noexcept)
+  - [16. Fixed Width Integer Types](#16-fixed-width-integer-types)
+  - [17. Concurrency Support](#17-concurrency-support)
+  - [18. Explicit Conversion Functions](#18-explicit-conversion-functions)
+  - [19. Current Exception. Internal Details.](#19-current-exception-internal-details)
+- [Miscellaneous Features of C++14](#miscellaneous-features-of-c14)
+  - [1. deprecated Attribute](#1-deprecated-attribute)
+  - [2. Return Type Deduction](#2-return-type-deduction)
+  - [3. Binary Literals](#3-binary-literals)
+  - [4. Variable Templates](#4-variable-templates)
+  - [5. Delimiter Inside Numeric Literals](#5-delimiter-inside-numeric-literals)
+  - [6. std::make_unique<T>](#6-stdmake_uniquet)
+- [Miscellaneous Features of C++17](#miscellaneous-features-of-c17)
+  - [1. Structured Binding](#1-structured-binding)
+  - [2. Deduce Template Parameters from Ctor. Arguments](#2-deduce-template-parameters-from-ctor-arguments)
+  - [3. Compile Time if](#3-compile-time-if)
+  - [4. __has_include Macro](#4-__has_include-macro)
+  - [5. std::byte](#5-stdbyte)
+  - [6. fallthrough Attribute](#6-fallthrough-attribute)
+  - [7. Initialization Statements in if/switch/for](#7-initialization-statements-in-ifswitchfor)
+  - [8. std::optional](#8-stdoptional)
+  - [9. std::string_view](#9-stdstring_view)
+  - [10. Inline Variables](#10-inline-variables)
+  - [11. The Exception Specification has been Removed](#11-the-exception-specification-has-been-removed)
+- [Miscellaneous Features of C++20](#miscellaneous-features-of-c20)
+  - [1. no_unique_address Attribute](#1-no_unique_address-attribute)
+  - [2. Spaceship operator](#2-spaceship-operator)
+  - [3. likely and unlikely Attribute](#3-likely-and-unlikely-attribute)
+  - [4. std::format()](#4-stdformat)
+  - [5. source_location::current()](#5-source_locationcurrent)
+  - [6. nodiscard(reason) Attribute](#6-nodiscardreason-attribute)
+  - [7. Only one Signed Integer Representation](#7-only-one-signed-integer-representation)
+  - [8. Right Shift is Arithmetic Right Shift](#8-right-shift-is-arithmetic-right-shift)
+  - [9. Abbreviated Function Templates](#9-abbreviated-function-templates)
+  - [10. Automatic generation of `!=` from `==`.](#10-automatic-generation-of--from-)
+  - [11. Designated initializers](#11-designated-initializers)
+- [Modules (from C++20)](#modules-from-c20)
+  - [Single Module Interface File/Module Unit](#single-module-interface-filemodule-unit)
+  - [Module Interface File With Implementation inside it](#module-interface-file-with-implementation-inside-it)
+  - [Module Interface File With Separate Implementation](#module-interface-file-with-separate-implementation)
+  - [What you can not Define in a Module Implementation File](#what-you-can-not-define-in-a-module-implementation-file)
+  - [Using Modules](#using-modules)
+  - [Splitting Modules](#splitting-modules)
 - [Templates](#templates)
-  * [Template Syntax Remarks](#template-syntax-remarks)
-  * [Variadic Templates](#variadic-templates)
-  * [Reference Collapsing Rules and Universal Reference](#reference-collapsing-rules-and-universal-reference)
+  - [Template Syntax Remarks](#template-syntax-remarks)
+  - [Variadic Templates](#variadic-templates)
+  - [Reference Collapsing Rules and Universal Reference](#reference-collapsing-rules-and-universal-reference)
 - [Variants of Casting](#variants-of-casting)
-- [Concepts (from C++20)](#concepts--from-c--20-)
-  * [Define Concepts](#define-concepts)
-  * [Use Concepts](#use-concepts)
-- [Coroutines (C++20)](#coroutines--c--20-)
+- [Concepts (from C++20)](#concepts-from-c20)
+  - [Define Concepts](#define-concepts)
+  - [Use Concepts](#use-concepts)
+- [Coroutines (C++20)](#coroutines-c20)
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
 
@@ -194,9 +193,9 @@ Sometimes you need to write software to a software platform (Java Virtual Machin
 
 That note is mainly based on materials from the Reference section and personal experience. We think that information can be helpful for three categories of people:
 
-* People who want to refresh or go deep into several language constructions of C++.
-* Obtain a pretty in-depth overview of new features from C++11/14/17/20.
-* People who need to support (legacy) C++03 or C99 code base.
+* People who want to refresh or go deep into several language constructions of C++
+* Obtain a pretty in-depth overview of new features from C++11/14/17/20
+* People who need to support (legacy) C++03 or C99 code base
 
 Finally, we welcome anybody who wants to make this note cleaner. We appreciate the style of *language lawyer* and *practical applicability*, but we don't want to have any of the extremes of both types.
 
@@ -298,7 +297,7 @@ But any interpretable languages are not a choice when actual time matters or sub
 
 1. The interpreter parses the program's text (source code) line by line (that is represented or in text form or extremely high-level instructions), which is highly inefficient. As a consequence, Interpretable languages provide algorithms that can be even up to 50'000 times slower in computing than highly optimized C/C++/ASM code. The interpreter is the worst possible that can be for execution time from all possible three choices for converting source code into the program: (Interpreter, Just In Time compiler, Compilers).
 
-> For a concrete example, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). The overview of that course is also available here [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
+    > For a concrete example, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). The overview of that course is also available here [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
 
 2. Interpretable languages do not provide subtle interfaces to Operation Systems such as [POSIX API](https://pubs.opengroup.org/onlinepubs/009695399/idx/index.html), [Windows API](https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list) or other OS-dependent APIs. It provides bindings for API that the team that developed the interpreter had time to finish, and they are provided in highly simplified form.
 
@@ -340,8 +339,8 @@ The interpretable language is excellent for prototyping. But any interpreter, an
 
 5. C++, to some extent, forces you to be aware of hardware level. It's not clear whether it is good or bad:
 
-* On one side, when you want to try an idea, interpretable language provides a fast way to do that.
-* On another side, widespread usage of interpretable languages will lead to situations in which many people will not know how the computer works. You will lose the ability to distinguish a big lie from a small lie and truth in the context of computing machines.
+   * On one side, when you want to try an idea, interpretable language provides a fast way to do that.
+   * On another side, widespread usage of interpretable languages will lead to situations in which many people will not know how the computer works. You will lose the ability to distinguish a big lie from a small lie and truth in the context of computing machines.
 
 People continue to predict that C++ will die. It's an ongoing three decades process, but it is not happening. It seems that the fundamental things of the language make it immortal, even though the language tends to be more and more complex.
 
@@ -353,9 +352,8 @@ The Language started as a project in Bell Labs in 1979 ([3]). The principles of 
 3. The locality of memory access patterns for variables and arrays is suitable for hardware in the long term.
 4. Zero-Overhead principle:
 
-    a. What you don't use, you should not pay for.
-
-    b. If something is built-in in the Language, it's impossible to write it better by hand.
+    * a. What you don't use, you should not pay for.
+    * b. If something is built-in in the Language, it's impossible to write it better by hand.
 
 Some language decisions due to B.Stroustoup:
 
@@ -366,16 +364,19 @@ Some language decisions due to B.Stroustoup:
 # Why learn C++ if I know Python (Toy Example)
 
 Sometimes while making programs in Python, you need to write programs directly in Python, not only call external C++ libraries from it. Possible reasons why you can implement the algorithm in Python:
+
 * Algorithm is short and suitable for CPU.
 * Library does not exist, or Library exists but does not provide Python bindings.
 * Library does not provide enough configuration
 * You need to change something fundamental inside C++ Library, and you don't know C++.
 
 Creating a CPU-effective algorithm in Python is difficult when wall clock time matters. As a concrete example, Let's compare the wall clock time of two programs written in C++11 and Python3 under the following assumptions:
+
 * Both programs use single-core CPU
 * C++ program does not use any special optimization techniques. It's usual C++ code.
 
 The test compares wall clock time of the following:
+
 1. Python with native Python lists
 2. Python implementation with NumPy arrays
 3. Cython(a programming language that mixes C and Python)
@@ -403,10 +404,12 @@ print(f"Processing {len(a)/1000000}M elements takes: ", (end - start) * 1000.0, 
 print(str.format("Sum is {0:g}" , s))
 ```
 
-> Output for Python 3.6.9:
+**Output for Python 3.6.9:**
 
-> Processing 10.0M elements takes:  2193.230390548706 ms
-Sum is 5e+13`
+```txt
+Processing 10.0M elements takes:  2193.230390548706 ms
+Sum is 5e+13
+```
 
 **2. Python implementation with using numpy**
 
@@ -429,10 +432,13 @@ end = time.time()
 print(f"Processing {len(a)/1000000}M elements takes: ", (end - start) * 1000.0, " milliseconds")
 print(str.format("Sum is {0:g}" , s))
 ```
-> Output for Python 3.6.9:
 
-> Processing 10.0M elements takes:  1051.522970199585  milliseconds
+Output for Python 3.6.9:
+
+```txt
+Processing 10.0M elements takes:  1051.522970199585  milliseconds
 Sum is 5e+13
+```
 
 **3. Cython implementation**
 
@@ -472,50 +478,68 @@ print(f"Processing {len(a)/1000000}M elements takes: ", (end - start) * 1000.0, 
 print(str.format("Sum is {0:g}" , s))
 ```
 **Build and launch**
-> python setup.py build_ext --inplace
 
-> python -c "import test_cython"
+```txt
+$ python setup.py build_ext --inplace
+$ python -c "import test_cython"
+```
+
 ----
 
-Output for Python 3.6.9:
+**Output for Python 3.6.9:**
 
-> 'Processing 10M elements takes: 19.9463367 milliseconds
-
-> Sum is 5e+13
+```txt
+Processing 10M elements takes: 19.9463367 milliseconds
+Sum is 5e+13
+```
 
 ----
 
 **4. C/C++ implementation**
+
 ```cpp
 #include <iostream>
 #include <chrono>
+#include <iterator>
 
 using std::cout;
 
-int main() {
-  auto start = std::chrono::steady_clock::now();
+namespace chrono = std::chrono;
 
-  int a[10*1000*1000] = {};
+static int a[10'000'000] = {};
+
+int main() {
+  auto const start = chrono::steady_clock::now();
+
   double s = 0.0;
-  for (size_t i = 0; i < 10*1000*1000; ++i) {
+  for (size_t i = 0; i < std::size(a); ++i) {
     a[i] = i;
     s += double(a[i]);
   }
 
-  auto end = std::chrono::steady_clock::now();
+  auto end = chrono::steady_clock::now();
 
-  cout << "Processing " << sizeof(a)/sizeof(a[0])/1000000.0 << "M" << " elements takes " <<std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms\n";
-  cout << "Sum is: " << s << "\n";
+  cout << "Processing " << std::size(a)/1'000'000.0 << "M "
+       << "elements takes " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << " ms\n"
+       << "Sum is: " << s << "\n";
+
   return 0;
 }
 ```
-> Building command line for g++ 7.5.0:
-> `g++ -O3 -Wall --std=c++11 -s test2.cpp -o testcpp; ./testcpp`
 
-> Output:
+**Building command line for g++ 7.5.0:**
+```
+$ g++ -O3 -DNDEBUG -Wall --std=c++17 -s test2.cpp -o testcpp
+$ ./testcpp
+```
+---
 
-> Processing 10M elements takes 16 ms
+**Output:**
+
+```txt
+Processing 10M elements takes 16 ms
 Sum is: 5e+13
+```
 
 ----
 
@@ -524,6 +548,7 @@ Sum is: 5e+13
 ----
 
 **Results.** From that benchmark, we see that the C++ implementation:
+
 * works *x137* times faster than plain Python implementation
 * works *x65* times faster than Python implementation that uses Numpy
 * works *x1.18* faster compare to [Cython](https://cython.readthedocs.io/en/latest/index.html) implementation
@@ -541,6 +566,7 @@ If you need to have a highly effective algorithm implementation in Python withou
 # Standards for the Language
 
 Both compilers writers and people who use the C++ language as writers should obey the international standard ISO/IEC for the language. C++ Standardization has a long history:
+
 * [C\+\+1998 standard - ISO/IEC 14882-1998](https://www.iso.org/ru/standard/25845.html). Draft of C++1998: [link](https://open-std.org/JTC1/SC22/WG21/docs/wp/pdf/nov97-2/).
 * [C\+\+2003 standard - ISO/IEC 14882:2003](https://www.iso.org/standard/38110.html). Standard C++2003: [link](http://staff.ustc.edu.cn/~zhuang/cpp/specs/ISO_IEC%2014882%202003.pdf).
 * [Technical Report on C++ Library Extensions - ISO/IEC TR 19768:2007](https://www.iso.org/standard/43289.html).
@@ -554,6 +580,7 @@ Both compilers writers and people who use the C++ language as writers should obe
 # Language Guarantees
 
 Fundamental code guarantees of C++ :
+
 1. **Basic guarantees** - no leaks and standard libraries supported.
 2. **Strong guarantees** - operation is fulfilled completely or not.
 
@@ -567,13 +594,13 @@ A source code for C/C++ consists of source files. Each source file is translated
 
 2. Processing trigrams. All available C trigrams can be obtained from [2,p.15].
 
-```cpp
-#include <iostream>
-int main() {
-  std::cout << "Do you know C++? Are you sure ??)";
-  return 0;
-}
-```
+  ```cpp
+  #include <iostream>
+  int main() {
+    std::cout << "Do you know C++? Are you sure ??)";
+    return 0;
+  }
+  ```
 
 3. Line splicing. Joining strings through the backslash character.
 
@@ -583,7 +610,7 @@ int main() {
 
 6. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program. For details about available preprocessor language, please read [2, p.43] or documentation for any de-facto standard toolchain like [GCC](https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros).
 
-The output of preprocessing of the source file is named as *preprocessed source* and typically has the extension "*.i." For example, obtaining such a source file from [clang](https://clang.llvm.org/get_started.html) can be achieved via `clang -E.`
+The output of preprocessing of the source file is named as *preprocessed source* and typically has the extension `*.i`. For example, obtaining such a source file from [clang](https://clang.llvm.org/get_started.html) can be achieved via `clang -E.`
 
 ## The Compiler and Linker. Briefly.
 
@@ -635,6 +662,7 @@ Before that stage, the stage of code Optimization is occurred. Compilers' innova
 
 Typically compilers perform a sequence of transformation passes. Each transformation pass
 analyzes and edits the code to optimize performance. A transformation pass might run multiple times. Keys run in a predetermined order that usually seems to work well. Some examples of optimization technics that happens at that moment:
+
 * Convert one arithmetic operation into more cheap operations via using bit tricks and logic/arithmetic shifts.
 * Replace stack allocation storage with storing variables in the processor's register.
 * Optimization for structure/class memory layout.
@@ -645,7 +673,8 @@ analyzes and edits the code to optimize performance. A transformation pass might
 * Remove Hoisting (also known as loop-invariant code). Try to remove recomputing loop-invariant code inside the loop.
 * Vectorization. Leverage into vector registers (like SSE2, Arm Neon) when possible.
 * Loops optimization: unrolling; loop fusion (also known as jamming) to combine multiple loops over the same index range; eliminating wasted iterations in the loop.
-* Figure out with Memory Aliasing and apply optimization for non-aliased pointed expression. For details please check [Compute Optimization Relative Information](#compute-optimization-relative-information.
+* Figure out with Memory Aliasing and apply optimization for non-aliased pointed expression. For details please check [Compute Optimization Relative Information](#compute-optimization-relative-information).
+
 Various things of optimization are out of the scope of the compiler. And can only be solved by the creator of the Algorithm/Method. Even we think there is a possibility of research to provide that information for the compiler.
 
 ### Code Emitting
@@ -657,9 +686,10 @@ However, in reality it's possible to have three different scenarios what exactly
 2. Compiler emits the program text written in Assembly. But in fact the process of producing final binary code is under responsibility of Assembler program. You can obtain such assembly source from preprocessed file manually for [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S -o -`.
 
 3. With the coming [LLVM](https://llvm.org/) project there is in fact intermediate layer between High Level Language(C++) and ASM for target ISA. That layer is called Intermediate Representation (IR). And contains tree stages conversion:
-* At the *first stage* the input preprocessed code is converted into pseudo-assembly called [LLVM-IR](https://llvm.org/docs/LangRef.html) producing files with extensions "*.ll". You can obtain unoptimized LLVM-IR code in [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S emit-llvm -o -`.
-* At the *second stage* LLVM-Optimizer works under that representation and produces optimized "*.ll" source code.
-* At the *third stage* the **LLVM code generator** generates real Assembly representation.
+
+    * At the *first stage* the input preprocessed code is converted into pseudo-assembly called [LLVM-IR](https://llvm.org/docs/LangRef.html) producing files with extensions "*.ll". You can obtain unoptimized LLVM-IR code in [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S emit-llvm -o -`.
+    * At the *second stage* LLVM-Optimizer works under that representation and produces optimized "*.ll" source code.
+    * At the *third stage* the **LLVM code generator** generates real Assembly representation.
 
 For further study as an introduction to LLVM-IR, we recommend [Lecture 5](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/resources/mit6_172f18_lec5/) from MIT course [6.172 Performance Engineering of Software Systems](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
 
@@ -727,10 +757,10 @@ class that contains virtual functions. The only time you should even debate whet
 
 15. There are names reserved for the compiler implementations. It's all names that:
 
-* Starting with a double underscore `__`
-* Names that start with a single underscore followed by an uppercase letter `_[A-Z]`, e.g., _Foo.
+    * Starting with a double underscore `__`
+    * Names that start with a single underscore followed by an uppercase letter `_[A-Z]`, e.g., _Foo.
 
-That names should not be used by not compiler writers both for C and C++ languages. With that rule for a long time, people escape conflicts between naming of compiler-specific entities and entities of the construct program.
+That names should not be used by non-compiler and non-STL writers both for C and C++ languages. With that rule for a long time, people escape conflicts between naming of compiler-specific entities and entities of the construct program.
 
 > Sometimes compiler writers violate that principle.
 For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.html) mentions standard predefined macro uses `unix` and `linux` during compilation for the Linux platform. That special names are not the names that follow C/C++ conventions to distinguish names used in the program and for compiler writers.
@@ -738,9 +768,10 @@ For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.htm
 > Sometimes, it's possible to observe defined guards at the beginning of the buildable program's header files via `#ifndef/#define` that uses names starting with `__.` That special names are not the names that followed that rules.
 
 16. In C/C++, postfix operators have higher priority than unary operators.
-```cpp
-*p++; // *(p++)
-```
+
+    ```cpp
+    *p++; // *(p++)
+    ```
 
 17. In C/C++ unary operators have higher priority than binary operators.
 
@@ -769,11 +800,11 @@ The original C specification says that the actual directory in which the compile
 
 ## Include Files Naming
 
-1. For each "C" standard library ```"X.h"``` header file, there is a corresponding C++ standard header file ```<cX>``` in C++. A standard header file whose name begins with the letter `c` is equivalent to a standard header file in the C library. (B. Stroustrup, Spec. Edition, p. 487, 16.1.2). Those headers files expose different behavior in terms of using their names from the global namespace.
+1. For each "C" standard library `<X.h>` header file, there is a corresponding C++ standard header file `<cX>` in C++. A standard header file whose name begins with the letter `c` is equivalent to a standard header file in the C library. (B. Stroustrup, Spec. Edition, p. 487, 16.1.2). Those headers files expose different behavior in terms of using their names from the global namespace.
 
-2. Standard headers with naming as "X.h" defines function names in the `std` namespace and also **imports those names into the global namespace**.
+2. Standard headers with naming as `<X.h>` define function names in the `std` namespace and also **import those names into the global namespace**.
 
-3. Standard headers with naming as "cX" defines function names only in the `std` namespace. ([1], 9.2.2, page 247).
+3. Standard headers with naming as `<cX>` defines function names only in the `std` namespace. ([1], 9.2.2, page 247).
 
 ## Predefined Identifiers and Macros
 
@@ -795,19 +826,24 @@ Example of checking the version of C/C++ compiler  mostly based on [2, p.53]:
 
 ```cpp
 #include <stdio.h>
+
 int main() {
 #ifdef __cplusplus
- printf("C++ version %li\n", __cplusplus);
+  printf("C++ version %li\n", __cplusplus);
+
 #elif defined(__STDC__)
-#if defined(__STDC_VERERSION__) &&__STDC_VERERSION__ > 199901L
- printf("C99 standart\n");
-#elif defined(__STDC_VERERSION__) &&__STDC_VERERSION__ > 199409L
- printf("C89 with additions 1\n");
+#   if defined(__STDC_VERERSION__) && __STDC_VERERSION__ > 199901L
+  printf("C99 standart\n");
+
+#   elif defined(__STDC_VERERSION__) && __STDC_VERERSION__ > 199409L
+  printf("C89 with additions 1\n");
+
+#   else
+  printf("C89\n");
+
+#   endif
 #else
- printf("C89\n");
-#endif
-#else
- printf("C not standartizied\n");
+  printf("C not standartizied\n");
 #endif
 
   return 0;
@@ -826,13 +862,13 @@ Next, creating two declarations of the same name in the same overload class in t
 |---|-----------------------------------|----------------------------------------------------------------------------------------------------------------|
 | 1 | Preprocessor Macro Names          | The names used by the preprocessor are independent of any other identifiers.                |
 | 2 | Operator labels/tags              | The labels used immediately follow the `goto` statement.                                                          |
-| 3 | Structures, Union, and Enum tags | They are part of a structure, union, or enumeration and immediately follow the keywords: ```struct```, ```union```, ```enum```. |
+| 3 | Structures, Union, and Enum tags | They are part of a structure, union, or enumeration and immediately follow the keywords: `struct`, `union`, `enum`. |
 | 4 | Components namespace              | Defined in the namespace(or name scope) associated with the corresponding structure or union type.             |
 | 5 | Another namespace                 | Name of the following objects: *Variables*, *Functions*, *Typedef names*, *Enumeration constants*.                 |
 
 C++ introduces structure and union tags, and enumeration names are implicitly declared via `typedef` in the namespace *"Another"* where there are also usual variables.
 
-If you explicitly use a ``` typedef``` for a structure followed by a variable declaration, it will lead to an error.
+If you explicitly use a `typedef` for a structure followed by a variable declaration, it will lead to an error.
 
 However, tag names can be hidden by subsequent variable or function declarations or by an enumeration member of the same name in the same scope.
 
@@ -842,16 +878,16 @@ Interestingly, according to ([6], Section 3.3.7), functions/variables take prece
 
 In C/C++, in a literal expression, you can encode the type of literal:
 
-| # | **Type**      | **Suffix** | **Alternative suffix** |
-|---|---------------|------------|------------------------|
-| 1 | long          | l          |                        |
-| 2 | long long     | ll         | LL                     |
-| 3 | unsigned      | u          | U                      |
-| 4 | unsigned long | ull        | ULL                    |
-| 5 | float         | f          | F                      |
-| 6 | double        | no suffix  |                        |
-| 7 | long double   | l          | L                      |
-| 8 | std::string   | s          |          |
+| # | **Type**      | **Suffix**   | **Alternative suffix**   |
+|---|---------------|--------------|--------------------------|
+| 1 | `long`          | `l`          | `L`                      |
+| 2 | `long long`     | `ll`         | `LL`                     |
+| 3 | `unsigned`      | `u`          | `U`                      |
+| 4 | `unsigned long` | `ull`        | `ULL`                    |
+| 5 | `float`         | `f`          | `F`                      |
+| 6 | `double`        | no suffix    |                          |
+| 7 | `long double`   | `l`          | `L`                      |
+| 8 | `std::string`   | `s`          |                          |
 
 Suffix `s` has been made available since C++17, and other suffixes were always in any version of C/C++.
 
@@ -862,25 +898,25 @@ Starting from C++11, you can use the following prefixes for strings:
 
 | # | **Suffix** | **Description** |
 |---|------------|----------------|
-| 1 | L'a'       | wchar_t symbol. For Windows it's UTF-16, for Linux it's UTF-32. |
-| 2 | u'a'       | ucs2 symbol. Pretty like UTF-16, but surrogate pairs are not supported in UCS-2.      |
-| 3 | u"a"       | UTF-16 string. With support for surrogate pairs.                      |
-| 4 | U'a'       | ucs4 (UTF-32) symbol. |
-| 5 | U"a" | ucs4 (UTF-32) string                    |
-| 6 | u8 "UTF8 string"      | UTF-8 string            |
-| 7 | R"(asd\n)"  | Raw string. Analogue of Python's r"""str str""". Multiline is supported for such lines and special character sequences \n are not special.             |
-| 8 | R"*(asd\n)*"  | Raw string literal with custom delimiters.         |
+| 1 | `L'a'`       | wchar_t symbol. For Windows it's UTF-16, for Linux it's UTF-32. |
+| 2 | `u'a'`       | ucs2 symbol. Pretty like UTF-16, but surrogate pairs are not supported in UCS-2.      |
+| 3 | `u"a"`       | UTF-16 string. With support for surrogate pairs.                      |
+| 4 | `U'a'`       | ucs4 (UTF-32) symbol. |
+| 5 | `U"a"`       | ucs4 (UTF-32) string                    |
+| 6 | `u8"UTF8_string"`      | UTF-8 string            |
+| 7 | `R"(asd\n)"`  | Raw string. Analogue of Python's `r"""str str"""`. Multiline is supported for such lines and special character sequences \n are not special.             |
+| 8 | `R"*(asd\n)*"`  | Raw string literal with custom delimiters.         |
 
 The UTF-8 and UTF-16 are variable width encodings for characters. Not all letters in Unicode can be represented by a single 8 bit character for UTF-8 or single 16 bit character for UTF-16.
 
 ## Function Call Nuances
 
 1. There are only two kinds of function and function calls in C++:
-* *Ordinary function call.*
-A static member function is an ordinary function ([6], 9.4).
-* *Member function call*.
+    * *Ordinary function call.*
+    A static member function is an ordinary function ([6], 9.4).
+    * *Member function call*.
 
-2. In functions with `void` return types or when the return type is absent, e.g., in constructors/destructors, you can have the absence of a ```return``` statement in a function body. It is equivalent to an explicit ```return;``` at the end of the function body.
+2. In functions with `void` return types or when the return type is absent (e.g., in constructors/destructors), you can have the absence of a `return` statement in a function body. It is equivalent to an explicit `return;` at the end of the function body.
 
 3. Due to ([6], 6.6.3) *"Flowing off the end of a function is equivalent to a return with no value; **this results in undefined behavior in a value-returning function**."*
 
@@ -888,23 +924,25 @@ A static member function is an ordinary function ([6], 9.4).
 
 5. Starting from C++11, there is a suffix syntax for the function return type. It is not primarily about templates and type deduction; it is about scope. One more example of when it was useful [C++11 Far from B.Stroustroup](http://www.stroustrup.com/C++11FAQ.html) ([9]).
 
-```cpp
-template<class T, class U>
-auto mul(T x, U y) -> decltype(x*y) {
-  return x*y;
-}
-```
-The notation of auto means *"return type to be deduced or specified later."*.
+    ```cpp
+    template<class T, class U>
+    auto mul(T x, U y) -> decltype(x*y) {
+      return x*y;
+    }
+    ```
+
+    The notation of auto means *"return type to be deduced or specified later"*.
 
 6. A non-constant reference cannot refer to a temporary variable.
 
 7. Although temporary objects can only be passed as `const T&` or `T.` However, calling non-const methods on temporary objects is allowed. The initializer for `const T&` does not need to be an LValue and even be of type T. In such cases, a temporary variable is created to hold the initializer, lasting until the end of the scope of the reference.
 
 8. Linkage rules cover name mangling and the call convention. Due to ([6], 7.5.3), there is the following requirement for the linkage aspect of functions:
-*Every implementation shall provide for linkage to functions written in the C programming language, "C," and linkage to C++ functions, "C++."* To link functions in C++ style:
-```cpp
-extern "C++" void f()
-```
+
+    *Every implementation shall provide for linkage to functions written in the C programming language, "C," and linkage to C++ functions, "C++"*. To link functions in C++ style:
+    ```cpp
+    extern "C++" void f()
+    ```
 
 ## Requirements for C++ Expressions
 
@@ -923,6 +961,7 @@ k = k++ + 5; // Valid from C++17
 ## Exceptions to the One Definition Rule
 
 You can read about that in detail in ([1], 9.2.3 p. 248) There can be more than one definition of the following things in different translation units (cpp source files):
+
 1. class type
 2. enumeration type
 3. inline function with external linkage
@@ -933,6 +972,7 @@ You can read about that in detail in ([1], 9.2.3 p. 248) There can be more than 
 8. template specialization for which some template parameters are not specified
 
 That same definitions are acceptable when:
+
 1. They are in different translation units
 2. They are identical token by token
 3. The meaning of token is the same in both translation units (Checking this is not included in the capabilities of the programming language itself but is assigned to the toolkit)
@@ -946,9 +986,10 @@ For details, we recommend looking at [2, p.125], but short information about the
 
 * *Two's complement (or twos-complement-notation)*. Range is $[-2^{n-1}, 2^{n-1}-1]$. Positive numbers are represented in the usual way. The most significant bit of the sign is set to 0
 negative numbers are obtained as (reverse bits(number)+1) in ASM instruction notation for x86 sounds like a NEG operation
-1000000..000 is the maximum negative number that has no positive equivalent.
 
-* *One's complement (or ones-complement-notation)*. Range is  $[-2^{n-1}+1,2^{n-1}-1]$
+    `1000 ... 0000 0000 (bin)` is the maximum negative number that has no positive equivalent.
+
+* *One's complement (or ones-complement-notation)*. Range is $[-2^{n-1}+1, 2^{n-1}-1]$.
 Negative numbers are the complement of all bits of the corresponding positive number. In this representation, positive and negative zero are possible. And that representation has one number less than *Two's complement*.
 
 * *Signed integer representation (or sign-magnitude-notation)*. Range is $[-2^{(n-1)}+1, +2^{(n-1)}-1]$
@@ -1016,15 +1057,13 @@ auto x1 = {1,2,3,4}; // x1 is an initializer_list<int>
 // in the form of list initialization does not allow narrowing
 ```
 
-`Auto` can be used jointly with `constant` `volatile` type qualifiers (cv) and with reference and pointers. Examples:
+`auto` can be used jointly with constant volatile type qualifiers (cv) and with reference and pointers. Examples:
 
 ```cpp
 int ii= 1;
-const auto * p_ii = &ii;
+const auto* p_ii = &ii;
 const auto& p_ref = ii;
 ```
-
-The close-by conception is [decltype](https://en.cppreference.com/w/cpp/language/decltype). It provides the ability to derive the type of expression without evaluating it.  There are some subtleties with `decltype`. In fact, `decltype(x)` and `decltype((x))` are often different types. If the argument is an unparenthesized expression or an unparenthesized class member access expression, then [decltype](https://en.cppreference.com/w/cpp/language/decltype) yields the type of the entity named by this expression. The inner parentheses cause the statement to be evaluated as an expression.
 
 ```cpp
 int main()
@@ -1067,8 +1106,8 @@ for (auto i : v)
   std::cout << i;
 ```
 Range-Based for Loops valid for any type supporting the notion of a range. One of the following constructions should be valid:
-* *obj.begin()* and *obj.end()*
-* *begin(obj)* and *end(obj)*
+* `obj.begin()` and `obj.end()`
+* `begin(obj)` and `end(obj)`
 
 # Technical Differences between C and C++
 Many times in the past, people aware of C/C++ talked that C++ and C are different. Let's take a look at what it means concretely. All differences are pretty subtle, but there are plenty of them. The text below covers the difference between C99 and classical C++03.
@@ -1090,7 +1129,7 @@ double alt_style( a , real )
 
 3. C++ style comments `//` only appeared in C99.
 
-4. C++03 has new operations ```.*, ->*, ::``` which are not in C
+4. C++03 has new operations `.*, ->*, ::` which are not in C
 
 5. Different memory for char literal in C and in C++
 ```cpp
@@ -1106,15 +1145,15 @@ sizoef('a') == sizeof(int)  // C
 * typedef names
 * enum constants
 
-Therefore, ```struct n{}; typedef double n;``` is correct in C but not in C++.
+Therefore, `struct n{}; typedef double n;` is correct in C but not in C++.
 
 7. Although for C++ type tag names (struct, union, `enum`) are implicitly declared using `typedef`, they can still be hidden by variables in the same scope `S S;`.
 
 8. C99 has pointer qualifier `restrict`, which is not in the official specification of C++98/03/.
 
-9. Support of ```varying array``` array. In C99, the last member of a structure can be a flexible array. In C++ it's possible as well.
+9. Support of `varying array` array. In C99, the last member of a structure can be a flexible array. In C++ it's possible as well.
 
-10. In C99, but not in C++, there is a ``` flexible arrays```. That arrays with a size specified via a non-const variable. In C99, to pass such arguments to a function, use the notation `void g(int pp[*], int k){}`.
+10. In C99, but not in C++, there is a ` flexible arrays`. That arrays with a size specified via a non-const variable. In C99, to pass such arguments to a function, use the notation `void g(int pp[*], int k){}`.
 
 11. Different initialization of the char array. In C++, the array must be of sufficient size to hold the "\0" character
 ```cpp
@@ -1126,15 +1165,15 @@ char a[3]="123";                     // Ok in C, but not in C++
 
 13. The definition of `struct` and `union` in C++ have block scope.
 
-14. ```const``` declarations are ```static``` by default in C++, but ```extern``` in C (Appendix C. C++2003)
+14. `const` declarations are `static` by default in C++, but `extern` in C (Appendix C. C++2003)
 7.11.6, C++2003:
 *"A name declared in a namespace scope without a storage-class-specifier has external linkage unless it has internal linkage because of a previous declaration and provided it is not declared const. Objects declared `const` and not explicitly declared extern have internal linkage."* It also follows from this paragraph that declarations of non-const variables declared on namespace level have extern linkage by default in C++.
 
-15. C++ declaration ```void f()``` is equivalent to void ```f(void)``` in C. The declaration in C ```void f()``` state that function has an indefinite number of arguments.
+15. C++ declaration `void f()` is equivalent to void `f(void)` in C. The declaration in C `void f()` state that function has an indefinite number of arguments.
 
 16. If the array is multidimensional, then in all cases, only the leftmost index can be omitted to determine the array's size. Also, in C99, component-wise initialization is allowed, which is not permitted in C++98/03.
 
-17. In C, but not in C++, you can write, although this is strange: ```sizeof(struct S{int a;});```
+17. In C, but not in C++, you can write, although this is strange: `sizeof(struct S{int a;});`
 
 18. Implicit cast from integer type to `enum` is allowed in C but not in C++. ([6], p. 113. 7.2.5): *"The type of an `enum` is an integer type that must support all underlying values. In C, enum has a synonym for int."*
 
@@ -1146,7 +1185,7 @@ char a[3]="123";                     // Ok in C, but not in C++
 
 22. In C++, an `inline` function, in terms of code, can have an address and static variables inside. In C, it is not allowed.
 
-23. In C99, the compiler must see the function definition, i.e., the function should be defined so that it is `inline` in ```*.h```. The compiler can choose to actually what to do:
+23. In C99, the compiler must see the function definition, i.e., the function should be defined so that it is `inline` in `*.h`. The compiler can choose to actually what to do:
 * inline calls
 * not inline
 * partially inline.
@@ -1161,15 +1200,15 @@ char a[3]="123";                     // Ok in C, but not in C++
 
 28. In C++, there is a namespace mechanism with namespace, which does not exist in C.
 
-29. In C, you can use ```exit()``` and ```abort()``` with no problems, but in C++, the destructors of local objects are not called.
+29. In C, you can use `exit()` and `abort()` with no problems, but in C++, the destructors of local objects are not called.
 
 30. Overloading of operators and functions is allowed only in C++.
 
 31. C does not support General-Purpose-Programming with templates.
 
-32. C99 has a predefined identifier ```__func__```. This identifier is implicitly defined by the compiler at the beginning of the function body as static const char ```__func__[] = "function-name"```. Such identifier was absent in C++98/03.
+32. C99 has a predefined identifier `__func__`. This identifier is implicitly defined by the compiler at the beginning of the function body as static const char `__func__[] = "function-name"`. Such identifier was absent in C++98/03.
 
-33. In C++, operators not presented in C language usually have the highest precedence, except for ``` throw``` which is only above the comma operator ```,```.
+33. In C++, operators not presented in C language usually have the highest precedence, except for ` throw` which is only above the comma operator `,`.
 
 34. In C, there must be at least one element in the initialization list when a structure or array is initialized.
 
@@ -1188,7 +1227,7 @@ const int* pointer_to_const;
 ```
 
 3. Quite a lot of important information is contained in ([6],  5.3.3 `sizeof`) including the following:
-* ```sizeof(char)``` with all variations of char is always one byte.
+* `sizeof(char)` with all variations of char is always one byte.
 * `sizeof(bool)` is implementation-defined.
 * `sizeof(wchar_t)` is implementation-defined.
 
@@ -1210,7 +1249,7 @@ const int* pointer_to_const;
 
 4. In some computers, data can be located in memory at any address; in others, alignment conditions are imposed on certain types.
 
-5. A typical data type to store pointers to some object/data is a pointer. To store (or serialize the value of pointer) in some integer variable, you can use ```uintptr_t```. The ```uintptr_t``` integer type was introduced in C99. The ```uintptr_t``` is sufficient to store a pointer to any data, but formally not to a function.
+5. A typical data type to store pointers to some object/data is a pointer. To store (or serialize the value of pointer) in some integer variable, you can use `uintptr_t`. The `uintptr_t` integer type was introduced in C99. The `uintptr_t` is sufficient to store a pointer to any data, but formally not to a function.
 
 6. A special value in C/C++ called a null pointer equal to a null pointer constant. A null pointer can be converted to any other type of pointer.
 
@@ -1231,7 +1270,7 @@ const int *x = nullptr;
 
 8. When using `union` for a mixture of structures that start the same way, there is a guarantee in C/C++ of an identical physical mapping of components "from this beginning".
 
-9. In C and C++, the components of the variable of structure type ```struct``` has addressed. There are the following guarantees:
+9. In C and C++, the components of the variable of structure type `struct` has addressed. There are the following guarantees:
 * The component addresses are in ascending order.
 * The address of the first component is the same as the address of the beginning of the structure. And it is regardless of what endian the computer has where the program will run.
 
@@ -1242,7 +1281,7 @@ It's due to (7.11.6, C++2003):
 ```
 "A name declared in a namespace scope without a storage-class-specifier has external linkage unless it has internal linkage because of a previous declaration and provided it is not declared const. Objects declared const and not explicitly declared extern have internal linkage."
 ```
-It also follows from this paragraph that declarations of non-const variables declared on namespace level have ```extern``` linkage by default in C++.
+It also follows from this paragraph that declarations of non-const variables declared on namespace level have `extern` linkage by default in C++.
 
 12. A compile-time string literal in C/C++ is statically allocated so that it is safe to return one from a function.
 
@@ -1379,14 +1418,14 @@ Now let's go into technical details.
 
 8. Conversion from the type array of type T to a pointer to type T is performed by substituting the pointer for the first element of the array.
 
-9. A value of any type can be converted to ```void```.
+9. A value of any type can be converted to `void`.
 
-10. Conversion to ```void *``` and back guarantee the restoration of the original pointer value
+10. Conversion to `void *` and back guarantee the restoration of the original pointer value
 
-11. In C, ```void *``` can be **implicitly** converted to a pointer to any type. In C++, **an explicit cast** is required. (Appendix C, 4.10, C ++ 2003 standard)
+11. In C, `void *` can be **implicitly** converted to a pointer to any type. In C++, **an explicit cast** is required. (Appendix C, 4.10, C ++ 2003 standard)
 
 12. On the operands of unary operations, ordinary unary conversions are performed. The goal is to reduce the number of arithmetic types.
-   * An array of type T $\to$ pointer to the first element (not applied for arguments of ```operator &``` and ```sizeof``` operators).
+   * An array of type T $\to$ pointer to the first element (not applied for arguments of `operator &` and `sizeof` operators).
    * Function $\to$ function pointer.
    * Conversions from an integer type of rank below int $\to$ to `in`.
    * Conversions from unsigned integer types lower than `int`, `int` represent all values $\to$ values are cast ​​to integers.
@@ -3292,7 +3331,7 @@ void printf(const char *s, T value, Args... args)
 
 **First thing:** In variadic template for ellipses <`...`> you can put spaces anywhere around it. And construction <`...`> are used in fact, for various purposes in context of variadic templates.
 
-**Second thing:** the only way to get the next template argument is to recursively call a function whose template parameters are specified as ```<TExtractType, RestTypes...>```. So if you have ever seen functional programming languages, that construction looks pretty close to that.
+**Second thing:** the only way to get the next template argument is to recursively call a function whose template parameters are specified as `<TExtractType, RestTypes...>`. So if you have ever seen functional programming languages, that construction looks pretty close to that.
 
 Packing operations:
 * `class ...Args` - parameters **pack** in template parameters list with optional name. Non type template parameters can also be organized in the pack via similar syntax `int...`. Whitespace around <`...`> does not matter for compiler.
