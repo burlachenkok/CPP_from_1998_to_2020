@@ -876,16 +876,16 @@ Interestingly, according to ([6], Section 3.3.7), functions/variables take prece
 
 In C/C++, in a literal expression, you can encode the type of literal:
 
-| # | **Type**      | **Suffix** | **Alternative suffix** |
-|---|---------------|------------|------------------------|
-| 1 | long          | l          |                        |
-| 2 | long long     | ll         | LL                     |
-| 3 | unsigned      | u          | U                      |
-| 4 | unsigned long | ull        | ULL                    |
-| 5 | float         | f          | F                      |
-| 6 | double        | no suffix  |                        |
-| 7 | long double   | l          | L                      |
-| 8 | std::string   | s          |          |
+| # | **Type**      | **Suffix**   | **Alternative suffix**   |
+|---|---------------|--------------|--------------------------|
+| 1 | `long`          | `l`          | `L`                      |
+| 2 | `long long`     | `ll`         | `LL`                     |
+| 3 | `unsigned`      | `u`          | `U`                      |
+| 4 | `unsigned long` | `ull`        | `ULL`                    |
+| 5 | `float`         | `f`          | `F`                      |
+| 6 | `double`        | no suffix    |                          |
+| 7 | `long double`   | `l`          | `L`                      |
+| 8 | `std::string`   | `s`          |                          |
 
 Suffix `s` has been made available since C++17, and other suffixes were always in any version of C/C++.
 
@@ -896,14 +896,14 @@ Starting from C++11, you can use the following prefixes for strings:
 
 | # | **Suffix** | **Description** |
 |---|------------|----------------|
-| 1 | L'a'       | wchar_t symbol. For Windows it's UTF-16, for Linux it's UTF-32. |
-| 2 | u'a'       | ucs2 symbol. Pretty like UTF-16, but surrogate pairs are not supported in UCS-2.      |
-| 3 | u"a"       | UTF-16 string. With support for surrogate pairs.                      |
-| 4 | U'a'       | ucs4 (UTF-32) symbol. |
-| 5 | U"a" | ucs4 (UTF-32) string                    |
-| 6 | u8 "UTF8 string"      | UTF-8 string            |
-| 7 | R"(asd\n)"  | Raw string. Analogue of Python's r"""str str""". Multiline is supported for such lines and special character sequences \n are not special.             |
-| 8 | R"*(asd\n)*"  | Raw string literal with custom delimiters.         |
+| 1 | `L'a'`       | wchar_t symbol. For Windows it's UTF-16, for Linux it's UTF-32. |
+| 2 | `u'a'`       | ucs2 symbol. Pretty like UTF-16, but surrogate pairs are not supported in UCS-2.      |
+| 3 | `u"a"`       | UTF-16 string. With support for surrogate pairs.                      |
+| 4 | `U'a'`       | ucs4 (UTF-32) symbol. |
+| 5 | `U"a"`       | ucs4 (UTF-32) string                    |
+| 6 | `u8"UTF8_string"`      | UTF-8 string            |
+| 7 | `R"(asd\n)"`  | Raw string. Analogue of Python's `r"""str str"""`. Multiline is supported for such lines and special character sequences \n are not special.             |
+| 8 | `R"*(asd\n)*"`  | Raw string literal with custom delimiters.         |
 
 The UTF-8 and UTF-16 are variable width encodings for characters. Not all letters in Unicode can be represented by a single 8 bit character for UTF-8 or single 16 bit character for UTF-16.
 
