@@ -1065,6 +1065,8 @@ const auto* p_ii = &ii;
 const auto& p_ref = ii;
 ```
 
+The close-by conception is [decltype](https://en.cppreference.com/w/cpp/language/decltype). It provides the ability to derive the type of expression without evaluating it.  There are some subtleties with `decltype`. In fact, `decltype(x)` and `decltype((x))` are often different types. If the argument is an unparenthesized expression or an unparenthesized class member access expression, then [decltype](https://en.cppreference.com/w/cpp/language/decltype) yields the type of the entity named by this expression. The inner parentheses cause the statement to be evaluated as an expression.
+
 ```cpp
 int main()
 {
