@@ -6,6 +6,14 @@ King Abdullah University of Science and Technology, Thuwal, Saudi Arabia.
 
 Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
+
+
+**Editors:**
+
+* [Vadim Sofin](https://github.com/sovadim) ex-[HUAWEI](https://www.huawei.ru/) / ex-[Yandex](https://yandex.ru/)
+* [Mikhail Filimonov](https://github.com/dosvidos) from [NVIDIA](http://nvida.com/)
+* [Dmytro Ovdiienko](https://github.com/ujos)
+
 ----
 
 Revision: Working Draft 1.3 / Last Update: Aug 30, 2022
@@ -27,8 +35,8 @@ Revision: Working Draft 1.3 / Last Update: Aug 30, 2022
 - [Language Guarantees](#language-guarantees)
 - [Stages of Source Code Translation in C++](#stages-of-source-code-translation-in-c)
   - [Initial Textual Source Code Processing and C Preprocessing](#initial-textual-source-code-processing-and-c-preprocessing)
-  - [The Compiler and Linker. Briefly.](#the-compiler-and-linker-briefly)
-  - [The Compiler and Linker. Details.](#the-compiler-and-linker-details)
+  - [The Compiler and Linker. Briefly](#the-compiler-and-linker-briefly)
+  - [The Compiler and Linker. Details](#the-compiler-and-linker-details)
     - [Lexical Analysis](#lexical-analysis)
     - [Syntax Analysis](#syntax-analysis)
     - [Semantic Analysis](#semantic-analysis)
@@ -76,7 +84,7 @@ Revision: Working Draft 1.3 / Last Update: Aug 30, 2022
 - [Overloading](#overloading)
   - [Functions and Operator Overloading Precedence](#functions-and-operator-overloading-precedence)
   - [Template Function Overloading](#template-function-overloading)
-  - [Resolving the Overloaded Binary Operator for x(op)y.](#resolving-the-overloaded-binary-operator-for-xopy)
+  - [Resolving the Overloaded Binary Operator for x(op)y](#resolving-the-overloaded-binary-operator-for-xopy)
   - [Operators Overloading Rules in C++](#operators-overloading-rules-in-c)
 - [Keyword typename](#keyword-typename)
 - [Class Constructor and Destructors](#class-constructor-and-destructors)
@@ -612,7 +620,7 @@ A source code for C/C++ consists of source files. Each source file is translated
 
 The output of preprocessing of the source file is named as *preprocessed source* and typically has the extension `*.i`. For example, obtaining such a source file from [clang](https://clang.llvm.org/get_started.html) can be achieved via `clang -E.`
 
-## The Compiler and Linker. Briefly.
+## The Compiler and Linker. Briefly
 
 The compiler converts text in a high-level language into instructions for a specific Instruction Set Architecture (ISA) of Computing Device or another machine-dependent representation. It saves the results of processing each source file into a correspondent *compiled object file*.
 
@@ -620,7 +628,7 @@ The compiler converts text in a high-level language into instructions for a spec
 
 The final binary format ([ELF](https://refspecs.linuxfoundation.org/elf/elf.pdf) for Linux and [PE](https://docs.microsoft.com/en-us/windows/win32/debug/pe-format) for Windows) is also not under the obligation of creators of Language or userspace developers. It's under the responsibility of the creators of the Operation System. There are situations when the target device in which the program will be executed has no operating system. The case of launching program on target device with no Operation System sometimes is denoted as *"Launching on Bare Metal"*. In that later case the format of binary files is typically under the Device Vendor's responsibility (example: [PTX](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html), [SASS](https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html) for NVIDIA GPU is provided by NVIDIA).
 
-## The Compiler and Linker. Details.
+## The Compiler and Linker. Details
 
 A high-level overview is presented below if you are curious about how a compiler compiles source code. It's possible to be productive even without the knowledge below especially during creating only userspace applications. If you want to know how things are working and you have that curiosity - you're welcome to read the text below. In another case - just skip it.
 
@@ -1671,7 +1679,7 @@ Template function overloading searches for a set of suitable specializations acc
 
 The call is considered an error if the function passed 1-4 is not found.
 
-## Resolving the Overloaded Binary Operator for x(op)y.
+## Resolving the Overloaded Binary Operator for x(op)y
 
 1. If X(type of x) is a class. Find out if the operator is defined as a member of class X or a base class of X.
 2. View operator declaration in the context of x(op)y expression.
@@ -3582,8 +3590,6 @@ Me, Konstantin Burlachenko, would like to acknowledge:
 * Thanks to [NVIDIA](http://nvida.com/) and [HUAWEI](https://www.huawei.com/en/), the places where I have used those languages a lot while creating complex software systems.
 
 * Thanks to all colleagues and friends from the past with whom I went through various steps of figuring out subtle details of C/C++. Between 2010 and 2020, I have created personal engineering drafts, some of which are available here [(old home page K.Burlachenko)](https://sites.google.com/site/burlachenkok/articles). All C/C++ information from it has been evolved into that document.
-
-* Thanks to [Mikhail Filimonov](https://github.com/dosvidos) from [NVIDIA](http://nvida.com/), and [Vadim Sofin](https://github.com/sovadim) ex-[HUAWEI](https://www.huawei.ru/) / ex-[Yandex](https://yandex.ru/) Software Engineer for providing specific suggestions to improve this document.
 
 Thanks to [Dr. B.Stroustroup](https://www.stroustrup.com/). He created a language that is used to create the most important software in that world. Interestingly, this language has an artificial force that makes people better in all aspects of science and engineering. The quote that I have learned from [Tim Roughgarden](http://timroughgarden.org/) is the following:
 
