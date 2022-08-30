@@ -191,9 +191,9 @@ If you're unsure whether you should learn C++ or not, then maybe the example pre
 
 That note is mainly based on materials from the Reference section and personal experience. We think that information can be helpful for three categories of people:
 
-* People who want to refresh or go deep into several language constructions of C++.
-* Obtain a pretty in-depth overview of new features from C++11/14/17/20.
-* People who need to support (legacy) C++03 or C99 code base.
+* People who want to refresh or go deep into several language constructions of C++
+* Obtain a pretty in-depth overview of new features from C++11/14/17/20
+* People who need to support (legacy) C++03 or C99 code base
 
 Finally, we welcome anybody who wants to make this note cleaner. We appreciate the style of *language lawyer* and *practical applicability*, but we don't want to have any of the extremes of both types.
 
