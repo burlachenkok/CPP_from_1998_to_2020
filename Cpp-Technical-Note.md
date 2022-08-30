@@ -402,10 +402,12 @@ print(f"Processing {len(a)/1000000}M elements takes: ", (end - start) * 1000.0, 
 print(str.format("Sum is {0:g}" , s))
 ```
 
-> Output for Python 3.6.9:
+**Output for Python 3.6.9:**
 
-> Processing 10.0M elements takes:  2193.230390548706 ms
-Sum is 5e+13`
+```txt
+Processing 10.0M elements takes:  2193.230390548706 ms
+Sum is 5e+13
+```
 
 **2. Python implementation with using numpy**
 
@@ -428,10 +430,13 @@ end = time.time()
 print(f"Processing {len(a)/1000000}M elements takes: ", (end - start) * 1000.0, " milliseconds")
 print(str.format("Sum is {0:g}" , s))
 ```
-> Output for Python 3.6.9:
 
-> Processing 10.0M elements takes:  1051.522970199585  milliseconds
+Output for Python 3.6.9:
+
+```txt
+Processing 10.0M elements takes:  1051.522970199585  milliseconds
 Sum is 5e+13
+```
 
 **3. Cython implementation**
 
@@ -471,50 +476,68 @@ print(f"Processing {len(a)/1000000}M elements takes: ", (end - start) * 1000.0, 
 print(str.format("Sum is {0:g}" , s))
 ```
 **Build and launch**
-> python setup.py build_ext --inplace
 
-> python -c "import test_cython"
+```txt
+$ python setup.py build_ext --inplace
+$ python -c "import test_cython"
+```
+
 ----
 
-Output for Python 3.6.9:
+**Output for Python 3.6.9:**
 
-> 'Processing 10M elements takes: 19.9463367 milliseconds
-
-> Sum is 5e+13
+```txt
+Processing 10M elements takes: 19.9463367 milliseconds
+Sum is 5e+13
+```
 
 ----
 
 **4. C/C++ implementation**
+
 ```cpp
 #include <iostream>
 #include <chrono>
+#include <iterator>
 
 using std::cout;
 
-int main() {
-  auto start = std::chrono::steady_clock::now();
+namespace chrono = std::chrono;
 
-  int a[10*1000*1000] = {};
+static int a[10'000'000] = {};
+
+int main() {
+  auto const start = chrono::steady_clock::now();
+
   double s = 0.0;
-  for (size_t i = 0; i < 10*1000*1000; ++i) {
+  for (size_t i = 0; i < std::size(a); ++i) {
     a[i] = i;
     s += double(a[i]);
   }
 
-  auto end = std::chrono::steady_clock::now();
+  auto end = chrono::steady_clock::now();
 
-  cout << "Processing " << sizeof(a)/sizeof(a[0])/1000000.0 << "M" << " elements takes " <<std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms\n";
-  cout << "Sum is: " << s << "\n";
+  cout << "Processing " << std::size(a)/1'000'000.0 << "M "
+       << "elements takes " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << " ms\n"
+       << "Sum is: " << s << "\n";
+
   return 0;
 }
 ```
-> Building command line for g++ 7.5.0:
-> `g++ -O3 -Wall --std=c++11 -s test2.cpp -o testcpp; ./testcpp`
 
-> Output:
+**Building command line for g++ 7.5.0:**
+```
+$ g++ -O3 -DNDEBUG -Wall --std=c++17 -s test2.cpp -o testcpp
+$ ./testcpp
+```
+---
 
-> Processing 10M elements takes 16 ms
+**Output:**
+
+```txt
+Processing 10M elements takes 16 ms
 Sum is: 5e+13
+```
 
 ----
 
