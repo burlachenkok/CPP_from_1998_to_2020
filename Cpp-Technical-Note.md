@@ -1022,13 +1022,36 @@ const auto * p_ii = &ii;
 const auto& p_ref = ii;
 ```
 
-The close by conception is `decltype`. It provides ability to derive type of expression without evaluating it.
+The close-by conception is [decltype](https://en.cppreference.com/w/cpp/language/decltype). It provides the ability to derive the type of expression without evaluating it.  There are some subtleties with `decltype`. In fact, `decltype(x)` and `decltype((x))` are often different types. If the argument is an unparenthesized expression or an unparenthesized class member access expression, then [decltype](https://en.cppreference.com/w/cpp/language/decltype) yields the type of the entity named by this expression. The inner parentheses cause the statement to be evaluated as an expression.
+
 ```cpp
-int x;
-const int *p;
-decltype(x) x1;     // x1: int
-decltype(ptr) p1;   // p1: int*
-decltype((ptr)) p2; // p1: const int*
+int main()
+{
+    double z = 1.0;
+    struct Point 
+    {
+        double x;
+        double y;
+    };
+    const Point a = {10.0, 11.0};
+
+
+    decltype(a.x) x4;     // type is double; decltype(expression) is the type of the expression
+                          
+    decltype((a.x)) x5=z; // type is const double&
+       
+    x4 = 123.0;
+    // x5 = 567.0; // compile-time error
+    
+    int x;
+    const int *ptr = &x;
+    decltype(x) x1 = 1;       // x1: int
+    decltype(ptr) p1 = 0;     // p1: const int*
+    //decltype((ptr)) p2 = 0; // p2: const int*& compile-time error
+    decltype((ptr)) p3 = ptr; // p3: const int*& 
+
+    return 0;
+}
 ```
 Extra parentheses are used to preserve `const` property for the type of expression.
 
