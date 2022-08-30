@@ -1066,10 +1066,10 @@ const auto& p_ref = ii;
 The close by conception is `decltype` keyword. It provides ability to derive type of expression without evaluating it.
 ```cpp
 int x;
-const int *p;
+const int *ptr;
 decltype(x) x1;     // x1: int
-decltype(ptr) p1;   // p1: int*
-decltype((ptr)) p2; // p1: const int*
+decltype(ptr) p1;   // p1: const int*
+decltype((ptr)) p2; // p2: const int* &
 ```
 Extra parentheses are used to preserve `const` property for the type of expression.
 
