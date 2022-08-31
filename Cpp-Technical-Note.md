@@ -1266,9 +1266,10 @@ const int* pointer_to_const;
 ```
 
 3. Quite a lot of important information is contained in ([6],  5.3.3 `sizeof`) including the following:
-* `sizeof(char)` with all variations of char is always one byte.
-* `sizeof(bool)` is implementation-defined.
-* `sizeof(wchar_t)` is implementation-defined.
+
+    * `sizeof(char)` with all variations of char is always one byte.
+    * `sizeof(bool)` is implementation-defined.
+    * `sizeof(wchar_t)` is implementation-defined.
 
 4. Also, `sizeof` of structures in C/C++ is equal to the amount of memory to store all components, space for padding between components, and space for padding after structures.
 
@@ -1283,8 +1284,9 @@ const int* pointer_to_const;
 2. The amount occupied by one char character is taken as a memory unit. The number of bits in character is specified in the `CHAR_BIT` macro in C Language. All objects of the same type by C/C++ rules occupy the same amount of memory. In practice, however, one char is "always" one byte, i.e., the *8 bit* number.
 
 3. Computers are classified into two categories in the order of bytes in a word:
-- *Right to left*, or *Little - Endian* - the address of a 32-bit word matches the address of its least significant byte (Examples of CPU architectures are Intel x86, Pentium)
-- *From left to right*, or *Big - Endian* - the address of a 32-bit word matches the address of its high-order byte (Motorola). Some systems support two modes at the same time.
+
+    - *Right to left*, or *Little - Endian* - the address of a 32-bit word matches the address of its least significant byte (Examples of CPU architectures are Intel x86, Pentium)
+    - *From left to right*, or *Big - Endian* - the address of a 32-bit word matches the address of its high-order byte (Motorola). Some systems support two modes at the same time.
 
 4. In some computers, data can be located in memory at any address; in others, alignment conditions are imposed on certain types.
 
