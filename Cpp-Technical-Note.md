@@ -1295,18 +1295,19 @@ const int* pointer_to_const;
 6. A special value in C/C++ called a null pointer equal to a null pointer constant. A null pointer can be converted to any other type of pointer.
 
 7. A null pointer in C/C++ is:
-* An integer expression that yields zero.
-* Or an integer expression casted into a pointer.
 
-The expressions below will not result in a compilation error, as much as we would like to:
-```cpp
-      void y(int*){}
-      y(0);
-```
+    * An integer expression that yields zero.
+    * Or an integer expression casted into a pointer.
 
-In C++11, in addition to NULL, you can use `nullptr`. That keyword stands for null pointer variable with type `std::nullptr_t.` The `nullptr` is convertible to **any pointer** type and to `bool`.
-```cpp
-const int *x = nullptr;
+    The expressions below will not result in a compilation error, as much as we would like to:
+    ```cpp
+          void y(int*){}
+          y(0);
+    ```
+
+    In C++11, in addition to NULL, you can use `nullptr`. That keyword stands for null pointer variable with type `std::nullptr_t.` The `nullptr` is convertible to **any pointer** type and to `bool`.
+    ```cpp
+    const int *x = nullptr;
 ```
 
 8. When using `union` for a mixture of structures that start the same way, there is a guarantee in C/C++ of an identical physical mapping of components "from this beginning".
