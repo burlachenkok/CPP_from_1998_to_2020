@@ -284,6 +284,16 @@ X&x = obj; // X is the datatype of obj
 2. There are no side - effects in program environment.
 3. The function does not change the state of the program.
 
+**Incomplete Type.** In C and in C++ there are two cases when you can use a type with a not yet undefined size - creating a pointer for a type and creating an alias name via a *typedef* or *using* Keywords. Essentially it is possible because the size is not required for a such declaration of a pointer and alias name. [2, p.150]
+
+```cpp
+class A;
+
+typedef A B;
+using BB = A;
+A* ptr;
+```
+
 
 ----
 
@@ -1171,7 +1181,8 @@ struct s {
 ```
 In that case, the size of the structure's element *d* is omitted. However, it's possible to access elements of array `d` through the pointer or reference to structure `s`. In that case, you should understand what you're doing - the structure has a memory layout that maps it into the underlying buffer correctly.
 
-10. In C99, but not in C++, there is a support of `variable length array type` (Defined in ISO/IEEC 9899 C99, 6.7.2.1) That arrays with a size specified via a non-const variable. In C99, to pass such arguments to a function, use the notation `void g(int pp[*], int k){}`.
+10. In C99, but not in C++, there is a support of `variable-length array` (Defined in ISO/IEEC 9899 C99, 6.7.2.1) That arrays with a size specified via a non-const variable.
+Such concept allow in a portable way perform varying allocation of automatic variables in the stack.
 
 11. Different initialization of the char array. In C++, the array must be of sufficient size to hold the "\0" character
 ```cpp
