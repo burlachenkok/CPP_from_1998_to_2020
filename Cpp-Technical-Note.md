@@ -1004,9 +1004,8 @@ In C and C++98/03/11, there are three allowable implementations for signed integ
 For details, we recommend looking at [2, p.125], but short information about them is presented below:
 
 * *Two's complement (or twos-complement-notation)*. Range is: 
-  $$
-  [-2^{n-1}, 2^{n-1}-1].
-  $$
+  $$[-2^{n-1}, 2^{n-1}-1].$$
+
   Positive numbers are represented in the usual way. The most significant bit of the sign is set to 0
   negative numbers are obtained as (reverse bits(number)+1) in ASM instruction notation for x86 sounds like a NEG operation
 
