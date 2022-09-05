@@ -1003,16 +1003,28 @@ Details about exceptions to the One Definition Rule are described in ([6], C++20
 In C and C++98/03/11, there are three allowable implementations for signed integers consisting of $n$ bits.
 For details, we recommend looking at [2, p.125], but short information about them is presented below:
 
-* *Two's complement (or twos-complement-notation)*. Range is: $$[-2^{n-1}, 2^{n-1}-1].$$ Positive numbers are represented in the usual way. The most significant bit of the sign is set to 0
-negative numbers are obtained as (reverse bits(number)+1) in ASM instruction notation for x86 sounds like a NEG operation
+* *Two's complement (or twos-complement-notation)*. Range is: 
+  $$
+  [-2^{n-1}, 2^{n-1}-1].
+  $$
+  Positive numbers are represented in the usual way. The most significant bit of the sign is set to 0
+  negative numbers are obtained as (reverse bits(number)+1) in ASM instruction notation for x86 sounds like a NEG operation
 
     `1000 ... 0000 0000 (bin)` is the maximum negative number that has no positive equivalent.
 
-* *One's complement (or ones-complement-notation)*. Range is: $$[-2^{n-1}+1, 2^{n-1}-1].$$
-Negative numbers are the complement of all bits of the corresponding positive number. In this representation, positive and negative zero are possible. And that representation has one number less than *Two's complement*.
+* *One's complement (or ones-complement-notation)*. Range is: 
+  $$
+  [-2^{n-1}+1, 2^{n-1}-1].
+  $$
 
-* *Signed integer representation (or sign-magnitude-notation)*. Range is: $$[-2^{(n-1)}+1, +2^{(n-1)}-1].$$
-The representation of the modulus of negative and positive numbers is identical. The sign of the number is stored in the most significant bit.
+  Negative numbers are the complement of all bits of the corresponding positive number. In this representation, positive and negative zero are possible. And that representation has one number less than *Two's complement*.
+
+* *Signed integer representation (or sign-magnitude-notation)*. Range is: 
+  $$
+  [-2^{(n-1)}+1, +2^{(n-1)}-1].
+  $$
+
+  The representation of the modulus of negative and positive numbers is identical. The sign of the number is stored in the most significant bit.
 
 The most famous representation for signed integers by hardware vendors is *two's complement* notation.
 
