@@ -721,7 +721,10 @@ An Assembler is a program that finally converts ASM instructions obtained from a
 
 For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the standard de-facto Assembler is [GAS](https://www.gnu.org/software/binutils/). The output of Assembler is saved into *object files*.
 
-The *ISA* specifies instructions, register, memory architecture, data types, and control flow mechanisms. The ISA connects physical Hardware designed by Electrical Engineering (EE) with the Software constructed by Computer Science (CS). The particular implementation of ISA is called Microarchitecture in Electrical Engineering(EE) terminology. Different vendors can provide the support of the same ISA, but Microarchitecture is typically under NDA.
+The Assembly code by itself obey Instruction Set Architecture *ISA*. The *ISA* specifies instructions, register, memory architecture, data types, and control flow mechanisms. The ISA connects physical Hardware designed by Electrical Engineering (EE) with the Software constructed by Computer Science (CS). The particular implementation of ISA is called Microarchitecture in Electrical Engineering(EE) terminology. Different vendors can provide the support of the same ISA, but Microarchitecture is typically under NDA.
+The Microarchitecture is the lowest level of computation and it's under the responsibility of Electrical Engineers, not Computer Science people.
+
+There are online tools such as [11] [Compiler Explorer](https://godbolt.org/) that allows demonstrate Assembly code during using various compilers for C++ online and can be very usefull for educational purposes and via using color show correspondence between C++ code and Assembly code.
 
 # Linkage
 
@@ -3645,3 +3648,5 @@ The mindset that C++ is shaping, helps to look into details and abstract when ne
 [9] [Bjarne Stroustrup's C++11 FAQ](https://www.stroustrup.com/C++11FAQ.html)
 
 [10] [Useful catalog of resources from CppReference: Standards, ABI](https://en.cppreference.com/w/cpp/links)
+
+[11] [Compiler Explorer. An interactive online compiler which shows the assembly output of compiled C++, Rust, Go](https://godbolt.org/)
