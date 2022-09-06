@@ -1309,9 +1309,9 @@ const int *x = nullptr;
 
 8. When using `union` for a mixture of structures that start the same way, there is a guarantee in C/C++ of an identical physical mapping of components "from this beginning".
 
-9. In C and C++, the components of the variable of structure type `struct` has addressed. There are the following guarantees:
-* The component addresses are in ascending order.
-* The address of the first component is the same as the address of the beginning of the structure. And it is regardless of what endian the computer has where the program will run.
+9. In C and C++ there are following guarantees for components of the variable with structure type (`struct`):
+* The components (members, fields) of the variable with structure type obtain addresses in ascending order as they are defined in the structure type.
+* The address of the first component is the same as the address of the beginning of the structure. It is regardless of what endian the computer has where the program will run.
 
 10. Structs are not allowed to perform comparisons with `==` or with `>`. The fundamental nature of this restriction in C/C++ is because, for objects, there may be holes in their memory layout that are filled randomly.
 
