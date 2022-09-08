@@ -1266,9 +1266,10 @@ const int* pointer_to_const;
 ```
 
 3. Quite a lot of important information is contained in ([6],  5.3.3 `sizeof`) including the following:
-* `sizeof(char)` with all variations of char is always one byte.
-* `sizeof(bool)` is implementation-defined.
-* `sizeof(wchar_t)` is implementation-defined.
+
+    * `sizeof(char)` with all variations of char is always one byte.
+    * `sizeof(bool)` is implementation-defined.
+    * `sizeof(wchar_t)` is implementation-defined.
 
 4. Also, `sizeof` of structures in C/C++ is equal to the amount of memory to store all components, space for padding between components, and space for padding after structures.
 
@@ -1283,44 +1284,45 @@ const int* pointer_to_const;
 2. The amount occupied by one char character is taken as a memory unit. The number of bits in character is specified in the `CHAR_BIT` macro in C Language. All objects of the same type by C/C++ rules occupy the same amount of memory. In practice, however, one char is "always" one byte, i.e., the *8 bit* number.
 
 3. Computers are classified into two categories in the order of bytes in a word:
-- *Right to left*, or *Little - Endian* - the address of a 32-bit word matches the address of its least significant byte (Examples of CPU architectures are Intel x86, Pentium)
-- *From left to right*, or *Big - Endian* - the address of a 32-bit word matches the address of its high-order byte (Motorola). Some systems support two modes at the same time.
+
+    - *Right to left*, or *Little - Endian* - the address of a 32-bit word matches the address of its least significant byte (Examples of CPU architectures are Intel x86, Pentium)
+    - *From left to right*, or *Big - Endian* - the address of a 32-bit word matches the address of its high-order byte (Motorola). Some systems support two modes at the same time.
 
 4. In some computers, data can be located in memory at any address; in others, alignment conditions are imposed on certain types.
 
-5. A typical data type to store pointers to some object/data is a pointer. To store (or serialize the value of pointer) in some integer variable, you can use `uintptr_t`. The `uintptr_t` integer type was introduced in C99. The `uintptr_t` is sufficient to store a pointer to any data, but formally not to a function.
+5. A typical data type to store the address to some object/data is a pointer. To store (or serialize the value of pointer) in some integer variable, you can use `uintptr_t`. The `uintptr_t` integer type was introduced in C99. The `uintptr_t` is sufficient to store a pointer to any data, but formally not to a function.
 
 6. A special value in C/C++ called a null pointer equal to a null pointer constant. A null pointer can be converted to any other type of pointer.
 
 7. A null pointer in C/C++ is:
-* An integer expression that yields zero.
-* Or an integer expression casted into a pointer.
 
-The expressions below will not result in a compilation error, as much as we would like to:
-```cpp
-      void y(int*){}
-      y(0);
-```
+    * An integer expression that yields zero.
+    * Or an integer expression casted into a pointer.
 
-In C++11, in addition to NULL, you can use `nullptr`. That keyword stands for null pointer variable with type `std::nullptr_t.` The `nullptr` is convertible to **any pointer** type and to `bool`.
-```cpp
-const int *x = nullptr;
+    The expressions below will not result in a compilation error, as much as we would like to:
+    ```cpp
+          void y(int*){}
+          y(0);
+    ```
+
+    In C++11, in addition to NULL, you can use `nullptr`. That keyword stands for null pointer variable with type `std::nullptr_t.` The `nullptr` is convertible to **any pointer** type and to `bool`.
+    ```cpp
+    const int *x = nullptr;
 ```
 
 8. When using `union` for a mixture of structures that start the same way, there is a guarantee in C/C++ of an identical physical mapping of components "from this beginning".
 
 9. In C and C++ there are following guarantees for components of the variable with structure type (`struct`):
-* The components (members, fields) of the variable with structure type obtain addresses in ascending order as they are defined in the structure type.
-* The address of the first component is the same as the address of the beginning of the structure. It is regardless of what endian the computer has where the program will run.
+    * The components (members, fields) of the variable with structure type obtain addresses in ascending order as they are defined in the structure type.
+    * The address of the first component is the same as the address of the beginning of the structure. It is regardless of what endian the computer has where the program will run.
 
 10. Structs are not allowed to perform comparisons with `==` or with `>`. The fundamental nature of this restriction in C/C++ is because, for objects, there may be holes in their memory layout that are filled randomly.
 
 11. In C++, for the definition (not just declaration) of a variable in global scope, you can use `extern int a = 0;`. But in fact, `extern` is ignored.
-It's due to (7.11.6, C++2003):
-```
-"A name declared in a namespace scope without a storage-class-specifier has external linkage unless it has internal linkage because of a previous declaration and provided it is not declared const. Objects declared const and not explicitly declared extern have internal linkage."
-```
-It also follows from this paragraph that declarations of non-const variables declared on namespace level have `extern` linkage by default in C++.
+    It's due to (7.11.6, C++2003):
+    > "A name declared in a namespace scope without a storage-class-specifier has external linkage unless it has internal linkage because of a previous declaration and provided it is not declared const. Objects declared const and not explicitly declared extern have internal linkage."
+
+    It also follows from this paragraph that declarations of non-const variables declared on namespace level have `extern` linkage by default in C++.
 
 12. A compile-time string literal in C/C++ is statically allocated so that it is safe to return one from a function.
 
@@ -1341,24 +1343,25 @@ There are such variations of the new operator:
 
 1. Usual placement `new`. Creation of an object, but using the already prepared address space. If the implementation needs to store some meta-information, then it can be the case that `b != address`. Example:
 
-```cpp
-#include <new>
-int *b = new(address) int(init_value);
-```
+    ```cpp
+    #include <new>
+    int *b = new(address) int(init_value);
+    ```
 
 2. Overloaded operator new as a new global function. Example:
-```cpp
-void* operator new(size_t sz) {return a.allocate(sz);}
-void operator delete(void* ptr)
-```
+
+    ```cpp
+    void* operator new(size_t sz) {return a.allocate(sz);}
+    void operator delete(void* ptr)
+    ```
 
 3. Overloading `new` with custom parameters. The first argument to the operator is the size in bytes and calculated automatically via `sizeof`. After that, there is a list of arguments that you decide clients should pass. Example:
-```cpp
-void* operator new(size_t sz, Arena& a, float b)
-{ return a.allocate(sz);}
+    ```cpp
+    void* operator new(size_t sz, Arena& a, float b)
+    { return a.allocate(sz);}
 
-new(arg2, arg3) SOMETYPE()
-```
+    new(arg2, arg3) SOMETYPE()
+    ```
 
 4. Operator overloading in a class. You can define new/delete within a class. It's good practice to make new/delete `static`.
 However, the operator will be implicitly static even if static is not explicitly specified.
