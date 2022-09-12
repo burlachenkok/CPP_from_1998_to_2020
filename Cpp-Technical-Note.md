@@ -2,7 +2,7 @@
 
 [Konstantin Burlachenko](https://burlachenkok.github.io/)
 
-King Abdullah University of Science and Technology, Thuwal, Saudi Arabia.
+[King Abdullah University of Science and Technology](https://www.kaust.edu.sa/en), Thuwal, Saudi Arabia.
 
 Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
@@ -16,7 +16,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision update: Sep 02, 2022
+Revision Update: Sep 09, 2022
 
 © 2022 Konstantin Burlachenko, all rights reserved.
 
@@ -1008,18 +1008,18 @@ For details, we recommend looking at [2, p.125], but short information about the
 
 * *Two's complement (or twos-complement-notation)*. The range is: $$[-2^{n-1}, 2^{n-1}-1].$$
   
-  Positive numbers are represented in the usual way. The most significant bit of the sign is set to 0
-  negative numbers are obtained as (reverse bits(number)+1) in ASM instruction notation for x86 sounds like a NEG operation
+  Positive numbers are represented in the usual way. The most significant bit of the sign is set to 0. 
+  Negative numbers are obtained via reversing(flipping) all bits of positive number representation plus 1. In Assembly for x86 that can be achieved via using [NEG](https://c9x.me/x86/html/file_module_x86_id_216.html) operation.
   
     `1000 ... 0000 0000 (bin)` is the maximum negative number that has no positive equivalent.
   
 * *One's complement (or ones-complement-notation)*. The range is: $$[-2^{n-1}+1, 2^{n-1}-1].$$
 
-  Negative numbers are the complement of all bits of the corresponding positive number. In this representation, positive and negative zero are possible. And that representation has one number less than *Two's complement*.
+  Negative numbers are the complement of all bits of the corresponding positive number. In this representation, positive and negative zero are possible. As implication that representation has one number less than *Two's complement*.
 
 * *Signed integer representation (or sign-magnitude-notation)*. The  range is: $$[-2^{(n-1)}+1, +2^{(n-1)}-1].$$
 
-  The representation of the modulus of negative and positive numbers is identical. The sign of the number is stored in the most significant bit.
+  The representation of the modulus of negative and positive numbers is identical bit to bit. But the sign of the number is stored in the most significant bit.
 
 The most famous representation for signed integers by hardware vendors is *two's complement* notation.
 
@@ -1266,9 +1266,10 @@ const int* pointer_to_const;
 ```
 
 3. Quite a lot of important information is contained in ([6],  5.3.3 `sizeof`) including the following:
-* `sizeof(char)` with all variations of char is always one byte.
-* `sizeof(bool)` is implementation-defined.
-* `sizeof(wchar_t)` is implementation-defined.
+
+    * `sizeof(char)` with all variations of char is always one byte.
+    * `sizeof(bool)` is implementation-defined.
+    * `sizeof(wchar_t)` is implementation-defined.
 
 4. Also, `sizeof` of structures in C/C++ is equal to the amount of memory to store all components, space for padding between components, and space for padding after structures.
 
@@ -1283,44 +1284,45 @@ const int* pointer_to_const;
 2. The amount occupied by one char character is taken as a memory unit. The number of bits in character is specified in the `CHAR_BIT` macro in C Language. All objects of the same type by C/C++ rules occupy the same amount of memory. In practice, however, one char is "always" one byte, i.e., the *8 bit* number.
 
 3. Computers are classified into two categories in the order of bytes in a word:
-- *Right to left*, or *Little - Endian* - the address of a 32-bit word matches the address of its least significant byte (Examples of CPU architectures are Intel x86, Pentium)
-- *From left to right*, or *Big - Endian* - the address of a 32-bit word matches the address of its high-order byte (Motorola). Some systems support two modes at the same time.
+
+    - *Right to left*, or *Little - Endian* - the address of a 32-bit word matches the address of its least significant byte (Examples of CPU architectures are Intel x86, Pentium)
+    - *From left to right*, or *Big - Endian* - the address of a 32-bit word matches the address of its high-order byte (Motorola). Some systems support two modes at the same time.
 
 4. In some computers, data can be located in memory at any address; in others, alignment conditions are imposed on certain types.
 
-5. A typical data type to store pointers to some object/data is a pointer. To store (or serialize the value of pointer) in some integer variable, you can use `uintptr_t`. The `uintptr_t` integer type was introduced in C99. The `uintptr_t` is sufficient to store a pointer to any data, but formally not to a function.
+5. A typical data type to store the address to some object/data is a pointer. To store (or serialize the value of pointer) in some integer variable, you can use `uintptr_t`. The `uintptr_t` integer type was introduced in C99. The `uintptr_t` is sufficient to store a pointer to any data, but formally not to a function.
 
 6. A special value in C/C++ called a null pointer equal to a null pointer constant. A null pointer can be converted to any other type of pointer.
 
 7. A null pointer in C/C++ is:
-* An integer expression that yields zero.
-* Or an integer expression casted into a pointer.
 
-The expressions below will not result in a compilation error, as much as we would like to:
-```cpp
-      void y(int*){}
-      y(0);
-```
+    * An integer expression that yields zero.
+    * Or an integer expression casted into a pointer.
 
-In C++11, in addition to NULL, you can use `nullptr`. That keyword stands for null pointer variable with type `std::nullptr_t.` The `nullptr` is convertible to **any pointer** type and to `bool`.
-```cpp
-const int *x = nullptr;
+    The expressions below will not result in a compilation error, as much as we would like to:
+    ```cpp
+          void y(int*){}
+          y(0);
+    ```
+
+    In C++11, in addition to NULL, you can use `nullptr`. That keyword stands for null pointer variable with type `std::nullptr_t.` The `nullptr` is convertible to **any pointer** type and to `bool`.
+    ```cpp
+    const int *x = nullptr;
 ```
 
 8. When using `union` for a mixture of structures that start the same way, there is a guarantee in C/C++ of an identical physical mapping of components "from this beginning".
 
 9. In C and C++ there are following guarantees for components of the variable with structure type (`struct`):
-* The components (members, fields) of the variable with structure type obtain addresses in ascending order as they are defined in the structure type.
-* The address of the first component is the same as the address of the beginning of the structure. It is regardless of what endian the computer has where the program will run.
+    * The components (members, fields) of the variable with structure type obtain addresses in ascending order as they are defined in the structure type.
+    * The address of the first component is the same as the address of the beginning of the structure. It is regardless of what endian the computer has where the program will run.
 
 10. Structs are not allowed to perform comparisons with `==` or with `>`. The fundamental nature of this restriction in C/C++ is because, for objects, there may be holes in their memory layout that are filled randomly.
 
 11. In C++, for the definition (not just declaration) of a variable in global scope, you can use `extern int a = 0;`. But in fact, `extern` is ignored.
-It's due to (7.11.6, C++2003):
-```
-"A name declared in a namespace scope without a storage-class-specifier has external linkage unless it has internal linkage because of a previous declaration and provided it is not declared const. Objects declared const and not explicitly declared extern have internal linkage."
-```
-It also follows from this paragraph that declarations of non-const variables declared on namespace level have `extern` linkage by default in C++.
+    It's due to (7.11.6, C++2003):
+    > "A name declared in a namespace scope without a storage-class-specifier has external linkage unless it has internal linkage because of a previous declaration and provided it is not declared const. Objects declared const and not explicitly declared extern have internal linkage."
+
+    It also follows from this paragraph that declarations of non-const variables declared on namespace level have `extern` linkage by default in C++.
 
 12. A compile-time string literal in C/C++ is statically allocated so that it is safe to return one from a function.
 
@@ -1341,24 +1343,25 @@ There are such variations of the new operator:
 
 1. Usual placement `new`. Creation of an object, but using the already prepared address space. If the implementation needs to store some meta-information, then it can be the case that `b != address`. Example:
 
-```cpp
-#include <new>
-int *b = new(address) int(init_value);
+    ```cpp
+    #include <new>
+    int *b = new(address) int(init_value);
 ```
 
 2. Overloaded operator new as a new global function. Example:
-```cpp
-void* operator new(size_t sz) {return a.allocate(sz);}
-void operator delete(void* ptr)
-```
+
+    ```cpp
+    void* operator new(size_t sz) {return a.allocate(sz);}
+    void operator delete(void* ptr)
+    ```
 
 3. Overloading `new` with custom parameters. The first argument to the operator is the size in bytes and calculated automatically via `sizeof`. After that, there is a list of arguments that you decide clients should pass. Example:
-```cpp
-void* operator new(size_t sz, Arena& a, float b)
-{ return a.allocate(sz);}
-
-new(arg2, arg3) SOMETYPE()
-```
+    ```cpp
+    void* operator new(size_t sz, Arena& a, float b)
+    { return a.allocate(sz);}
+    
+    new(arg2, arg3) SOMETYPE()
+    ```
 
 4. Operator overloading in a class. You can define new/delete within a class. It's good practice to make new/delete `static`.
 However, the operator will be implicitly static even if static is not explicitly specified.
@@ -2701,7 +2704,7 @@ A a(123); // from C++17
 ```
  instead of
  ```cpp
-`A<int> a(123); // correct syntax in C++98/03/11/14
+A<int> a(123); // correct syntax in C++98/03/11/14
  ```
 
 Before C++17, such a feature was supported only for template functions but not for template classes. That feature is called *Class Template Argument Deduction*.
@@ -2805,7 +2808,8 @@ class Objects {
     static inline size_t s_object_count {};
 };
 ```
-Before inline variables, it was possible to use static variables, but the burden to add static variables into compilable and finally, the linkable unit is under your responsibility.
+Before inline variables, it was possible to use static variables, but the burden to add static variables into compilable and finally, the linkable binary is under your responsibility.
+
 ```cpp
 // somewhere in some header file
 class ObjectsOld {
@@ -2849,7 +2853,7 @@ Documentation: [cpp reference details about no_unique_address](https://en.cppref
 
 ## 2. Spaceship operator
 
-The three-way comparison operator denoted `<=>` is a new comparison operator. It's the informal name: spaceship operator.
+The three-way comparison operator denoted `<=>` is a new comparison operator. It has the informal name - **spaceship operator**.
 The term "spaceship operator" was coined by Randal L.Schwartz because it reminded him of the spaceship in the 1970s text-based strategy video game Star Trek. [4,p.100].
 
 ```cpp
@@ -2859,11 +2863,11 @@ After defining what is called spaceship operator compiler generates based on tha
 
 The `<=>` operator can return one of the following return types:
 
-* std::strong_ordering. It's a enumeration type of available values - std::strong_ordering::less, std::strong_ordering::greater, std::strong_ordering::equal. In mathematical sense it should be used when relation is totally ordered.
+* **std::strong_ordering**. It's a enumeration type of available values - std::strong_ordering::less, std::strong_ordering::greater, std::strong_ordering::equal. In mathematical sense it should be used when relation is totally ordered.
 
-* std::partial_ordering. It's a enumeration type of available values - std::strong_ordering::less, std::strong_ordering::greater, std::strong_ordering::equivalent, std::strong_ordering::unordered.
+* **std::partial_ordering**. It's a enumeration type of available values - std::strong_ordering::less, std::strong_ordering::greater, std::strong_ordering::equivalent, std::strong_ordering::unordered.
 
-* std::weak_ordering. It's a enumeration type of available values - std::strong_ordering::less, std::strong_ordering::greater, std::strong_ordering::equivalent.
+* **std::weak_ordering**. It's a enumeration type of available values - std::strong_ordering::less, std::strong_ordering::greater, std::strong_ordering::equivalent.
 
 Documentation: [cpp reference details about no_unique_address](https://en.cppreference.com/w/cpp/language/operator_comparison).
 
@@ -2903,7 +2907,7 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/utility
 
 ## 6. nodiscard(reason) Attribute
 
-Attribute `[[nodiscard(reason)]]` applied for function and described the consequence of discarding the return object from the function call. And the compiler is encouraged to issue a warning in case of discarding the return value. Example:
+Attribute `[[nodiscard(reason)]]` applied for function and described the consequence of discarding the return object from the function call. The compiler is encouraged to issue a warning in case of discarding the return value. Example:
 ```cpp
 [[nodiscard("DO NOT IGNORE")]] int sum(int x, int y)
 { return x + y; }
@@ -2924,7 +2928,7 @@ Documentation: [cpp reference arithmetic operations details](https://en.cpprefer
 
 ## 9. Abbreviated Function Templates
 
-Staring from C++20, the template function can be written a bit shorter. That syntax is called "Abbreviated Function Templates". If you want your template to instantiate functions where multiple parameters have the same type or related
+Staring from C++20, the template function can be written a bit shorter. That syntax is called *"Abbreviated Function Template"*. If you want your template to instantiate functions where multiple parameters have the same type or related
 types, you still have to use the old syntax. It is so because every occurrence of `auto` in the function parameter list of an abbreviated function template introduces an implicit, unnamed template type parameter. Example:
 
 ```cpp
@@ -2944,7 +2948,7 @@ If you overload `operator ==` C++20 compiler automatically generates `operator !
 
 ## 11. Designated initializers
 
-The mechanism from C99 called "named initialization" was not previously available in C++03/11/17. Example (from cpp reference):
+The mechanism from C99 called *"named initialization"* was not previously available in C++03/11/17. Example (from cpp reference):
 ```cpp
 struct A { int x; int y; int z; };
 A b{.x = 1, .z = 2};
@@ -2989,7 +2993,8 @@ We will go example by example to open all features of *modules*.
 // 2. "export module ..." means that this is module interface file
 export module simple;
 
-// 3. Within a module name you may use dots to concatenate together multiple identifiers. Module names are the only names in C++ in which this is allowed.
+// 3. Within a module name you may use dots to concatenate together multiple identifiers. 
+// Module names are the only names in C++ in which this is allowed.
 // Example: export module simple.my.hello;
 
 //---------------------------------------------------------
@@ -3031,7 +3036,7 @@ export // The module's interface
 // The implementation of the module's functions
 auto square(const auto& x) { return x * x; }
 
-// You can, but you do not have to add export
+// You can add export, but you do not have to.
 // Still valid:
 // export auto square(const auto& x) { return x * x; }
 ```
@@ -3227,7 +3232,7 @@ int main() {
 ```
 
 ## Template Syntax Remarks
-When instantiating a template, starting from C++11 not necessary to make a space in `>>`. In the case of specifying an integral type in a template parameter and wishing to perform right-shift `>>`, you should enclose the expression in parentheses starting from C++11.
+When instantiating a template, starting from C++11 not necessary to make a space in the right shift operator  `>>`. In the case of specifying an integral type in a template parameter and wishing to perform right-shift `>>`, you should enclose the expression in parentheses starting from C++11.
 
 Example of using `>>`:
 ```cpp
@@ -3339,7 +3344,7 @@ Array<T>::Array(size_t size)
 ```
 
 ## Variadic Templates
-The motivation is to have the ability to work with a varying number of template parameters. The smallest example:
+Variadic templates has been introduced in C++11. The motivation is to have the ability to work with a varying number of template parameters. The smallest example:
 ```cpp
 template <class T...>
 void f(const T&...arg)
@@ -3368,28 +3373,31 @@ void printf(const char *s, T value, Args... args)
 }
 ```
 
-**First thing:** In variadic template for ellipses <`...`> you can put spaces anywhere around it. And construction <`...`> are used in fact, for various purposes in context of variadic templates.
+**First thing:** In the variadic template for ellipses <`...`> you can put spaces anywhere around it. Construction <`...`> is used for various purposes in the context of variadic templates.
 
-**Second thing:** the only way to get the next template argument is to recursively call a function whose template parameters are specified as `<TExtractType, RestTypes...>`. So if you have ever seen functional programming languages, that construction looks pretty close to that.
+**Second thing:** The only way to get the next template argument is to recursively call a function whose template parameters are specified as `<TExtractType, RestTypes...>` via specifying some parameters in the usual way and some parameters via **unpack construction** (see below). If you have ever seen functional programming languages, that construction looks pretty close to that.
 
 Packing operations:
-* `class ...Args` - parameters **pack** in template parameters list with optional name. Non type template parameters can also be organized in the pack via similar syntax `int...`. Whitespace around <`...`> does not matter for compiler.
-* `(Arg&&....params)` - function arguments parameters **pack**.
+* `class ...Args` - parameters **pack** in template parameters list with optional name. Non-type template parameters can also be organized in the pack via similar syntax `int...`.  One more time - whitespace around <`...`> does not matter for the compiler.
+* `(Arg&&....params)` - template function arguments parameters **pack**.
 
 Unpacking operations:
 * `Args...` - **unpack** parameters. Used inside the body of the template function.
 * `sizeof...(Args)` - size of of parameters in terms of number of elements in Args. (It is not the size in bytes).
 
-Variadic templates has been introduced in C++11, the last trick with variadic template is called *fold expression* has been introduced in C++17. Unary syntax for fold expression:
+The last trick with a variadic template is called *fold expression* has been introduced in C++17. The unary syntax for fold expression:
 ```cpp
 template<typename... Args>
-bool allLeftFold(Args... args) { return (... && args); }
+bool allLeftFold(Args... args) { return (... && args); }  // Unary right fold (E op ...) becomes (E1 op (... op (EN-1 op EN)))
 
 template<typename... Args>
-bool allRightFold(Args... args) { return (args&& ...); }
+bool allRightFold(Args... args) { return (args&& ...); }  // Unary left fold (... op E) becomes (((E1 op E2) op ...) op EN)
 ```
 
+Documentation [cpp reference details](https://en.cppreference.com/w/cpp/language/fold)
+
 ## Reference Collapsing Rules and Universal Reference
+
 In C++ you can not declare a reference to reference, but when reference collapsing occurs during template types substitution, there are the following rules:
 
 `T&&` => `T&` - valid from C++03 (1)
@@ -3442,7 +3450,7 @@ template <class T>
 void f(T&& arg)
 {}
 ```
-can binds everything. The term that has been used to describe that (by Skott Meyers) has obtained a name universal reference.
+can binds everything. The term that has been used to describe that (by Skott Meyers) has obtained a name *universal reference*.
 
 
 # Variants of Casting
@@ -3475,7 +3483,7 @@ int main() {
 ## Define Concepts
 
 A concept is a named set of requirements. It's possible in general, to distinguish three categories of requirements [4,p.512]:
-* Syntactic requirements. Some expressions should be compilable.
+* Syntactic requirements.
 * Semantic requirements.
 * Complexity requirements.
 
@@ -3486,10 +3494,13 @@ template <typename T>
 concept Small = sizeof(T) <= sizeof(int);
 ```
 
+General things about concepts:
+
 1. Concepts are never instantiated by the compiler. They never give rise to executable code.
 2. Concepts should be seen as functions that the compiler evaluates at compile time to determine whether a set of arguments satisfies the given constraints.
 3. A *constant expression* is any expression that the compiler can evaluate at compile time.
-4. The constraints in the body of a concept definition are logical expressions connected with `&&` or `||`.
+4. The constraints in the body of a concept definition are logical expressions connected with `&&` or `||` .
+5. Expressions that are connected with logical symbols are **atomic constraint**.
 
 You can define concept in terms of another concepts. Example:
 ```cpp
@@ -3502,7 +3513,7 @@ So concept is defined in the following way:
 template <parameter list>
 concept name = constraints;
 ```
-Next, to express the actual syntactical requirements of a **concept** you should use require expression.
+To express the actual syntactical requirements of a **concept** you can use *requires* expression. In that context *requires* specifies a constant expression on template parameters that evaluate a requirement (since C++20).
 ```cpp
 requires { requirements }
 requires (parameter list) { requirements }
@@ -3533,7 +3544,8 @@ template <typename T>concept NoExceptDestructible = requires (T& value) { { valu
 ```
 
 A compound requirement is similar to a simple requirement; only
-besides asserting that a given expression must be valid, a compound requirement can also prohibit this expression from ever throwing an exception and/or constrain the type that it evaluates to. There is no semicolon after the expression inside the curly braces of a compound requirement. There is no semicolon after the expression inside the curly braces of a compound requirement. All possible types of compound requirements:
+besides asserting that a given expression must be valid, a compound requirement can also prohibit this expression from ever throwing an exception and/or constraint type that it evaluates to. There is no semicolon after the expression inside the curly braces of a compound requirement. All possible types of compound requirements:
+
 ```cpp
 // expr is a valid expression
 { expr };
@@ -3569,7 +3581,12 @@ const T& function(const T& a, const T& b)
 { return a > b ? a : b; }
 ```
 
+In a template, declaration keyword **requires** specifying the used constraint.
+
+
+
 Starting from C++20 there is a shorthand notation for using concept:
+
 ```cpp
 template <MyConcept T>
 const T& function(const T& a, const T& b)
