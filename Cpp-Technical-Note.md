@@ -10,9 +10,9 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 **Editors:**
 
-* [Vadim Sofin](https://github.com/sovadim) ex-[HUAWEI](https://www.huawei.ru/) / ex-[Yandex](https://yandex.ru/)
-* [Mikhail Filimonov](https://github.com/dosvidos) from [NVIDIA](http://nvida.com/)
-* [Dmytro Ovdiienko](https://github.com/ujos)
+* [Vadim Sofin](https://github.com/sovadim) ex-[HUAWEI](https://www.huawei.ru/) / ex-[Yandex](https://yandex.ru/).
+* [Mikhail Filimonov](https://github.com/dosvidos) from [NVIDIA](http://nvida.com/).
+* [Dmytro Ovdiienko](https://github.com/ujos) Principal Software Engineer *Low Latency Systems* from Quiet Light Trading.
 
 ----
 
@@ -3628,6 +3628,8 @@ return x.result();
 # Acknowledgements
 
 Me, Konstantin Burlachenko, would like to acknowledge:
+
+* Editors of that document [Vadim Sofin](https://github.com/sovadim), [Mikhail Filimonov](https://github.com/dosvidos) for producing useful feedback.  Editor [Dmytro Ovdiienko](https://github.com/ujos) for producing very big feedback, and constructive suggestions, and his big contributions to document improvement.
 
 * [Acronis](https://www.acronis.com/en-us/) company. In 2011-2012, it invited [Dr. B.Stroustroup](https://www.stroustrup.com/) to give a long one-day talk for Acronis, HQ and Parallels, HQ in Moscow employees. [Dr. B.Stroustroup](https://www.stroustrup.com/) gave an excellent and practical talk by appealed to everybody, which I highly appreciated.
 
