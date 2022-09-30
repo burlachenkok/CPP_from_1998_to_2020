@@ -16,7 +16,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision Update: Sep 09, 2022
+Revision Update: Oct 01, 2022
 
 © 2022 Konstantin Burlachenko, all rights reserved.
 
@@ -25,6 +25,7 @@ Revision Update: Sep 09, 2022
 **Table of Content**
 
 - [Introduction](#introduction)
+- [Prepare Environment](#prepare-environment)
 - [Glossary](#glossary)
 - [Motivation](#motivation)
   - [Downsides of Interpretable Languages](#downsides-of-interpretable-languages)
@@ -34,9 +35,9 @@ Revision Update: Sep 09, 2022
 - [Standards for the Language](#standards-for-the-language)
 - [Language Guarantees](#language-guarantees)
 - [Stages of Source Code Translation in C++](#stages-of-source-code-translation-in-c)
-  - [Initial Textual Source Code Processing and C Preprocessing](#initial-textual-source-code-processing-and-c-preprocessing)
   - [The Compiler and Linker. Briefly](#the-compiler-and-linker-briefly)
   - [The Compiler and Linker. Details](#the-compiler-and-linker-details)
+    - [Initial Textual Source Code Processing and C Preprocessing](#initial-textual-source-code-processing-and-c-preprocessing)
     - [Lexical Analysis](#lexical-analysis)
     - [Syntax Analysis](#syntax-analysis)
     - [Semantic Analysis](#semantic-analysis)
@@ -205,7 +206,21 @@ That note is mainly based on materials from the Reference section and personal e
 * Obtain a pretty in-depth overview of new features from C++11/14/17/20
 * People who need to support (legacy) C++03 or C99 code base
 
-Finally, we welcome anybody who wants to make this note cleaner. We appreciate the style of *language lawyer* and *practical applicability*, but we don't want to have any of the extremes of both types.
+Finally, we welcome anybody who wants to make this note cleaner. We appreciate the style of *language lawyer* and *practical applicability*, but we don't want to have any of the extremes of both types. 
+
+# Prepare Environment
+
+To reproduce code snippets you need to have a C++ IDE or command line environment in which you will compile and link code snippets. But because currently there are plenty of versions of C++ programming language, you will need to provide compiler information about the version of the standard that you're going to use. 
+
+It can be accomplished in the following way:
+* **Visual Studio/MSVC.** Specify `/std:c++20` or `/std:c++latest` for 
+[MSVC](https://learn.microsoft.com/en-us/cpp/build/reference/std-specify-language-standard-version?view=msvc-170) compiler.
+Use *MSVC 19.30* or higher. Visual Studio 2022 Community Edition is distributed with *MSVC 19.32* at the moment of writing this text. 
+
+* **GCC**. Specify `-x c++ --std=c++20` if you're using Gnu Compiler Collection ([GCC](https://gcc.gnu.org/onlinedocs/gcc-3.3.6/gcc/G_002b_002b-and-GCC.html)). Use *GCC 10.1* or newer.
+
+* **CLANG**. Specify `--std=c++20` if you're using ([CLang](https://clang.llvm.org/)). Use *Clang 10.0.0* or newer.
+
 
 # Glossary
 
@@ -322,7 +337,7 @@ But any interpretable languages are not a choice when actual time matters or sub
 3. To some extent, interpreters provide portability in the source code for user space applications. Still, it comes with the cost of reducing the number of possible calls to OS. Creating portability at the source code level between different OS is a big thing, and people thought about that in the past. The problem understanding led to the creation of [POSIX](https://en.wikipedia.org/wiki/POSIX), which was a way to provide portability between different OS via the standardization of many everyday routines for OS API. If the goal is portability between different OS, more correctly is to solve it via standardization of API to OS. Creating extra software layers, especially in the form of interpreters, is a suboptimal decision if speed or memory matters.
 
 
-4. During work with interpretable languages, you don't have a real interface to work with the devices' memory inside the computer. In fact, you do not even have enough tools to precisely handle just usual Virtual memory in your process.
+4. During work with interpretable languages, you don't have a real interface to work with the devices' memory inside the computer. In fact, you do not even have enough tools to precisely handle just usual *virtual memory* in your process.
 
 5. The interpreter as a computer program adds an extra level of abstraction. The standard implementation Python interpreter is CPython. It is called CPython because it has been implemented in C/C++. Such software as an interpreter improves the time for completing the project from social point of view, but implementation is suboptimal.
 
@@ -606,15 +621,29 @@ Fundamental code guarantees of C++ :
 All containers in C++98 provide a fundamental guarantee. And some operations (for example, `std::vector<T>::push_back`) give a strong guarantee.
 
 # Stages of Source Code Translation in C++
-A source code for C/C++ consists of source files. Each source file is translated (or processed) through the following sequence of steps.
 
-## Initial Textual Source Code Processing and C Preprocessing
+## The Compiler and Linker. Briefly
+
+The compiler converts text in a high-level language into instructions for a specific Instruction Set Architecture (ISA) of Computing Device or another machine-dependent representation. It saves the results of processing each source file into a correspondent *compiled object file*.
+
+*Compiled object files* augmented with another binary file from static libraries are linked into the final executable. The language does not specify the internal details of the compilation or linkage - it's under the responsibility of the creators of toolchains.
+
+The final binary format ([ELF](https://refspecs.linuxfoundation.org/elf/elf.pdf) for Linux and [PE](https://docs.microsoft.com/en-us/windows/win32/debug/pe-format) for Windows) is also not under the obligation of creators of Language or userspace developers. It's under the responsibility of the creators of the Operation System. There are situations when the target device in which the program will be executed has no operating system. The case of launching program on target device with no Operation System sometimes is denoted as *"Launching on Bare Metal"*. In that later case the format of binary files is typically under the Device Vendor's responsibility (example: [PTX](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html), [SASS](https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html) for NVIDIA GPU is provided by NVIDIA).
+
+## The Compiler and Linker. Details
+
+A high-level overview is presented below if you are curious about how a compiler compiles source code. It's possible to be productive even without the knowledge below especially during creating only userspace applications. If you want to know how things are working and you have that curiosity - you're welcome to read the text below. In another case - just skip it. A source code for C/C++ consists of source files. Each source file is translated (or processed) through the following sequence of steps.
+
+----
+
+### Initial Textual Source Code Processing and C Preprocessing
 1. The input file is read into memory and broken into lines.
 
 2. Processing trigrams. All available C trigrams can be obtained from [2,p.15].
 
   ```cpp
   #include <iostream>
+
   int main() {
     std::cout << "Do you know C++? Are you sure ??)";
     return 0;
@@ -631,17 +660,6 @@ A source code for C/C++ consists of source files. Each source file is translated
 
 The output of preprocessing of the source file is named as *preprocessed source* and typically has the extension `*.i`. For example, obtaining such a source file from [clang](https://clang.llvm.org/get_started.html) can be achieved via `clang -E.`
 
-## The Compiler and Linker. Briefly
-
-The compiler converts text in a high-level language into instructions for a specific Instruction Set Architecture (ISA) of Computing Device or another machine-dependent representation. It saves the results of processing each source file into a correspondent *compiled object file*.
-
-*Compiled object files* augmented with another binary file from static libraries are linked into the final executable. The language does not specify the internal details of the compilation or linkage - it's under the responsibility of the creators of toolchains.
-
-The final binary format ([ELF](https://refspecs.linuxfoundation.org/elf/elf.pdf) for Linux and [PE](https://docs.microsoft.com/en-us/windows/win32/debug/pe-format) for Windows) is also not under the obligation of creators of Language or userspace developers. It's under the responsibility of the creators of the Operation System. There are situations when the target device in which the program will be executed has no operating system. The case of launching program on target device with no Operation System sometimes is denoted as *"Launching on Bare Metal"*. In that later case the format of binary files is typically under the Device Vendor's responsibility (example: [PTX](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html), [SASS](https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html) for NVIDIA GPU is provided by NVIDIA).
-
-## The Compiler and Linker. Details
-
-A high-level overview is presented below if you are curious about how a compiler compiles source code. It's possible to be productive even without the knowledge below especially during creating only userspace applications. If you want to know how things are working and you have that curiosity - you're welcome to read the text below. In another case - just skip it.
 
 ### Lexical Analysis
 
@@ -651,10 +669,11 @@ An important part is that the C/C++ compiler always tries to assemble the longes
 ```cpp
 int a = 1, b = 1, c = 3;
 // invalid tokenization: tokens (b, --, a)
-c = b--a;
-// valid tokenization:tokens(b, -, -, a)
-// but C/C++ compiler does not do that
-c = b - -a;
+
+c = b--a;    // Compile error
+
+// valid tokenization: tokens(b, -, -, a)
+// But C/C++ compiler does not do that c = b - -a;
 ```
 The concept of whitespace in C/C++ includes different keyboard spaces and comments. In C/C++ and most programming languages, the tokens fundamentally can be one of the following types:
 * a. Operators
@@ -671,16 +690,14 @@ The compiler is based on the language rules typically described by Backus–Naur
 Based on the grammar of the C or C++ programming language, the syntax analyzer constructs the Abstract Syntax Tree (AST) for the program's source text.  The exact Grammar rules can be found in the Appendices of corresponding Language Standards.
 
 ### Semantic Analysis
-Some rules of the language can not be expressed only by using CFG. Examples: Multiple declarations of a variable in one scope, usage of not yet declared variables, access to a plain C array via an index that is out of range, etc. For handling that analysis, the Semantic analyzer inside the compiler is used.
+Some rules of the language can not be expressed only by using CFG. Examples: Multiple declarations of a variable in one scope, usage of not yet declared variables, access to a plain C array via an index that is out of range, etc. For handling such analysis, the Semantic analyzer inside the compiler is used.
 
 ### Code Optimization
 
-At that moment, we have constructed AST for a program and augmented it with information from the semantic analysis stage. At that moment, we can traverse AST and translate that code into more low-level construction expressed as Assembly Language or Intermediate Representation (IR).
-
-Before that stage, the stage of code Optimization is occurred. Compilers' innovations based on various fields of science and engineering that mainly bring considerable speedup are exploited in that stage.
+At this moment, we constructed AST for a program and augmented it with information from the semantic analysis stage. Also, we can traverse AST and translate this code into more low-level construction expressed as Assembly Language or Intermediate Representation (IR).Before this stage, the stage of code Optimization occurred. Compilers' innovations based on various fields of science and engineering that mainly bring considerable speedup are exploited in this stage.
 
 Typically compilers perform a sequence of transformation passes. Each transformation pass
-analyzes and edits the code to optimize performance. A transformation pass might run multiple times. Keys run in a predetermined order that usually seems to work well. Some examples of optimization technics that happens at that moment:
+analyzes and edits the code to optimize performance. A transformation pass might run multiple times. Keys run in a predetermined order that usually seems to work well. Some examples of optimization technics that happens at this moment:
 
 * Convert one arithmetic operation into more cheap operations via using bit tricks and logic/arithmetic shifts.
 * Replace stack allocation storage with storing variables in the processor's register.
@@ -704,16 +721,18 @@ However, in reality it's possible to have three different scenarios what exactly
 
 2. Compiler emits the program text written in Assembly. But in fact the process of producing final binary code is under responsibility of Assembler program. You can obtain such assembly source from preprocessed file manually for [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S -o -`.
 
-3. With the coming [LLVM](https://llvm.org/) project there is in fact intermediate layer between High Level Language(C++) and ASM for target ISA. That layer is called Intermediate Representation (IR). And contains tree stages conversion:
+3. With the coming [LLVM](https://llvm.org/) project there is in fact intermediate layer between High-Level Language(such as C++) and ASM for the target device (described by ISA). This layer is called Intermediate Representation (IR). And contains three stages of conversion:
 
     * At the *first stage* the input preprocessed code is converted into pseudo-assembly called [LLVM-IR](https://llvm.org/docs/LangRef.html) producing files with extensions "*.ll". You can obtain unoptimized LLVM-IR code in [clang](https://clang.llvm.org/get_started.html) toolchain via invocation of `clang <source_file.i> -S emit-llvm -o -`.
-    * At the *second stage* LLVM-Optimizer works under that representation and produces optimized "*.ll" source code.
+    * At the *second stage* LLVM-Optimizer works under such representation and produces optimized "*.ll" source code.
     * At the *third stage* the **LLVM code generator** generates real Assembly representation.
 
 For further study as an introduction to LLVM-IR, we recommend [Lecture 5](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/resources/mit6_172f18_lec5/) from MIT course [6.172 Performance Engineering of Software Systems](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
 
+----
+
 ### Calling Assembler Program
-Assembler(ASM) Language is the lowest possible level that can still be readable, but understanding it (without extra tools and extra documentation) is not easy in a big programs. ASM language has a close relation to target compute devices. 
+Assembler(ASM) Language is the lowest possible level that can still be readable, but understanding it (without extra tools and extra documentation) is not easy in a big program. ASM language has a close relation to target computing devices. 
 
 One instruction in C++ code can correspond to several( 1,2,3,etc.) ASM code instructions. On the other hand, the same instruction in C/C++ can be emitted (materialized or generated) into different instructions in ASM Language. 
 
@@ -724,15 +743,15 @@ For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the stand
 The Assembly code by itself obey Instruction Set Architecture *ISA*. The *ISA* specifies instructions, register, memory architecture, data types, and control flow mechanisms. The ISA connects physical Hardware designed by Electrical Engineering (EE) with the Software constructed by Computer Science (CS). The particular implementation of ISA is called Microarchitecture in Electrical Engineering(EE) terminology. Different vendors can provide the support of the same ISA, but Microarchitecture is typically under NDA.
 The Microarchitecture is the lowest level of computation and it's under the responsibility of Electrical Engineers, not Computer Science people.
 
-There are online tools such as [11] [Compiler Explorer](https://godbolt.org/) that allows demonstrate Assembly code during using various compilers for C++ online and can be very usefull for educational purposes and via using color show correspondence between C++ code and Assembly code.
+There are online tools such as [11] [Compiler Explorer](https://godbolt.org/) that provide a demonstration of the generated Assembly code during using various compilers for C++ online and can be very useful for educational purposes and via using color show correspondence between C++ code and Assembly code.
 
 # Linkage
 
-The linker constructs the final program or dynamic (shared) library from compiled source files in the form of *object files*, obtains additional input archives of object files (called static libraries), obtains information about used dynamic library dependencies, performs other semantic checks (for example via finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links. 
+The linker constructs the final program or dynamic (shared) library from compiled source files in the form of *object files*, obtains additional input archives of object files (called static libraries), obtains information about used dynamic library dependencies, performs other semantic checks (for example via finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links.
 
 The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from the C compiler physically. In another toolchain, e.g., from Microsoft Visual C compiler, the translation to final binary code is inside their C compiler.
 
-The name of linkage program typically in toolchains has a name  as [ld](https://linux.die.net/man/1/ld) or [link](https://docs.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170).
+The name of the linkage program typically in toolchains has a name such as [ld](https://linux.die.net/man/1/ld) or [link](https://docs.microsoft.com/en-us/cpp/build/reference/linker-options?view=msvc-170).
 
 ----
 
@@ -818,7 +837,7 @@ For the C/C++ preprocessor, any undefined identifiers that appear after the cond
 
 ## Include Search Order
 
-The original C specification says that the actual directory in which the compiled source file is located is used to look for a user-defined include file. But nowadays an enumeration order of include paths varies between compiler toolchains, so you may figure it out for a particular toolchain by experiment.
+The original C specification says that the actual directory in which the compiled source file is located is used to look for a user-defined *include file*. But nowadays an enumeration order of include paths varies between compiler toolchains, so you may figure it out for a particular toolchain by experiment.
 
 ## Include Files Naming
 
@@ -830,19 +849,22 @@ The original C specification says that the actual directory in which the compile
 
 ## Predefined Identifiers and Macros
 
-`__func__` - In C99, a predefined identifier with the name of the current function. C++11 officially supports that too.
+| Macros | Meaning  |
+|---|---------------|
+| `__func__` | In C99, a predefined identifier with the name of the current function. C++11 officially supports that too.|
+| `__LINE__`, `__FILE__` | Current line number, and current source file name. |
+| `__DATE__`, `__TIME__` | Date and time of source file compilation.|
+| `__STDC__ ` | Compiler conforms to the C standard. |
+| `__VA_ARGS__` | Only C++11 and C99 formally support that, but informally `__VA_ARGS__` is often supported. This built-in name can be used for macros with an arbitrary number of the argument. When the macro is invoked, all the tokens in its argument list `...`, including any commas, become the variable argument.
+| `__cplusplus` | C++ version. |
+| `__STDC_VERERSION__` | Version of standard C. |
+|
 
-`__LINE__`, `__FILE__` - current line number, and current source file name.
-
-`__DATE__`, `__TIME__` - date and time of source file compilation.
-
-`__STDC__ ` - compiler conforms to the C standard.
-
-`__VA_ARGS__` - only C++11 and C99 formally support that, but informally `__VA_ARGS__` is often supported. This built-in name can be used for macros with an arbitrary number of the argument. When the macro is invoked, all the tokens in its argument list `...`, including any commas, become the variable argument.
-
-`__cplusplus` - C++ version
-
-`__STDC_VERERSION__` - version of standard C.
+Example with using `__VA_ARGS__`: 
+```cpp
+#define my_printf(...) \
+do{ fprintf(stdout, __VA_ARGS__); }while(0)
+```
 
 Example of checking the version of C/C++ compiler  mostly based on [2, p.53]:
 
@@ -1083,13 +1105,15 @@ auto x1 = {1,2,3,4}; // x1 is an initializer_list<int>
 // in the form of list initialization does not allow narrowing
 ```
 
-`auto` can be used jointly with constant volatile type qualifiers (cv) and with reference and pointers. Examples:
+`auto` can be used jointly with constant volatile type qualifiers (cv) and with reference and pointers. Example:
 
 ```cpp
 int ii= 1;
 const auto* p_ii = &ii;
 const auto& p_ref = ii;
+const volatile auto* p_iii = &ii;
 ```
+The side comment *volatile* - this is a type qualifier that denotes that that type can alter its value not due to C++ language, but for other system reasons. And so C++ implementation should be careful with optimization access for that variable through registers. In C++ the usage of `volatile` does not imply memory fence, so be carefull with creating multithreaded code and use memory fences approprietly.
 
 The close-by conception is [decltype](https://en.cppreference.com/w/cpp/language/decltype). It provides the ability to derive the type of expression without evaluating it.  There are some subtleties with `decltype`. In fact, `decltype(x)` and `decltype((x))` are often different types. If the argument is an unparenthesized expression or an unparenthesized class member access expression, then [decltype](https://en.cppreference.com/w/cpp/language/decltype) yields the type of the entity named by this expression. The inner parentheses cause the statement to be evaluated as an expression.
 
@@ -1300,13 +1324,13 @@ const int* pointer_to_const;
     * Or an integer expression casted into a pointer.
 
     The expressions below will not result in a compilation error, as much as we would like to:
-    ```cpp
+```cpp
           void y(int*){}
           y(0);
-    ```
+```
 
     In C++11, in addition to NULL, you can use `nullptr`. That keyword stands for null pointer variable with type `std::nullptr_t.` The `nullptr` is convertible to **any pointer** type and to `bool`.
-    ```cpp
+```cpp
     const int *x = nullptr;
 ```
 
@@ -1343,25 +1367,25 @@ There are such variations of the new operator:
 
 1. Usual placement `new`. Creation of an object, but using the already prepared address space. If the implementation needs to store some meta-information, then it can be the case that `b != address`. Example:
 
-    ```cpp
+```cpp
     #include <new>
     int *b = new(address) int(init_value);
 ```
 
 2. Overloaded operator new as a new global function. Example:
 
-    ```cpp
+```cpp
     void* operator new(size_t sz) {return a.allocate(sz);}
     void operator delete(void* ptr)
-    ```
+```
 
 3. Overloading `new` with custom parameters. The first argument to the operator is the size in bytes and calculated automatically via `sizeof`. After that, there is a list of arguments that you decide clients should pass. Example:
-    ```cpp
+```cpp
     void* operator new(size_t sz, Arena& a, float b)
     { return a.allocate(sz);}
     
     new(arg2, arg3) SOMETYPE()
-    ```
+```
 
 4. Operator overloading in a class. You can define new/delete within a class. It's good practice to make new/delete `static`.
 However, the operator will be implicitly static even if static is not explicitly specified.
@@ -3588,9 +3612,17 @@ In a template, declaration keyword **requires** specifying the used constraint.
 Starting from C++20 there is a shorthand notation for using concept:
 
 ```cpp
+template <typename S>
+concept MyConcept = requires(S a, S b)
+{
+    a + b; // Summable
+};
+
 template <MyConcept T>
-const T& function(const T& a, const T& b)
-{ return a > b ? a : b; }
+const T& function(const T & a, const T & b)
+{
+    return a + b;
+}
 ```
 
 # Coroutines (C++20)
