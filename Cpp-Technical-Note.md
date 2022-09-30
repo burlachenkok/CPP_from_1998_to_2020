@@ -858,7 +858,6 @@ The original C specification says that the actual directory in which the compile
 | `__VA_ARGS__` | Only C++11 and C99 formally support that, but informally `__VA_ARGS__` is often supported. This built-in name can be used for macros with an arbitrary number of the argument. When the macro is invoked, all the tokens in its argument list `...`, including any commas, become the variable argument.
 | `__cplusplus` | C++ version. |
 | `__STDC_VERERSION__` | Version of standard C. |
-|
 
 Example with using `__VA_ARGS__`: 
 ```cpp
