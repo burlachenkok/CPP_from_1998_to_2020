@@ -200,7 +200,7 @@ If you're unsure whether you should learn C++ or not, then maybe the example pre
 
 Sometimes you need to write software to a software platform (Java Virtual Machine, JavaScript Engine, Python interpreter). This is the case for instance when you can not execute real code in a target computing machine for some reasons. In such circumstances, the defacto standard can be another programming language: not C/C++ at all or dialect of C/C++. Analyzing when it is good or bad to limit users from using C++ or in fact any compiled language is out of the scope of that technical note.
 
-That note is mainly based on materials from the [References](#references) section and personal experience. We think that information can be helpful for three categories of people:
+That note is mainly based on materials from the [references](#references) section and personal experience. We think that information can be helpful for three categories of people:
 
 * People who want to refresh or go deep into several language constructions of C++
 * Obtain a pretty in-depth overview of new features from C++11/14/17/20
