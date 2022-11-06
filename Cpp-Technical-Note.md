@@ -217,18 +217,18 @@ It can be accomplished in the following way:
 [MSVC](https://learn.microsoft.com/en-us/cpp/build/reference/std-specify-language-standard-version?view=msvc-170) compiler.
 Use *MSVC 19.30* or higher. Visual Studio 2022 Community Edition is distributed with *MSVC 19.32* at the moment of writing this text. 
 
-* **GCC**. Specify `-x c++ --std=c++20` if you're using Gnu Compiler Collection ([GCC](https://gcc.gnu.org/onlinedocs/gcc-3.3.6/gcc/G_002b_002b-and-GCC.html)). Use *GCC 10.1* or newer.
+* **GCC**. Specify `-x c++ --std=c++20` if you're using Gnu Compiler Collection ([GCC](https://gcc.gnu.org/onlinedocs/gcc-3.3.6/gcc/G_002b_002b-and-GCC.html)) please use *GCC 10.1* or newer.
 
-* **CLANG**. Specify `--std=c++20` if you're using ([CLang](https://clang.llvm.org/)). Use *Clang 10.0.0* or newer.
+* **CLANG**. Specify `--std=c++20` if you're using ([CLang](https://clang.llvm.org/)) please use *Clang 10.0.0* or newer.
 
 
 # Glossary
 
 **C/C++**. By C/C++, we mean C or C++ programming languages.
 
-**A Shallow Copy.** A shallow copy contains copies of all members of an object one by one. If the copied members are pointers to dynamic memory, then only pointers by themselves are copied.
+**A Shallow Copy.** A shallow copy contains copies of all members of an object one by one. If the copied members are pointers to dynamic memory, then only pointers by themselves are copied. Objects to which data pointers refer are not taken into consideration during shallow copying.
 
-**A Deep Copy.** A deep copy copies all dynamic memory objects referred to by any pointer members.
+**A Deep Copy.** A deep copy copies all dynamic memory objects referred to by any pointer members and data fields/members of object as well.
 
 **Upcast.** Casting object to its base class
 
@@ -356,6 +356,9 @@ But any interpretable languages are not a choice when actual time matters or sub
 12. Processors have a limited number of registers. If you have too many objects with too many wrappers around them the useful load for a real final compute device is smaller and degrades.
 
 13. There is no way to use special registers or special instructions of the processor from typical interpretable language (Bash, Python)
+
+14. The modern CPU devices (after 1980) and GPU compute devices are pretty complicated pipelined devices with different Functional Units (FU). Of such devices are L1, L2, L3 Data, and Instruction Caches. 
+To utilize these Caches the program should execute instructions in ISA for the CPU. Unfortunately, if you will execute the interpreter it's very likely that caches will hold data and instructions of the Interpreter itself.
 
 The interpretable language is excellent for prototyping. But any interpreter, any user space algorithm in it, can be beaten already by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
 
