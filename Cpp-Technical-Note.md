@@ -198,9 +198,9 @@ Do not get us wrong. If you have never seen the C/C++ language to obtain knowled
 
 If you're unsure whether you should learn C++ or not, then maybe the example presented in section *"Why learn C++ if I know Python (Toy Example)"* of this document will bring some consideration to your mind. C++ is complex, but currently, it's one of the fastest (in terms of execution speed in CPU) high-level, general-purpose programming languages in the world. It can be observed from comparison tests such as [benchmarksgame-team.pages.debian.net/benchmarksgame](https://benchmarksgame-team.pages.debian.net/benchmarksgame/performance/binarytrees-cpu.html) and checking the language in which compute demanding applications in your domain have been written. In our experience in most cases, it will be C/C++.
 
-Sometimes you need to write software to a software platform (Java Virtual Machine, JavaScript Engine, Python interpreter). This is the case for instance when you can not execute real code in a target computing machine for some reasons. In such circumstances, the defacto standard can be another programming language: not C/C++ at all or dialect of C/C++. Analyzing when it is good or bad is out of the scope of that technical note.
+Sometimes you need to write software to a software platform (Java Virtual Machine, JavaScript Engine, Python interpreter). This is the case for instance when you can not execute real code in a target computing machine for some reasons. In such circumstances, the defacto standard can be another programming language: not C/C++ at all or dialect of C/C++. Analyzing when it is good or bad to limit users from using C++ or in fact any compiled language is out of the scope of that technical note.
 
-That note is mainly based on materials from the Reference section and personal experience. We think that information can be helpful for three categories of people:
+That note is mainly based on materials from the [References](#references) section and personal experience. We think that information can be helpful for three categories of people:
 
 * People who want to refresh or go deep into several language constructions of C++
 * Obtain a pretty in-depth overview of new features from C++11/14/17/20
