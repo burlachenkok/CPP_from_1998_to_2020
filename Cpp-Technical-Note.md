@@ -2060,7 +2060,11 @@ If `consteval` function can not be run during compile time, it leads to compile 
 ### constinit (C++20)
 The order of initialization of usual `static` variables from different translation units in C++03/11 is undefined. And even more in C++03/11 `static` variables initialization in fact can happen in *compile-time* or in *run-time*.
 
-The `constinit` guarantees that a variable with static storage duration (global variables and static variables inside the functions) is initialized at *compile time*. The variable is mutable and is not nessesary a const, but initialization must be performed in compile time.
+The `constinit` guarantees that a variable with static storage duration (global variables and static variables inside the functions) is initialized at *compile time*. 
+
+The variable is mutable and is not nessesary a const, but initialization must be performed in compile time.
+
+The `constinit` modifier can only be applied for a variable with static storage duration.
 
 
 ```cpp
