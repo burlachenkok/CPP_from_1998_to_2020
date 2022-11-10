@@ -2016,7 +2016,7 @@ The keyword `const` prevent `const` objects from getting mutated. But `const` - 
 
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/constexpr).
 
-`constexpr` - indicating that it *should be possible* to evaluate the function at compile time if given constant expressions as arguments.
+The `constexpr` is a modifier of a function or a variable. The `constexpr` indicating that it *should be possible* to evaluate the function or expression at compile time if given constant expressions as arguments.
 
 **It can be run in compile time and in runtime.** 
 
