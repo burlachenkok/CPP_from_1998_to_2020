@@ -2047,9 +2047,7 @@ The `constexpr` functions requirements:
 * Function with `constexpr` modifier is **pure** function.
 
 ### consteval (C++20)
-The `consteval` expressions generated an immediate function. 
-
-**It can only be run in compile time.** 
+The `consteval` is a modifier of a function. The `consteval` expressions generated an immediate function, which **can only be run in compile time.** 
 
 If `consteval` function can not be run during compile time, it leads to compile time error Every call to `consteval` generates constant expression that is executed at compile time. The `consteval` functions has the same requirements as `constexpr` functions:
 
@@ -2059,6 +2057,8 @@ If `consteval` function can not be run during compile time, it leads to compile 
 
 ### constinit (C++20)
 The order of initialization of usual `static` variables from different translation units in C++03/11 is undefined. And even more in C++03/11 `static` variables initialization in fact can happen in *compile-time* or in *run-time*.
+
+The `constinit` is a modifier of a  variable with static storage duration.
 
 The `constinit` guarantees that a variable with static storage duration (global variables and static variables inside the functions) is initialized at *compile time*. 
 
