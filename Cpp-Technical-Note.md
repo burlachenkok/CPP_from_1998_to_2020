@@ -2397,7 +2397,13 @@ The **final specification** prevents a member function from being overridden in 
 be because you want to limit how a derived class can modify the behavior of the class interface. There is no contradiction in combining override and final. This states that you disallow any further overrides of the function you are overriding. [5, p.578].
 
 It is also possible to specify an entire class as **final**.
-That will enforce that no further derivation from the final class is possible.
+That will enforce that no further derivation from the final class is possible. Example:
+```cpp
+class A final
+{};
+// Compile time error
+// class B: public A {};
+```
 
 A function's access specifier determines whether you can call that function. It plays no role whatsoever, though, in determining whether you can override it.
 The consequence is that you can override a private virtual function of a given base class.
@@ -2638,6 +2644,46 @@ Documentation: [cpp reference about explicit keyword](https://en.cppreference.co
 
 ## 19. Current Exception. Internal Details.
 The construction in the standard library devoted for for concept of current exception object called *"Exception Pointer"*.  Starrting from C++11, it's possible to get it object via: [std::current_exception](https://en.cppreference.com/w/cpp/error/current_exception) and [std::exception_ptr](https://en.cppreference.com/w/cpp/error/exception_ptr).
+
+## 20. The trailing return type for member function and usual functions.
+Documentation: [cpp reference about trailiing return type](https://en.cppreference.com/w/cpp/language/function).
+
+```cpp
+auto sumA(int a, int b) -> int {
+    return a + b;
+}
+
+auto sumB(int a, int b) -> decltype(a+b) {
+    return a + b;
+}
+```
+
+## 21. Return type deduction for member/usual/templates functions. Also known as Placeholder Type Specifier.
+Documentation: [cpp reference about placeholder type specifier](https://en.cppreference.com/w/cpp/language/auto).
+
+```cpp
+// Return type deduction in templates: auto deduces to value type
+template <class T>
+auto sum1(T a, T b)
+{
+    return a + b;
+}
+
+// Return type deduction in templates: auto deduces to exact type of return expression
+template <class T>
+decltype(auto) sum2(T a, T b)
+{
+    return a + b;
+}
+
+auto sum3(int a, int b) {
+    return a + b;
+}
+
+decltype(auto) sum4(int a, int b) {
+    return a + b;
+}
+```
 
 # Miscellaneous Features of C++14
 
@@ -3229,7 +3275,7 @@ For more info: please view at "B.13.6 template" in Special Edition, Biern Strous
 
 4. An empty `template<>` is syntactically reserved for explicit specialization and cannot be used to create a template without parameters.
 
-5. A template specialization can be complete (type int), or partial (the type that uses T as the basis for something else). However, the general template must be declared before any partial or complete specialization. Also, partial specialization only works for classes but doesn't work for functions. Example:
+5. A template specialization can be complete (type int), or partial (the type that uses T as the basis for something else). However, the general template must be declared before any partial or complete specialization. Also, partial specialization only works for classes but doesn't work for functions. For functions to obtain something similar to the partial specialization you can combine template function definition with function overloading. Example:
 ```cpp
 template <class T>
 struct Single {
