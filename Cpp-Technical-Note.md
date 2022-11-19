@@ -3239,78 +3239,27 @@ export import :partb;
 
 # Templates
 
-1. In addition to type, template parameters include Non Type Parameters, which can have the type of integral constant, reference, and a pointer to a given function. Pointers to data of function must have an external link type. Starting from C++20, a template parameter can be of any fundamental type (bool, float, int, and so on), enumeration type, pointer type, and reference type. [4, p.380]. The compiler needs to be able to evaluate the arguments corresponding to all non-type parameters at compile time.
+A **template** describes a skeleton of code for a set of related classes or related functions. When you instantiate a template with a given set of template arguments the compiler generates a new definition of the class or template function based on provided template arguments. Creating a new definition of a function, class, or member function from specified template arguments for the template class or template function is called **template instantiation**. 
 
-2. You can use `template` to create a specialization for the array with a fixed size.
+## Template Parameters
+
+There are three types of template parameters that can be used during template class or template function definition:
+
+1. *Type parameters.* With function or class templates you can introduce template type parameters either using the `class` or `typename` keyword. 
+
+2. *Non-type parameters.* In addition to type, template parameters include Non Type Parameters, which can have the type of integral constant, reference, and a pointer to a given function. Pointers to data of function must have an external link type. Starting from C++20, a template parameter can be of any fundamental type (bool, float, int, and so on), enumeration type, pointer type, and reference type. [4, p.380]. The compiler needs to be able to evaluate the arguments corresponding to all non-type parameters at compile time.
+
+3. *Template template parameters.* A template can be customized with a template class. Details are avilable [1], Appendix B. Example:
 ```cpp
-#include "stdio.h"
-
-template<class T>
-void p(T a){ puts("not array"); }
-
-template<class T>
-void p(T a){ puts("not array"); }
-
-template<class T, int sz>
-void p( T (&t)[sz] ) { puts("array"); }
-
-int main(int argc, char *argv[]) {
-     intq[3];
-     p(q);
-     return 0;
-}
-```
-3. Very rarely, but sometimes while using templates inside templates, there is a need for the `template` qualifier is needed in case of difficulty in understanding.
-```cpp
-template <typename S, typename T>
-T* allocate(S& storage, int numberOfElements)
-{
-     T*res = 0;
-     // res = storage.alloc<T>(numberOfElements);
-     res = storage.template alloc<T>(numberOfElements);
-     return res ? true : false;
-}
-```
-For more info: please view at "B.13.6 template" in Special Edition, Biern Stroustrup.
-
-4. An empty `template<>` is syntactically reserved for explicit specialization and cannot be used to create a template without parameters.
-
-5. A template specialization can be complete (type int), or partial (the type that uses T as the basis for something else). However, the general template must be declared before any partial or complete specialization. Also, partial specialization only works for classes but doesn't work for functions. For functions to obtain something similar to the partial specialization you can combine template function definition with function overloading. Example:
-```cpp
-template <class T>
-struct Single {
-  Single() : var(T()) {}
-  T var;
-};
-
-template <class T>
-struct Single<T*> {
-  Single() : var(T()) {}
-  T var;
-  int extra_for_ptr;
-};
-
-template <>
-struct Single<int> {
-  Single() : var(int()) {}
-  int var;
-  int extra_for_int;
-};
-
-int main() {
-  Single<int> a;
-  a.extra_for_int = 1;
-  Single<int*> b;
-  b.extra_for_ptr = 1;
-
-  return 0;
-}
+    template<template<class, class> class H, class S>
+    struct T {
+       H<S, S> my_pair;
+    };
+    T<std::pair, int> aa;
 ```
 
 ## Template Syntax Remarks
-When instantiating a template, starting from C++11 not necessary to make a space in the right shift operator  `>>`. In the case of specifying an integral type in a template parameter and wishing to perform right-shift `>>`, you should enclose the expression in parentheses starting from C++11.
-
-Example of using `>>`:
+Starting from C++11 it is not necessary during instantiating a template, ake a space in the right shift operator `>>` when it's used during template instantiation. In the case of specifying an integral type in a template parameter and wishing to perform right-shift `>>`, you should enclose the expression in parentheses starting from C++11. Example of using `>>`:
 ```cpp
 template <class T, int size>
 class AA {
@@ -3319,8 +3268,55 @@ class AA {
 AA<std::vector<int>>, 2> obj;
 ```
 
-Derivation of the template from the list of function arguments
-from longer to shorter form A->B->C. On the complex rules of the admissible derivation of template arguments, functions see ([1], 13.4).
+The name of a template class or a template function augmented with the list of parameter names for the template between angle brackets is called the **template-id** (See cpp [reference documentation](https://en.cppreference.com/w/cpp/language/templates)).
+
+During the definition of a member function or a static member of a template class, there are two aspects. 
+
+First, it’s not essential to use the full **template-id** within a template definition. Example:
+```cpp
+template <typename T>
+class ClassA
+{
+public:
+    ClassA(size_t size) {}
+    static void print(const ClassA& ctr) {}
+};
+
+template <typename T>
+class ClassB {
+public:
+    ClassB<T>(size_t size) {}
+    static void print(const ClassB<T>& ctr) {}
+};
+```
+Secondary,  if you are defining methods of a template class outside the template class definition then the name of the class must be qualified with **template id**. However syntactically after passing the scope resolution `::` there is no reason to use full qualified **template id**. Example:
+```cpp
+template<class Tx, class Ty> class MyPair {
+private:
+    Tx first;
+    Ty second;    
+public:
+    MyPair(const Tx& theFirst = Tx(), 
+           const Ty& theSecond = Ty());
+    void f(){}
+};
+
+#if 1
+template<class Tx, class Ty>
+MyPair<Tx,Ty>::MyPair(const Tx& theFirst, 
+                      const Ty& theSecond)
+: first(theFirst), second(theSecond) {}
+#else
+// Obsolete and too long. 
+// However syntactically correct.
+template<class Tx, class Ty>
+MyPair<Tx, Ty>::MyPair<Tx, Ty>(const Tx& theFirst, 
+                               const Ty& theSecond)
+    : first(theFirst), second(theSecond) {}
+#endif
+```
+
+It's possible to use different syntaxes for function specialization from longer to shorter syntax (A->B->C). On the complex rules of the admissible derivation of template arguments, functions see ([1], 13.4).
 
 ```cpp
 template <class T>
@@ -3362,68 +3358,36 @@ int main() {
 }
 ```
 
-Default template arguments type must occur at the end for class or variable template. However, for function templates, it's not a requirement because, for functions, there is a rich type deduction template mechanism.
+Finally, we would like to mention that default template arguments type must occur at the end for class or variable template. However, for function templates, it's not a requirement because, for functions, there is a rich type deduction template mechanism.
 
-For compilation purposes, you may want to request **explicit template instantiation**. Explicit instantiation of a class template instantiates all members. It's possible to instantiate only individual template class member functions too.
+## Template instantiation
 
-Example of syntax:
+Templates can be instantiated in two forms: 
+
+* **Implicit instantiation.** The compiler will generate a specialization for the template only when it needs the definition. For example, the compiler instantiates a class template as a result of a definition of an object with of specific template instantiated type. All member function definitions in the class template are templates. When the code for member functions of the class template is needed they are generated by the compiler. If the member of the template class is not needed by the program then the compiler won’t create instances of a member function or anything which is not required.
+
 ```cpp
-template class MyVector<int>;
+MyPair<int,int> a;
+```
+
+* **Explicit instantiation.** Explicitly instantiating a class template generates the complete class type definition and in fact, instantiates all member functions. This happens regardless of whether you 
+call the member functions or not. Syntax:
+```cpp
+// explicit instantiation of a class 
+template class MyPair<int, int>;
+// explicit instantiation of a function member
+template void MyPair<int,int>::f(); 
 template void f<int>(int&);
 template void g(double&);
-template void MyVector<int>::size();
 ```
 
-Also, one more complication - there must be exactly one definition of the corresponding specialization. So if you instantiate a template explicitly in one translation unit, you should not explicitly instantiate it in another.
-Example of syntax:
-
-```cpp
-extern template class MyVector<int>;
-extern template void f<int>(int&);
-extern template void g(double&);
-extern template void MyVector<int>::size();
-```
-
-Let's assume you define template class Array, e.g. in the following way:
-```cpp
-template <typename T>
-class Array {
-public:
-  explicit Array<T>(size_t size);
-  ~Array<T>();
-  Array<T>(const Array<T>& array);
-private:
-  T* m_elements; // Array of type T
-  size_t m_size; // Number of array elements
-};
-```
-
-Using the complete(full) template identifier within a template definition scope is not essential. So the following is the legal code:
-```cpp
-template <typename T>
-class Array {
-public:
-  explicit Array(size_t size);
-  ~Array();
-  Array(const Array& array);
-private:
-  T* m_elements; // Array of type T
-  size_t m_size; // Number of array elements
-};
-```
-The same is applied during template class member definitions. After name resolution operator `::` you don't need to repeat the full template class specification. [4, p.638]
-```cpp
-template <typename T>
-Array<T>::Array(size_t size)
-: m_elements {new T[size] {}},m_size {size}
-{}
-```
+Explicit instantiation of a class template instantiates all members. Explicit instantiation can be used to quickly test whether a class template and all its member templates can be instantiated without errors.
 
 ## Variadic Templates
-Variadic templates has been introduced in C++11. The motivation is to have the ability to work with a varying number of template parameters. The smallest example:
+Variadic templates have been introduced in C++11. The motivation is to have the ability to work with a varying number of template parameters during template definition. The smallest example:
 ```cpp
 template <class T...>
-void f(const T&...arg)
+void f(const T&...arg){}
 ```
 
 Example of performing *printf* in variadic template style (The example is typical and can be found for example in [that](https://stackoverflow.com/questions/17671772/c11-variadic-printf-performance) question in the [StackOverflow](https://stackoverflow.com/)):
@@ -3458,8 +3422,8 @@ Packing operations:
 * `(Arg&&....params)` - template function arguments parameters **pack**.
 
 Unpacking operations:
-* `Args...` - **unpack** parameters. Used inside the body of the template function.
-* `sizeof...(Args)` - size of of parameters in terms of number of elements in Args. (It is not the size in bytes).
+* `Args...` - **unpack** parameters (or **pack expansion**). Used inside the body of the template function.
+* `sizeof...(Args)` - the size of parameters in terms of a number of elements in Args. (It is not the size in bytes).
 
 The last trick with a variadic template is called *fold expression* has been introduced in C++17. The unary syntax for fold expression:
 ```cpp
@@ -3470,7 +3434,97 @@ template<typename... Args>
 bool allRightFold(Args... args) { return (args&& ...); }  // Unary left fold (... op E) becomes (((E1 op E2) op ...) op EN)
 ```
 
-Documentation [cpp reference details](https://en.cppreference.com/w/cpp/language/fold)
+Documentation: [cpp reference details about folding](https://en.cppreference.com/w/cpp/language/fold)
+
+## Template Specialization
+
+Override the default behavior for template instantiation is called *specialization*. An explicit specialization declaration must appear after the declaration of the primary/general-template at least due to the language requirements. In C++ you can specialize the following things:
+
+1. Function template and class template.
+2. Member function of a class template
+3. Static data member of a class template.
+4. Member class of a class template.
+5. Template member function of a class template.
+6. Member class template of a class template.
+
+A template specialization can be:
+* **Complete.** For example make specialization for some concrete types. A complete class template specialization is a class definition. starting with `template<>`, and it is not a class template. In fact, an empty `template<>` is syntactically reserved for explicit specialization and cannot be used to create a template without parameters. 
+
+* **Partial.** A Partial Specialization is a specialization of template  for specific cases. The partial specialization of the original template is a template. The template uses type T as the basis for something else. Partial specialization only works for classes but doesn't work for template functions. For template functions to obtain behavior similar to the partial specialization you can combine template function definition with function overloading. A partial specialization has both a template argument list and a template parameter list. The compiler uses partial specialization if its template argument list matches a subset of the template arguments of a template instantiation.
+
+Example of partial and complete class specialization:
+```cpp
+template <class T>
+struct Single {
+  Single() : var(T()) {}
+  T var;
+};
+
+template <class T>
+struct Single<T*> {
+  Single() : var(T()) {}
+  T var;
+  int extra_for_ptr;
+};
+
+template <>
+struct Single<int> {
+  Single() : var(int()) {}
+  int var;
+  int extra_for_int;
+};
+
+int main() {
+  Single<int> a;
+  a.extra_for_int = 1;
+  Single<int*> b;
+  b.extra_for_ptr = 1;
+
+  return 0;
+}
+```
+
+## Miscellaneous 
+The general template must be declared before any partial or complete specialization. Each instantiated class template specialization has its own copy of any static members. You may explicitly specialize static members.
+
+In a function template specialization, a template argument is optional if the compiler can deduce it from the type of the function arguments. 
+
+You can nest member templates within many enclosing class templates. If you explicitly specialize a template nested within several enclosing class templates, you must prefix the declaration with `template<>` for every enclosing class template you specialize. You cannot explicitly specialize a class template unless its enclosing class templates are also explicitly specialized.
+
+Each class template instantiation has its own copy of any static data members.
+
+You can use `template` to create a specialization for the array with a fixed size.
+```cpp
+#include "stdio.h"
+
+template<class T>
+void p(T a){ puts("not array"); }
+
+template<class T>
+void p(T a){ puts("not array"); }
+
+template<class T, int sz>
+void p( T (&t)[sz] ) { puts("array"); }
+
+int main(int argc, char *argv[]) {
+     intq[3];
+     p(q);
+     return 0;
+}
+```
+
+Very rarely, but sometimes while using templates inside templates, there is a need for the `template` qualifier is needed in case of difficulty in understanding.
+```cpp
+template <typename S, typename T>
+T* allocate(S& storage, int numberOfElements)
+{
+     T*res = 0;
+     // res = storage.alloc<T>(numberOfElements);
+     res = storage.template alloc<T>(numberOfElements);
+     return res ? true : false;
+}
+```
+For more info: please view "B.13.6 template" in Special Edition, Biern Stroustrup.
 
 ## Reference Collapsing Rules and Universal Reference
 
