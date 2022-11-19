@@ -178,11 +178,7 @@ Revision Update: Oct 01, 2022
   - [Using Modules](#using-modules)
   - [Splitting Modules](#splitting-modules)
 - [Templates](#templates)
-  - [Template Syntax Remarks](#template-syntax-remarks)
-  - [Variadic Templates](#variadic-templates)
-
-- [Templates](#templates)
-  - [Template Parameters]
+  - [Template Parameters](#template-parameters)
   - [Template Syntax Remarks](#template-syntax-remarks)
   - [Template Instantiation](#template-specialization)
   - [Variadic Templates](#variadic-templates)
