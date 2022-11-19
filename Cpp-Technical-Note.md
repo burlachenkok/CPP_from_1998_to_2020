@@ -180,6 +180,14 @@ Revision Update: Oct 01, 2022
 - [Templates](#templates)
   - [Template Syntax Remarks](#template-syntax-remarks)
   - [Variadic Templates](#variadic-templates)
+
+- [Templates](#templates)
+  - [Template Parameters]
+  - [Template Syntax Remarks](#template-syntax-remarks)
+  - [Template Instantiation](#template-specialization)
+  - [Variadic Templates](#variadic-templates)
+  - [Template Specialization](#template-specialization)
+  - [Templates Miscellaneous](#templates-miscellaneous)
   - [Reference Collapsing Rules and Universal Reference](#reference-collapsing-rules-and-universal-reference)
 - [Variants of Casting](#variants-of-casting)
 - [Concepts (from C++20)](#concepts-from-c20)
@@ -3487,7 +3495,7 @@ int main() {
 }
 ```
 
-## Miscellaneous 
+## Templates Miscellaneous 
 The general template must be declared before any partial or complete specialization. Each instantiated class template specialization has its own copy of any static members. You may explicitly specialize static members.
 
 In a function template specialization, a template argument is optional if the compiler can deduce it from the type of the function arguments. 
