@@ -136,6 +136,9 @@ Revision Update: Oct 01, 2022
   - [17. Concurrency Support](#17-concurrency-support)
   - [18. Explicit Conversion Functions](#18-explicit-conversion-functions)
   - [19. Current Exception. Internal Details.](#19-current-exception-internal-details)
+  - [20. The trailing return type for functions.](#20-The-trailing-return-type-for-functions)
+  - [21. Return type deduction.](#19-return-type-deduction)
+
 - [Miscellaneous Features of C++14](#miscellaneous-features-of-c14)
   - [1. deprecated Attribute](#1-deprecated-attribute)
   - [2. Return Type Deduction](#2-return-type-deduction)
@@ -2645,7 +2648,7 @@ Documentation: [cpp reference about explicit keyword](https://en.cppreference.co
 ## 19. Current Exception. Internal Details.
 The construction in the standard library devoted for for concept of current exception object called *"Exception Pointer"*.  Starrting from C++11, it's possible to get it object via: [std::current_exception](https://en.cppreference.com/w/cpp/error/current_exception) and [std::exception_ptr](https://en.cppreference.com/w/cpp/error/exception_ptr).
 
-## 20. The trailing return type for member function and usual functions.
+## 20. The trailing return type for functions.
 Documentation: [cpp reference about trailiing return type](https://en.cppreference.com/w/cpp/language/function).
 
 ```cpp
@@ -2658,7 +2661,7 @@ auto sumB(int a, int b) -> decltype(a+b) {
 }
 ```
 
-## 21. Return type deduction for member/usual/templates functions. Also known as Placeholder Type Specifier.
+## 21. Return type deduction
 Documentation: [cpp reference about placeholder type specifier](https://en.cppreference.com/w/cpp/language/auto).
 
 ```cpp
