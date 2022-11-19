@@ -180,7 +180,7 @@ Revision Update: Oct 01, 2022
 - [Templates](#templates)
   - [Template Parameters](#template-parameters)
   - [Template Syntax Remarks](#template-syntax-remarks)
-  - [Template Instantiation](#template-specialization)
+  - [Template Instantiation](#template-instantiation)
   - [Variadic Templates](#variadic-templates)
   - [Template Specialization](#template-specialization)
   - [Templates Miscellaneous](#templates-miscellaneous)
@@ -3367,7 +3367,7 @@ int main() {
 
 Finally, we would like to mention that default template arguments type must occur at the end for class or variable template. However, for function templates, it's not a requirement because, for functions, there is a rich type deduction template mechanism.
 
-## Template instantiation
+## Template Instantiation
 
 Templates can be instantiated in two forms: 
 
