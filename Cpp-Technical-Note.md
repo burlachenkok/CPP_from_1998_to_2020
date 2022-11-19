@@ -137,7 +137,7 @@ Revision Update: Oct 01, 2022
   - [18. Explicit Conversion Functions](#18-explicit-conversion-functions)
   - [19. Current Exception. Internal Details.](#19-current-exception-internal-details)
   - [20. The trailing return type for functions.](#20-The-trailing-return-type-for-functions)
-  - [21. Return type deduction.](#19-return-type-deduction)
+  - [21. Return type deduction.](#21-return-type-deduction)
 
 - [Miscellaneous Features of C++14](#miscellaneous-features-of-c14)
   - [1. deprecated Attribute](#1-deprecated-attribute)
@@ -2661,7 +2661,7 @@ auto sumB(int a, int b) -> decltype(a+b) {
 }
 ```
 
-## 21. Return type deduction
+## 21. Return type deduction.
 Documentation: [cpp reference about placeholder type specifier](https://en.cppreference.com/w/cpp/language/auto).
 
 ```cpp
