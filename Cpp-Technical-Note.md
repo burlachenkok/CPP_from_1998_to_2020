@@ -2902,7 +2902,7 @@ class ObjectsOld {
 // somewhere in cpp unit
 size_t ObjectsOld::s_object_count;
 ```
-Documentation: [cpp reference details about inline keyword](https://en.cppreference.com/w/cpp/string/basic_string_view).
+Documentation: [cpp reference details about inline specifier](https://en.cppreference.com/w/cpp/language/inline).
 
 
 ## 11. The Exception Specification has been Removed
