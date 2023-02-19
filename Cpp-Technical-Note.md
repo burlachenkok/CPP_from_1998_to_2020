@@ -3266,7 +3266,7 @@ There are three types of template parameters that can be used during template cl
 ```
 
 ## Template Syntax Remarks
-Starting from C++11 it is not necessary during instantiating a template, ake a space in the right shift operator `>>` when it's used during template instantiation. In the case of specifying an integral type in a template parameter and wishing to perform right-shift `>>`, you should enclose the expression in parentheses starting from C++11. Example of using `>>`:
+Starting from C++11 it is not necessary during instantiating a template, write a space in the right shift operator `>>` when it's used during template instantiation. In the case of specifying an integral type in a template parameter and wishing to perform right-shift `>>`, you should enclose the expression in parentheses starting from C++11. Example of using `>>`:
 ```cpp
 template <class T, int size>
 class AA {
@@ -3279,7 +3279,7 @@ The name of a template class or a template function augmented with the list of p
 
 During the definition of a member function or a static member of a template class, there are two aspects. 
 
-First, it’s not essential to use the full **template-id** within a template definition. Example:
+First, it’s not necessary to use the full **template-id** within a template definition. Example:
 ```cpp
 template <typename T>
 class ClassA
@@ -3314,8 +3314,7 @@ MyPair<Tx,Ty>::MyPair(const Tx& theFirst,
                       const Ty& theSecond)
 : first(theFirst), second(theSecond) {}
 #else
-// Obsolete and too long. 
-// However syntactically correct.
+// Obsolete and too long. However syntactically it is correct as well.
 template<class Tx, class Ty>
 MyPair<Tx, Ty>::MyPair<Tx, Ty>(const Tx& theFirst, 
                                const Ty& theSecond)
@@ -3520,7 +3519,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-Very rarely, but sometimes while using templates inside templates, there is a need for the `template` qualifier is needed in case of difficulty in understanding.
+Sometimes while using templates inside templates, there is a need for the `template` qualifier is needed in case of difficulty in understanding.
 ```cpp
 template <typename S, typename T>
 T* allocate(S& storage, int numberOfElements)
