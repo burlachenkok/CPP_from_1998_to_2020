@@ -3815,3 +3815,18 @@ The mindset that C++ is shaping, helps to look into details and abstract when ne
 [10] [Useful catalog of resources from CppReference: Standards, ABI](https://en.cppreference.com/w/cpp/links)
 
 [11] [Compiler Explorer. An interactive online compiler which shows the assembly output of compiled C++, Rust, Go](https://godbolt.org/)
+
+# How to cite this C++ Technical Note
+
+In case if you decide to cite this note, please use the following bibtex entry type:
+
+```
+@techreport{burlachenkok2020cpp,
+author = {Burlachenko, Konstantin},
+title = {C++ from 1998 to 2020},
+year = {2022},
+institution = {GitHub},
+url = {https://github.com/burlachenkok/CPP_from_1998_to_2020},
+note = {Accessed: 2022-01-14}
+}
+```
