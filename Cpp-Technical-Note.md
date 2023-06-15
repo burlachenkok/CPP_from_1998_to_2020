@@ -4498,6 +4498,80 @@ Whether they are needed or not, it's not bad to be aware of them. Unfortunately,
 
 3. Brittle Base Class problem. what should a base class have to serve all conceivable derived classes without having any dummy data and methods.
 
+# Another Code Optimization Methods
+
+Based on materials from [MIT 6-172, 2018](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/1a57adbec9520270d4485b42a2e1a316_MIT6_172F18_lec2.pdf).
+
+**Preparation:**
+
+First get correct working code. Then add preserving correctness regression testing. The compiler automates many low-level
+optimizations. To tell if the compiler is actually performing a
+particular optimization, look at the assembly code.
+
+
+**Optimization:**
+
+1. **Select Good Algorithm.** The good assymptotically rate algorithm is not nessesary the fastest, however it's a good start heuristic.
+
+2. **Pack structure into bits.** If you have structure that stores intgeger with values you can facilitates bitfields in C/C++. This method save space, but to extract and set bits the read and write will be really coupled with bit operations.
+
+    > Sometimes unpacking and decoding are the
+    optimization, depending on whether more work is
+    involved moving the data or operating on it.
+
+3. **Data structure augmentation.** Motivation is to add information to a data structure to make common operations do less work.
+
+4. **Precomputation.** The idea of precomputation is to perform calculations in advance so as to avoid doing them at "missioncritical" times. We precompute the table of coefficients when initializing, and perform table look-up at runtime.
+
+5. **Compile-Time Initialization.** The idea of compile-time initialization is to store the values of constants during compilation, saving work at execution time. One way is create code snippet which generate function for you. (Such technic is called meta programming).
+
+6. **Caching.** The idea of caching is to store results that have been accessed recently so that the program need not
+compute them again.
+
+7. **Exploit Sparsity.** The idea of exploiting sparsity is to avoid storing and computing on zeroes. Structures such as Compressed Sparse Row(CSR) can be used for compress information about sparse matrix, sparse graphs, sparse weighted graph.
+
+8. **Constant folding and propagation.** The idea of constant folding and propagation is to
+evaluate constant expressions and substitute the
+result into further expressions during compilation.
+
+9. **Common-Subexpression Elimination.** Avoid computing the same expression multiple times by evaluating the expression once and storing the result for later use.
+
+10. **Algebraic Identities.** Replace expensive algebraic expressions with algebraic equivalents that require less work.
+
+11. **Short-Circuiting.** When performing a series of tests stop evaluating as soon as you know the answer. The `&&`, `||`
+are short-circuiting logical operators from C/C++.
+
+12. **Ordering Tests.** Perform those tests which are more often successful or alternative is selected by the test before tests that are rarely successful. Inexpensive tests
+should precede expensive ones. 
+
+13. **Creating a Fast Path.** In Computer Graphics people apply checks based on Axis Aligned Boundinx Boxes. Try construct the same thing for your situation.
+
+14. **Combining Tests.** Replace a sequence of tests with one test or switch.
+
+15. **Hoisting.** Hoisting (also called loop-invariant code
+motion) is to avoid recomputing loop-invariant code.
+in the the body of a loop.
+
+16. **Sentinels.** Sentinels are special dummy values placed in a data structure to simplify the logic of boundary conditions and in particular, the handling of loop - exit tests.
+
+17. **Loop Unrolling.**  Attempt to save work by combining
+several consecutive iterations of a loop into a single
+iteration. Another benefit of loop unrolling it opens more compiler otptimization to apply.
+    * *Full loop unrolling:* All iterations are unrolled
+    * *Partial loop unrolling:* Several, but not all, of the
+    iterations are unrolled.
+
+18. **Loop Fusion.** Loop fusion(also called jamming) is to
+combine multiple loops over the same index, saving the overhead
+of loop control.  In addition this tenchnique is good for cache locality, and during loop fusion common subexpression may be obtained.
+
+19. **Eliminating Wasted Iterations.** Modify loop bounds to avoid executing loop iterations over empty loop bodies.
+
+20. **Tail-Recursion Elimination.** For recursive functions replace a recursive call that occurs as the last step of a function with a branch, saving function-call overhead.
+
+21. **Coarsening Recursion.** The idea of coarsening recursion is to increase the size of the base case and handle it with more efficient code that avoids function-call overhead.
+
+
 # Acknowledgements
 
 Me, Konstantin Burlachenko, would like to acknowledge:
