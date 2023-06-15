@@ -2348,15 +2348,20 @@ According to the Microsoft documentation, we can use `__declspec(noalias)` in th
 ## Popular Compiler Flags for Optimization
 
 Below are compiler flags for GCC/CLANG which can be useful for your code optimization:
-* **-O3:** Aggressive optimization.
+* [-O0](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#index-O0) : Do not optimize
+* [-Og](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#index-Og): Flag for debugging purposes
+* [-O1](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#index-O): Optimize
+* [-O2](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#index-O2): Optimize even more. 
+* [-O3](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#index-O3): Aggressive optimization.
+* [-OS](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#index-Os) : Optimize to limit code size
 * **-march=core2:** Tune for a specific architecture.
 * **-march=native -mtune=native:** Automatic detection of current processors' features and tune for it.
-* **-ftree-vectorize:** Automatic use of SSE (supposedly).
-* **-funroll-loops:** Loop unrolling.
-* **-ffast-math:** Unsafe floating-point optimizations.
-* **-fno-rtti:** Turn of RTTI (no dynamic_cast, typeid)
+* [-ftree-vectorize](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#index-ftree-vectorize): Automatic use of SSE.
+* [-funroll-loops](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#index-funroll-loops): Loop unrolling.
+* [-ffast-math](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#index-ffast-math): Unsafe floating-point optimizations.
+* **-fno-rtti**: Turn of RTTI (no dynamic_cast, typeid)
 * **-fno-exceptions:** Turn of exception support from C++
-* **-flto:** Turn on global program optimization (link-time optimization). LTO can help with aliasing, inlining theoretically, however, in practice, it is not always the case.
+* [-flto](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#index-flto): Turn on global program optimization (link-time optimization). LTO can help with aliasing, inlining theoretically, however, in practice, it is not always the case.
 
 ## Several Principles for Code Optimization
 * Sometimes recomputing is faster than saving/loading
