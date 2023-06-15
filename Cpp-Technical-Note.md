@@ -140,7 +140,6 @@ Revision Update: June 15, 2023
   - [19. Current Exception. Internal Details.](#19-current-exception-internal-details)
   - [20. The Trailing Return Type For Functions.](#20-The-trailing-return-type-for-functions)
   - [21. Return Type Deduction.](#21-return-type-deduction)
-
 - [Miscellaneous Features of C++14](#miscellaneous-features-of-c14)
   - [1. deprecated Attribute](#1-deprecated-attribute)
   - [2. Return Type Deduction](#2-return-type-deduction)
@@ -172,8 +171,8 @@ Revision Update: June 15, 2023
   - [9. Abbreviated Function Templates](#9-abbreviated-function-templates)
   - [10. Automatic generation of `!=` from `==`.](#10-automatic-generation-of--from-)
   - [11. Designated initializers](#11-designated-initializers)
-  - [12. __has_cpp_attribute feature test](#12.-__has_cpp_attribute-feature-test)
-  - [13. Feature Test Macro](#13.-feature-test-macro)
+  - [12. __has_cpp_attribute feature test](#12-__has_cpp_attribute-feature-test)
+  - [13. Feature Test Macro](#13-feature-test-macro)
 - [Modules (from C++20)](#modules-from-c20)
   - [Single Module Interface File/Module Unit](#single-module-interface-filemodule-unit)
   - [Module Interface File With Implementation inside it](#module-interface-file-with-implementation-inside-it)
