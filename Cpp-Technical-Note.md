@@ -16,7 +16,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision Update: March 29, 2023
+Revision Update: June 15, 2023
 
 © 2022-2023 Konstantin Burlachenko, all rights reserved.
 
@@ -109,9 +109,11 @@ Revision Update: March 29, 2023
   - [Compiler Implementation Relative Questions](#compiler-implementation-relative-questions)
   - [std::aligned_storage](#stdaligned_storage)
   - [Memory Aliasing and restrict](#memory-aliasing-and-restrict)
+  - [Popular Compiler Flags for Optimization](#popular-compiler-flags-for-optimization)
+  - [Several Principles for Code Optimization](#several-principles-for-code-optimization)
 - [Lambda Functions](#lambda-functions)
 - [Move Semantics](#move-semantics)
-- [Virtual and Polymorphism in C++](#virtual-and-polymorphism-in-c)
+- [Virtual Functions and Polymorphism in C++](#virtual-functions-and-polymorphism-in-c)
   - [General Rules from C++03](#general-rules-from-c03)
   - [Override Specification (from C++11)](#override-specification-from-c11)
   - [Final Specification](#final-specification)
@@ -136,8 +138,8 @@ Revision Update: March 29, 2023
   - [17. Concurrency Support](#17-concurrency-support)
   - [18. Explicit Conversion Functions](#18-explicit-conversion-functions)
   - [19. Current Exception. Internal Details.](#19-current-exception-internal-details)
-  - [20. The trailing return type for functions.](#20-The-trailing-return-type-for-functions)
-  - [21. Return type deduction.](#21-return-type-deduction)
+  - [20. The Trailing Return Type For Functions.](#20-The-trailing-return-type-for-functions)
+  - [21. Return Type Deduction.](#21-return-type-deduction)
 
 - [Miscellaneous Features of C++14](#miscellaneous-features-of-c14)
   - [1. deprecated Attribute](#1-deprecated-attribute)
@@ -170,6 +172,8 @@ Revision Update: March 29, 2023
   - [9. Abbreviated Function Templates](#9-abbreviated-function-templates)
   - [10. Automatic generation of `!=` from `==`.](#10-automatic-generation-of--from-)
   - [11. Designated initializers](#11-designated-initializers)
+  - [12. __has_cpp_attribute feature test](#12.-__has_cpp_attribute-feature-test)
+  - [13. Feature Test Macro](#13.-feature-test-macro)
 - [Modules (from C++20)](#modules-from-c20)
   - [Single Module Interface File/Module Unit](#single-module-interface-filemodule-unit)
   - [Module Interface File With Implementation inside it](#module-interface-file-with-implementation-inside-it)
@@ -190,6 +194,10 @@ Revision Update: March 29, 2023
   - [Define Concepts](#define-concepts)
   - [Use Concepts](#use-concepts)
 - [Coroutines (C++20)](#coroutines-c20)
+- [Appendices](#appendices)
+  - [Virtual Inheritance Inside](#virtual-inheritance-inside)
+  - [Object Orientated Design](#object-orientated-design)
+  - [Object Orientated Design Patterns](#object-orientated-design-patterns)
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
 
@@ -883,7 +891,8 @@ The original C specification says that the actual directory in which the compile
 | `__DATE__`, `__TIME__` | Date and time of source file compilation.|
 | `__STDC__ ` | Compiler conforms to the C standard. |
 | `__VA_ARGS__` | Only C++11 and C99 formally support that, but informally `__VA_ARGS__` is often supported. This built-in name can be used for macros with an arbitrary number of the argument. When the macro is invoked, all the tokens in its argument list `...`, including any commas, become the variable argument.
-| `__cplusplus` | C++ version. |
+| `__cplusplus` | Version of C++ standard that is being used. For MSVC you should provide compiler option
+`/Zc:__cplusplus`.|
 | `__STDC_VERERSION__` | Version of standard C. |
 
 Example with using `__VA_ARGS__`: 
@@ -1816,8 +1825,8 @@ The typename keyword must be used in three tasks.
       return *max_i;
     }
     ```
-There is also a very detailed description of the `typename` keyword here:
-[http://stackoverflow.com/questions/610245/where-and-why-do-i-have-to-put-the-template-and-typename-keywords](http://stackoverflow.com/questions/610245/where-and-why-do-i-have-to-put-the-template-and-typename-keywords).
+    There is also a very detailed description of the `typename` keyword here:
+    [http://stackoverflow.com/questions/610245/where-and-why-do-i-have-to-put-the-template-and-typename-keywords](http://stackoverflow.com/questions/610245/where-and-why-do-i-have-to-put-the-template-and-typename-keywords).
 
 # Class Constructor and Destructors
 
@@ -2013,7 +2022,7 @@ In C++98 constant member arrays are impossible to initialize, but in C++11, ther
 ```cpp
 int a[] {1,8,8}
 ```
-Here `{1,8,8}` - is an initialization list. This construction implicitly casts rigth hand side to `std::initializer_list<T>`. Ctor. with initialization, list argument has priority during overloading.
+Here `{1,8,8}` - is an initialization list. This construction implicitly casts right hand side to `std::initializer_list<T>`. Ctor. with initialization, the list argument has priority during overloading.
 
 Type deduction in template functions does not work for `std::initializer_list` type. But for auto works fine.  **It is one place where auto != template**. Example
 ```cpp
@@ -2202,56 +2211,98 @@ The essence of `restrict` is described in [2,p.94], and here we repeat it shortl
 
 In the case of using objects by `RValue,` the restriction does not impose any semantic restriction of memory not overlapping where pointed objects are located.
 
+## Popular Compiler Flags for Optimization
+
+Below are compiler flags for GCC/CLANG which can be useful for your code optimization:
+* **-O3:** Aggressive optimization.
+* **-march=core2:** Tune for a specific architecture.
+* **-march=native -mtune=native:** Automatic detection of current processors' features and tune for it.
+* **-ftree-vectorize:** Automatic use of SSE (supposedly).
+* **-funroll-loops:** Loop unrolling.
+* **-ffast-math:** Unsafe floating-point optimizations.
+* **-fno-rtti:** Turn of RTTI (no dynamic_cast, typeid)
+* **-fno-exceptions:** Turn of exception support from C++
+* **-flto:** Turn on global program optimization (link time optimization).
+
+## Several Principles for Code Optimization
+* Sometimes recomputing is faster than saving/loading
+* Avoid branches inside the internal loop
+* Use local variables to expose independent computations
+* You should decide what to use for function calculation or table of precomputed values
+* You can make several (independent) passes over a data structure or one combined pass
+* Dense operations or operation that exploits sparsity
+
+These principles have been taken from a course [12] at Cornell University.
+
 # Lambda Functions
 
 Lambda expressions offer a convenient, compact syntax to quickly define callback functions. Basic syntax:
 ```cpp
 [] (int x, int y) { return x < y; }
 ```
-* []. The opening square brackets are called the lambda introducer.
-* (int x, int y). lambda parameter list between round parentheses. You may omit the empty parameter list for lambda functions without parameters and write: `[] {...}`.
+Terminology:
+* `[]` - The opening square brackets are called the lambda introducer.
 
-*Closure* in math set with its boundary (*functional analysis*) or family function, which can be achieved via constructing all possible formulas under basis function (*discrete math*).
+* `(int x, int y)` - lambda parameter list between round parentheses. You may omit the empty parameter list for lambda functions without parameters and write: `[] {...}`.
 
-But in C++ *lambda closure* is functional object (instance of the class) with defined:
-  `ret_type operator()(<list of arguments>) const`
-The closure type name is not specified by C++, but you automatically deduce if for specific variable via using `auto`. Example:
+* *Closure in Math* - in math, it is (i) a set with its boundary (*functional analysis*) or (ii) family function, which can be achieved via constructing all possible formulas under basis function (*discrete math*).
 
-```cpp
-auto isOdd = [](int x) { return x % 2 == 1;};
-```
+* *Closure in C++* - in C++ *lambda closure* is a functional object (instance of the class) with the defined:
+  ```cpp
+  ret_type operator()(<list of arguments>) const
+  ```
+  C++ does not specify the closure type name, but you automatically deduce it for a specific variable using `auto`. Example:
 
-The compiler creates that object during parsing lambda expression. So Lambda's in fact generate C++ classes with `operator()`.
+  ```cpp
+  auto isOdd = [](int x) { return x % 2 == 1;};
+  ```
+
+The compiler creates the *closure object* during parsing lambda expression. So essentially Lambda's in fact generate C++ classes with overloaded `operator()`.
 
 It's possible to add the keyword `mutable` to the definition of a lambda expression right after the parameter list. Doing so causes the compiler to omit the `const` keyword from the function call operator of the generated class.
 
-You can refer to variables with static storage duration in lambdas. They all are captured.
+You can refer to variables with static storage duration in Lambdas. They are available inside the closure. The technical term for this is that they are *captured*.
 
-You can use lambda to capture values "by value". In such a case, captured variables will be copied to a function object (closure).
+You can use lambda to capture values **by value**. In such a case, captured variables will be copied to a function object (closure). Example: 
+```cpp
+[captureVar1,captureVar2](int arg1){}
+```
 
-Example: `[captureVar1,captureVar2](int arg1){}`
+You can capture variables **by reference**. To do this use `&`. In the context of lambda `&` means capture by reference, not dereferencing operator. Example: 
 
-You can capture variables by reference. `&` - in context of lambda `&` means capture by reference, not dereferencing operator. Example: `[&captureVar1,&captureVar2](int arg1){}`
+```cpp
+[&captureVar1,&captureVar2](int arg1){}
+```
 
-It exists notation to capture all non-static variables by value, or by reference:
+Next, it exists a notation to capture all non-static variables by value, or by reference:
 
-`[=](int arg1){} // capture all not-static vars by value`
+```cpp
+[=](int arg1){} // capture all not-static vars by value
+[&](int arg1){} // capture all not-static vars by reference
+```
 
-`[&](int arg1){} // capture all not-static vars by reference`
+Next, a notation exists to capture all non-static vars by value or reference and specify something for other variables. Example:
+* Capturing all not-static vars by reference,
+* Capture by value Param2
 
-Next, a notation exists to capture all non-static vars by value or reference and specify something for other variables. Example of capture all not-static vars by reference, but by value capture Param2:
+```cpp
+[&,Param2](int arg1){}
+```
 
-`[&,Param2](int arg1){}`
+The important thing, the capture default (`=` or `&`) if used, should always come first in Lambda introducer. [4, p.752].
 
-The capture default (`=` or `&`) if used, should always come first. [4, p.752].
+The lambda return type can be deduced if lambda is one expression in C++11. Or you can explicitly specify it:
 
-Lambda return type can be deduced if lambda is one expression in C++11. Or you can explicitly specify it.
+```cpp
+[=](int arg1)->trailing_return_type
+{
+  return trailing_return_type();
+}
+```
 
-`[=](int arg1)->trailing_return_type{return trailing_return_type();}`
+If lambda has more than one expression, then the return type must be specified via the trailing return type in C++11, and it will be deduced in C++14.  A similar trailing syntax can be applied to `auto` and usual `member` functions.
 
-If lambda has more than one expression, then the return type must be specified via the trailing return type in C++11, and it will be deduced in C++14. A similar trailing syntax can be applied to auto and member - functions.
-
-You can capture only local vars, not member variables of the object. Also, you can allow lambda to modify captured values.
+You can capture only local vars, not member variables of the object. Also, you can allow lambda to modify captured values with mutable modifier as has already been mentioned:
 
 ```cpp
 int x = 12;
@@ -2267,53 +2318,80 @@ or implicitly, because default capture also makes this available.
 auto a = [=]() ->void  { aa = 1; };
 ```
 
-Even though the lambda closure will be an object of a class another class, its function call operator will still have access to all protected and private members of Finder provided with `[this]` pointer to the object.
+Even though the lambda closure will be an object of a class, its function call operator will still have access to all protected and private members of the class provided with `[this]` pointer to the object. Example:
 
-Even lambda is not a function pointer, and it is not an anonymous function, but **capture-less** lambdas can be implicitly converted to a function pointer.
+```cpp
+class X {
+private:
+    int x;
+public:
+    int f() {
+        auto z = [this]() {return x; };
+        return z();
+    }
+};
+```
+Even lambda is not a function pointer, and it is not an anonymous function, but **capture-less** lambdas can be implicitly converted to a function pointer. Example:
 
-In C++14, there is an extra feature with a name is **"init capture"**. It allows performing arbitrarily declaration of closure data members:
+```cpp
+int a;
+auto f1 = []() {return 123; };
+auto f2 = [&a]() {return a; };
+
+int (*f1_ptr)() = f1;    // OK
+// int (*f2_ptr)() = f2; // Compile time Error
+```
+
+Starting from C++14, there is an extra feature for Lambdas **"init capture"**. It allows performing arbitrary declaration of closure data members:
 
 ```cpp
 auto interpolate =
 [min = toFloat(0), max = toFloat(255)](int value)->float { return (value - min) / (max - min);};
 ```
 
-Starting from C++14, you may not want to specify types of arguments. It's called *generic lambdas*. A *generic lambda* is a lambda expression where at least one placeholder type such as `auto`, `auto&`, or `const auto&`. That turns the function call operator of the generated class into a template call operator. Example:
+Starting from C++14, you may not want to specify types of arguments. It's called **generic lambdas**. A **generic lambda** is a lambda expression where at least one placeholder type such as `auto`, `auto&`, or `const auto&`. 
+
+That turns the function call operator of the generated class for lambda into a template call operator. Example:
 
 ```cpp
 auto test = [](const auto& x){std::cout << x;};
 ```
 
-Starting from C++20, the same `auto` syntax can be applied for generic functions. Both of that things are just a shorthand for template methods.
+Starting from C++20, the same `auto` syntax can be applied to generic functions. Both of those things are just shorthand for template methods.
 
-Starting from C++20, it's possible to be more explicit about the type and define what is called **Lambda Templates**.
-
-Example:
+Starting from C++20, it's possible to be more explicit about the type and define what is called **lambda templates**. Example:
 
 ```cpp
 auto multiply = []<class T>(T a, T b) {return a*b;};
 ```
 
 # Move Semantics
-The move brings objects to a valid but unspecified state. Objects, in fact, can be reused after movement.
+The move brings object to a valid, but unspecified state. What is less well known that objects, in fact, can be reused after movement.
 
-Move semantics is one of the main innovations of C++11. The move is useful for objects that store part of their state in a heap. Moving is never slower than copying and usually faster. For some objects, there are only move semantics, e.g., thread.
+Move semantics is one of the main innovations of C++11. The move is useful for objects that store part of their state in a heap. Moving is never slower than copying and is usually faster. For some objects, there is only moving semantics, e.g., thread.
 
-It doesn't make sense to implement a move if (1) its speed is worse or the same as copying, (2) This operation is not on the critical execution path in the program. You shouldn't use `std::swap` to implement the move. It doesn't make any sense.
+It doesn't make sense to implement a move if:
+
+* (1) Its speed is worse or the same as copying
+* (2) This operation is not on the critical execution path in the program. 
+
+Also you shouldn't use `std::swap` to implement the move. It doesn't make any sense.
 
 **Important rule: move from LValues is never executed. It is copied.**
 
-The construction `void f(T&&)` takes precedence over `void f(T&)` if both can be called. C++11 considers `noexcept` calling any destructor, memory allocation. Move self to self - usually not checked because this is not normal behavior. Move operations need not be `noexcept`, but it's preferable.
+The construction `void f(T&&)` takes precedence over `void f(T&)` if both can be called. C++11 considers `noexcept` calling any destructor, or memory allocation. Move self to self - usually not checked because this is not normal behavior. Move operations need not be `noexcept`, but it's preferable.
 
-**The First Scary Thing. Handling RValue refs with std::move**
+**The First Scary Thing of C++11: Handling RValue Refs with std::move**
 
-The move constructor should be written carefully. The fact is `T&& arg` although is an RValue reference, but in the context of the function body `T&& arg` can be observed as variable, and it makes `arg` as an LValue . The most confusing thing about C++11 due to Scott Meyers.
+The move constructor should be written carefully. The fact is `T&& arg` although is an RValue reference, but in the context of the function body `T&& arg` can be observed as variable, and it makes `arg` as an LValue. 
 
-Therefore, for example, in the initialization list in you copy constructor you need to write `Base(std::move(rhs))`.
+This is the most confusing thing about C++11 due to Scott Meyers.
 
-`std::move` - turn any LValue expression into an RValue reference. `std::move` could be called `RValue_cast`.
+Therefore, for example, in the initialization list in you copy constructor you need to write in intialization list `Base(std::move(rhs))`.
 
-* In fact std::move() does not move anything.
+The `std::move` is a need utility function that turns any LValue expression into an RValue reference, `std::move` could be called `RValue_cast`.
+
+* In fact `std::move()` does not move anything.
 
 * Simplified implementation:
 ```cpp
@@ -2332,27 +2410,25 @@ move(T&& obj) noexcept
 }
 ```
 
-**The Second Scary Thing. Universal references.**
+**The Second Scary Thing of C++11: Universal references.**
 
-You can create a special construction that uses `T&& param` and it is valid only for constructions of the form:
+You can create a special construction that uses `T&& param` and it is valid only for template constructions in the following form:
 ```cpp
 template <class T>
 void f(T&& arg)
 {}
 ```
-That construction is processed by special rules (for details please check Reference Collapsing section of that note):
+And that construction is processed by special rules. For details please check [reference collapsing section](#reference-collapsing-rules-and-universal-reference) of this note. But currently we need two rules:
 * arg is Lvalue => `void f<T&> (T&&,& arg)=>void f<T&> (T& arg)`
 * arg is Rvalue => `void f<T&&> (T&&,&& arg)=>void f<T&&>(T&& arg)`.
 
-That construction has an informal name Universal reference (term from Skott Mayers) binds everything:
+That construction has an informal name **Universal Reference** (term from Skott Mayers), and it binds everything:
 ```cpp
 template <class T>
 void f(T&& arg)
 {}
 ```
-The universal reference is not the official term; Scott Myers coins it only for informal discussions.
-
-The `auto` type deduction working in the same way as template type deduction.
+The universal reference is not the official term; Scott Myers coins it only for informal discussions. The `auto` type deduction working in the same way as template type deduction and has the same reference collapsing:
 ```cpp
 int f();
 int x;
@@ -2381,54 +2457,65 @@ private:
 };
 ```
 
-# Virtual and Polymorphism in C++
+# Virtual Functions and Polymorphism in C++
 
 ## General Rules from C++03
-To get runtime polymorphic behavior, the member functions must be `virtual`, and objects must be manipulated through pointers or references.
+To get runtime polymorphic behavior, the member functions must be `virtual`, and objects must be manipulated through pointers or references. For a function to behave **virtually** its declaration in a derived class must have the same signature as it has in
+the base class. 
 
-For a function to behave "virtually" its definition in a derived class must have the same signature as it has in
-the base class. The only exception is for the return type that should be the same or as described below. The derived class version of a "virtual function" may return a pointer or a reference to a more specialized type than the base. The technical term used in relation to these return types is *covariance*. [4, p.576].
+> The only exception for virtual function declaration is allowed and it is about the return type. The derived class version of a *"virtual function"* may return a pointer or a reference to a more specialized type than the base. The technical term used in relation to these return types is *covariance*. [4, p.576].
 
-When you're calling a function using the scope resolution `operator::` that ensures that the virtual mechanism built in the language **is not using**. This call will be resolved at compile time.
+When you're calling a function using the scope resolution `operator::` that ensures that the virtual mechanism built in the language **is not used at all**. And this call will be resolved at compile time.
 
-When manipulating an object directly (rather than through a pointer or references) and its exact type is known by the compiler, then, in that case, runtime polymorphism is not needed, and the call will be done without using vptr's.
+We said that objects must be manipulated through pointers or references to invoke a virtual mechanism, because in the case of manipulating an object directly (rather than through a pointer or references) - its exact type is known to the compiler. In that case, runtime polymorphism is not needed, and the call will be done without using vptr's.
 
-A virtual function invoked from a constructor, or a destructor reflects that the object is partially constructed.
+A virtual function invoked from a constructor, or a destructor reflects that the object is partially constructed. It's easier to remember it in the following way - *during constructor, or destructor invocation the virtual mechanism is not used at all*.
 
 ## Override Specification (from C++11)
-The **override specification** ([cpp reference details](https://en.cppreference.com/w/cpp/language/override)) of a virtual function guarantees that you have not made any mistakes in the function signatures at the time of writing. It safeguards you and your team from forgetting to change any existing function overrides when the signature of the base class function changes.
+The **override specification** ([cpp reference details](https://en.cppreference.com/w/cpp/language/override)) of a virtual function guarantees that you have not made any mistakes in the function signatures at the time of writing. It safeguards you and your team from forgetting to virtual function signature in the base or derived class at the same time.
 
-The use of override is optional, but being explicit allows the compiler to catch mistakes, such as misspellings of function names or slight differences between the type of virtual functions.
+The use of `override` is optional, but being explicit allows the compiler to catch mistakes, such as misspellings of function names or slight differences between the type of virtual functions. Let's describe in details.
 
-So it can be a situation when the function is intended to override something, but due to a mistake, it is a new virtual function. But in the case of, using `override` will remove this problem. Better to not repeat virtual in a derived class, but if you want to be explicit, use `override`. B. Stroustrup:
-*"That it’s illogical that virtual is a prefix and override is a suffix. This is part of the price we pay for compatibility and stability over the decades".*
+It can be a situation when the function is intended to `override` something, but due to a mistake, it is a new `virtual`function. In the case of, using `override` will remove this problem.
 
-Curiously, override is not a keyword; it is what is called a contextual keyword. E.g. It can be used as an identifier."
+Better to not repeat `virtual` in a derived class, but if you want to be explicit, use `override`.
+
+> B. Stroustrup: "That it’s illogical that virtual is a prefix and override is a suffix. This is part of the price we pay for compatibility and stability over the decades. Curiously, override is not a keyword; it is what is called a contextual keyword. E.g. It can be used as an identifier."
 
 ```cpp
 struct Base
 {
     Base(){puts("Base()");}
     Base(const Base&){puts("Base(const Base&)");}
-    virtual void f(){} // declare functions in a base class that can be redefined in each derived class
-    virtual void g(){} // declare functions in a base class that can be redefined in each derived class
+    // declare functions in a base class that can be redefined in each derived class
+    virtual void f(){}
+
+    // declare functions in a base class that can be redefined in each derived class
+    virtual void g(){} 
 };
 
 struct A: Base
 {
     A(){puts(__func__);}
     A(const A&a): Base(a) {puts("A(const A&)");}
-    virtual void f(){} // By default, a function that overrides a virtual function itself becomes virtual
-    void g(){}         // By default, a function that overrides a virtual function itself becomes virtual
+    // By default, a function that overrides a virtual function itself becomes virtual
+    virtual void f(){} 
+
+    // By default, a function that overrides a virtual function itself becomes virtual
+    void g(){}         
 };
 
 struct B: Base
 {
     B(){puts(__func__);};
     B(const B& b) : Base(b) {puts("B(const B&)");}
-   // Better to not repeat virtual in a derived class, but if you want be explicit use "override"
-   // final provides prevent further overriding
+   // 1) Better to not repeat virtual in a derived class
+   // 2) If you want to be explicit use "override"
    void f() override final {}
+   
+   // Final provides prevent further overriding
+   void g() override final {}
+
    int override = 7;
 };
 ```
@@ -2447,7 +2534,29 @@ class A final
 ```
 
 A function's access specifier determines whether you can call that function. It plays no role whatsoever, though, in determining whether you can override it.
-The consequence is that you can override a private virtual function of a given base class.
+
+The consequence is that you can override a private virtual function of a given base class. Example:
+
+```cpp
+struct Base
+{
+public:
+    Base() { puts("Base()"); }
+    Base(const Base&) { puts("Base(const Base&)"); }
+
+private:
+    virtual void f() {}
+};
+
+struct A : Base
+{
+public:
+    A() { puts(__func__); }
+    A(const A& a) : Base(a) { puts("A(const A&)"); }
+
+    void f() override  {}
+};
+```
 
 ## Connection of Virtual Function with Default Values
 
@@ -2462,7 +2571,7 @@ The `emplace_back` construct object is directly in place in the memory of the co
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/container/vector/emplace_back).
 
 ## 2. vector::shrink_to_fit
-vector::shrink_to_fit method requests the removal of unused capacity from reserved memory of std::vector that encapsulates dynamic linear array.
+`vector::shrink_to_fit` method requests the removal of unused capacity from reserved memory of `std::vector` that encapsulates dynamic linear array.
 
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/container/vector/shrink_to_fit).
 
@@ -2483,7 +2592,7 @@ The syntax for `static_assert` is the following: `static_assert(expr)`. A specia
 The `static_assert` valid anywhere:
 * Global/namespace scope
 * Class scope
-*  Function/block scope.
+* Function/block scope.
 
 Example:
 
@@ -2494,7 +2603,7 @@ static_assert(sizeof(void*) == sizeof(int),
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/static_assert).
 
 ## 5. alignas operator
-The `alignas` operator from (C++11) enforce alignment. `alignas` allocates an object with the requirement to allocate it with alignment suitable for another type. Example:
+The `alignas` operator from (C++11) enforces alignment. `alignas` allocates an object with the requirement to allocate it with alignment suitable for another type. Example:
 ```cpp
 alignas(int) char buff[1024];
 ```
@@ -2535,11 +2644,6 @@ Documentaion: [cpp reference details](https://docs.microsoft.com/en-us/cpp/cpp/u
 Placing `[[noreturn]]` at the start of a function declaration indicates that the function is not expected to return. Example:
 
 ```cpp
-struct S {
-[[noreturn]] virtual inline auto f(const unsigned long int* arg)
--> void const {}
-};
-
 [[noreturn]] void exit(int);
 ```
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/attributes/noreturn).
@@ -2555,9 +2659,7 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/languag
 Documentation: [cpp reference details](https://en.wikipedia.org/wiki/Union_type#Anonymous_union).
 
 ## 11. Type Alias
-Starting from C++11, there are *"Alias Templates"* or *"Smart Typedefs"*.
-
-Using declarations can now be used for "partially bound" templates:
+Starting from C++11, there are *"Alias Templates"* also known as *"Smart Typedefs"*. With this form of new typedefs using declarations can now be used for "partially bound" templates:
 
 ```cpp
 // Usual namespace alias from C++98.
@@ -2566,7 +2668,7 @@ namespace AA = std;
 // Usual typedef
 typedef AA::vector<int> VecInt1;
 
-// Alias for bind some types. From C++11
+// Alias for bind some types. Typedef analog from C++11
 using VecInt2 = AA::vector<int>;
 
 template <class T>
@@ -2574,17 +2676,17 @@ using MyAllocVec = std::vector<T, MyAllocator>;
 // MyAllocVec is alias template
 ```
 
-**Remarks:**
+Remarks about Alias Templates:
 
-* They cannot be partially specialized
-* They can be used wherever `typedef` is used.
+* Cannot be partially specialized
+* Can be used wherever `typedef` is used.
 
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/type_alias).
 
 
 ## 12. Static Variables are Always Initialized Thread Safe
 
-Interestingly, that `static` local variable in C++11 guarantees thread-safe initialization. It was not the case in C++03. But since C++11 static variables and local variables are guaranteed to be initialized only once.
+Interestingly, that `static` local variable in C++11 guarantees thread-safe initialization. It was not the case in C++03. 
 
 ## 13. Delegating constructors
 A constructor can call another constructor in the initialization list. In that way, initialization is delegated to another constructor.
@@ -2602,12 +2704,13 @@ private:
   double h;
 };
 ```
+
 There is one extra thing regarding delegating constructors. Once you have decided to delegate construction work to another constructor, you can not initialize any member in initializer list of constructor.
 
 If you will add member initialization into the previous code snippet, it will lead to compile error:
 
 ```cpp
-//...
+// Compiler Time Error:
 explicit MyArea(double w_and_h): MyArea(w_and_h, w_and_h), h(1.0) {}
 //...
 ```
@@ -2629,12 +2732,16 @@ class D: public B {
 public:
   // Bring f() into the scope of class D (valid from C++98)
   using Base::f;
+
   // Implicit declaration of
   // D::D(int a):B(a){} (valid from C++11 only)
   using Base::Base;
+
   void f();
+
   D(int x, int y);
 };
+
 Derived d1(1);
 Derived d2(2, 3);
 ```
@@ -2652,18 +2759,24 @@ Documentation: [cpp reference about integer types](https://en.cppreference.com/w
 
 ## 17. Concurrency Support
 
-For first-time concurrency support has been introduced into the language for C++11. Before C++11 the language was not aware of multithreading aspects.
+For the first time concurrency support has been introduced into the language for C++11. Before C++11 the language was not aware of multithreading aspects at all at the level of a standard library.
 
 * [std::thread](https://en.cppreference.com/w/cpp/thread/thread). Independent execution by real OS threads. Thread detachment when no thread joining is needed is supported.
 
-* [std::async()](https://en.cppreference.com/w/cpp/thread/async). Request asynchronous execution of a function
+* [std::async()](https://en.cppreference.com/w/cpp/thread/async). Request asynchronous execution of a function. Async support [launch](https://en.cppreference.com/w/cpp/thread/launch) deferred policy to assist in debugging asynchronous code in a single thread.
+
 * [std::future<ret_type>](https://en.cppreference.com/w/cpp/thread/future). Token representing functions result and encapsulate thrown exception.
 
-* Mutexes ([std::mutex](https://en.cppreference.com/w/cpp/thread/mutex), [std::timed_mutex](https://en.cppreference.com/w/cpp/thread/timed_mutex), [std::recursive_mutex](https://en.cppreference.com/w/cpp/thread/recursive_mutex), [std::recursive_timed_mutex](https://en.cppreference.com/w/cpp/thread/recursive_timed_mutex), [std::shared_timed_mutex](https://en.cppreference.com/w/cpp/thread/shared_timed_mutex)) for controlled access to shared data.
-* Condition Variables ([std::condition_variable](https://en.cppreference.com/w/cpp/thread/condition_variable)). To allow threads to communicate about changes to shared data. Via ability to notify one/all waiting threads.
-* [thread_local](https://en.cppreference.com/w/cpp/language/storage_duration) data with static storage duration for thread-specific data.
+* Mutexes:
+  * [std::mutex](https://en.cppreference.com/w/cpp/thread/mutex) 
+  * [std::timed_mutex](https://en.cppreference.com/w/cpp/thread/timed_mutex)
+  * [std::recursive_mutex](https://en.cppreference.com/w/cpp/thread/recursive_mutex)
+  * [std::recursive_timed_mutex](https://en.cppreference.com/w/cpp/thread/recursive_timed_mutex)
+  * [std::shared_timed_mutex](https://en.cppreference.com/w/cpp/thread/shared_timed_mutex)
+* Condition Variables ([std::condition_variable](https://en.cppreference.com/w/cpp/thread/condition_variable)). To allow threads to communicate about changes of shared data via ability to notify one/all waiting threads.
+* [thread_local](https://en.cppreference.com/w/cpp/language/storage_duration) data with static storage duration (with internal `static` or external `extern`) for thread-specific data.
 * [std::atomic](https://en.cppreference.com/w/cpp/atomic/atomic) atomic types (e.g., `std::atomic<int>`) with memory ordering options.
-* Thread safe only one-time function invocation ([std::call_once](https://en.cppreference.com/w/cpp/thread/call_once)).
+* [std::call_once](https://en.cppreference.com/w/cpp/thread/call_once) for thread safe only one-time function (or callable object) invocation.
 * Thread safe initialization guarantees of objects of [static](https://en.cppreference.com/w/cpp/language/storage_duration#Static_local_variables) storage duration.
 * There are some Library thread safety guarantees (e.g., for std::cin/std::cout, containers). Please check
 ([9], [link](https://www.stroustrup.com/C++11FAQ.html#std-threads)).
@@ -2673,20 +2786,32 @@ For first-time concurrency support has been introduced into the language for C++
 The `explicit` keyword now applicable to conversion functions. It will prohibit using type conversion implicitly, only explicitly. Example:
 ```cpp
 class MyClass {
-  //...
-  explicit operator std::string(); // C++11 only
-  //...
+public:
+    //...
+    // C++11 only
+    explicit operator std::string() { return ""; }
+    //...
 };
-MyClass a;
-std::string s = static_cast<std::string>(w)); // ok
+
+int main()
+{
+    MyClass a;
+    // OK
+    std::string s1 = static_cast<std::string>(a);
+    // OK
+    std::string s2 = (std::string)(a);
+    // Compile-Time Error
+    // std::string s3 = a;
+    return 0;
+}
 ```
 
 Documentation: [cpp reference about explicit keyword](https://en.cppreference.com/w/cpp/language/explicit).
 
 ## 19. Current Exception. Internal Details.
-The construction in the standard library devoted for for concept of current exception object called *"Exception Pointer"*.  Starrting from C++11, it's possible to get it object via: [std::current_exception](https://en.cppreference.com/w/cpp/error/current_exception) and [std::exception_ptr](https://en.cppreference.com/w/cpp/error/exception_ptr).
+The construction in the standard library is devoted for the concept of the current exception object called *"Exception Pointer"*.  Starting from C++11, it's possible to get it object via [std::current_exception](https://en.cppreference.com/w/cpp/error/current_exception) and [std::exception_ptr](https://en.cppreference.com/w/cpp/error/exception_ptr).
 
-## 20. The trailing return type for functions.
+## 20. The Trailing Return Type For Functions.
 Documentation: [cpp reference about trailiing return type](https://en.cppreference.com/w/cpp/language/function).
 
 ```cpp
@@ -2699,7 +2824,7 @@ auto sumB(int a, int b) -> decltype(a+b) {
 }
 ```
 
-## 21. Return type deduction.
+## 21. Return Type Deduction.
 Documentation: [cpp reference about placeholder type specifier](https://en.cppreference.com/w/cpp/language/auto).
 
 ```cpp
@@ -2733,7 +2858,7 @@ This indicates that the use of the name or entity declared with this attribute i
 ```cpp
 [[deprecated]] void func(int);
 ```
-Documentaion: [cpp reference details about deprecated](https://en.cppreference.com/w/cpp/language/attributes/deprecated).
+Documentationn: [cpp reference details about deprecated](https://en.cppreference.com/w/cpp/language/attributes/deprecated).
 
 ## 2. Return Type Deduction
 For functions, it is now possible to deduce the return type from its return statements.
@@ -2799,7 +2924,7 @@ struct Entry {
 auto [n,v] = read_entry(is)
 ```
 
-The `auto [n,v]` declares two local variables n and v with their types deduced from read_entry() return type. This mechanism for giving local names to members of a class object is named a structured binding.
+The `auto [n,v]` declares two local variables n and v with their types deduced from read_entry() return type. This mechanism for giving local names to members of a class object is named a structured binding. You can use this mechanism for arbitarily number of variables.
 
 Documentation: [cpp reference details structured binding](https://en.cppreference.com/w/cpp/language/structured_binding).
 
@@ -2826,7 +2951,7 @@ A<int> a(123); // correct syntax in C++98/03/11/14
 
 Before C++17, such a feature was supported only for template functions but not for template classes. That feature is called *Class Template Argument Deduction*.
 
-Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction).
+Documentation: [cpp reference details about class template argument deduction](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction).
 
 ## 3. Compile Time if
 
@@ -2850,13 +2975,13 @@ int main() {
 Documentation: [cpp reference details about compile if](https://en.cppreference.com/w/cpp/language/if).
 
 ## 4. __has_include Macro
-The new macro `__has_include ` to test that header file is presented. Example of usage:
+The new macro `__has_include ` to test that the header file is presented. Example of usage:
 ```cpp
 #if __has_include(<optional>)
 #endif
 ```
 
-Documentation: [cpp reference details about feature test](https://en.cppreference.com/w/cpp/feature_test).
+Documentation: [cpp reference details about __has_include](https://en.cppreference.com/w/cpp/preprocessor/include), [C++2020 standard, p.446, Section 15.2](https://open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf)
 
 ## 5. std::byte
 C++17 introduces byte type to work directly with bytes `std::byte` defined in `<cstddef>`.
@@ -2865,7 +2990,9 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/types/b
 
 
 ## 6. fallthrough Attribute
-In C/C++ language in `switch` construction, if not explicitly use `break` instruction, instruction flow will fall through after the first `case` statement without reevaluating the predicate. The C++17 added a language feature to signal to the compiler and the person reading your code that you are intentionally using a fallthrough. Example:
+In C/C++ language in `switch` construction, if not explicitly use `break` instruction, instruction flow will fall through the first `case` statement without reevaluating the predicate. 
+
+The C++17 added a language feature to signal to the compiler and the person reading your code that you are intentionally using a fall through. Example:
 ```cpp
 switch (number)
 {
@@ -2880,16 +3007,19 @@ case 78:
 }
 ```
 
-Documentation: [cpp reference details about fallthrough](https://en.cppreference.com/w/cpp/language/attributes/fallthrough).
+Documentation: [cpp reference details about fall through](https://en.cppreference.com/w/cpp/language/attributes/fallthrough).
 
 ## 7. Initialization Statements in if/switch/for
 
-The syntax for define local variable and consequence `if` statement was so common enough that in C++17 have been added a specialized syntax for it.
+The syntax for defining local variables and consequence `if` statement was so common enough that in C++17 have been added a specialized syntax for it in several constructions via using syntax similar to initialization in `for` statement.
+
+For `if` statement:
 ```cpp
 if (auto my=2; my >= 1 || lower <= 2) {
   ;
 }
 ```
+
 The same syntax has been added for `switch` statement:
 ```cpp
 switch (initialization; condition) { ... }
@@ -2903,10 +3033,25 @@ for ([initialization;] range_declaration : range_expression)
 
 ## 8. std::optional
 The `std::optional` is a class template for conceptually storing an object. The optional object optionally contains a value. To check that `std::optional` has value in it, you have three ways:
-* convert the `optional` object to a bool.
-* call the `has_value()` member function.
-* compare the `optional` object to `std::nullopt`.
+* Convert the `optional` object to a bool.
+* Call the `has_value()` member function.
+* Compare the `optional` object to `std::nullopt`.
 
+Example:
+```cpp
+#include <iostream>
+#include <optional>
+
+int main()
+{
+    std::optional<int> o1;
+    std::optional<int> o2 = 1;
+
+    std::cout << *o1 << ' ' << *o2 << "\n";
+    std::cout << (o1.has_value() ? "YES" : "NO") << ' ' 
+              << (o2.has_value() ? "YES" : "NO") << "\n";
+}
+```
 Documentation: [cpp reference details about optional](https://en.cppreference.com/w/cpp/utility/optional).
 
 ## 9. std::string_view
@@ -2925,15 +3070,15 @@ class Objects {
     static inline size_t s_object_count {};
 };
 ```
-Before inline variables, it was possible to use static variables, but the burden to add static variables into compilable and finally, the linkable binary is under your responsibility.
+Before inline variables, it was possible to use static variables, but the burden to add static variables into compliable and finally, the linkable binary is under your responsibility.
 
 ```cpp
-// somewhere in some header file
+// Somewhere in some header file
 class ObjectsOld {
     static size_t s_object_count;
 };
 
-// somewhere in cpp unit
+// Somewhere in some cpp unit
 size_t ObjectsOld::s_object_count;
 ```
 Documentation: [cpp reference details about inline specifier](https://en.cppreference.com/w/cpp/language/inline).
@@ -2974,23 +3119,48 @@ The three-way comparison operator denoted `<=>` is a new comparison operator. It
 The term "spaceship operator" was coined by Randal L.Schwartz because it reminded him of the spaceship in the 1970s text-based strategy video game Star Trek. [4,p.100].
 
 ```cpp
-operator <=> (const Y&)
+bool operator <=> (const Y&, const Y&) {}
+
 ```
 After defining what is called spaceship operator compiler generates based on that various s (<, >, <=, >=), comparison operators automatically.
 
 The `<=>` operator can return one of the following return types:
 
-* **std::strong_ordering**. It's a enumeration type of available values - std::strong_ordering::less, std::strong_ordering::greater, std::strong_ordering::equal. In mathematical sense it should be used when relation is totally ordered.
+* **std::strong_ordering**. It's a enumeration type of available values:
+  * std::strong_ordering::less
+  * std::strong_ordering::greater
+  * std::strong_ordering::equal. 
 
-* **std::partial_ordering**. It's a enumeration type of available values - std::strong_ordering::less, std::strong_ordering::greater, std::strong_ordering::equivalent, std::strong_ordering::unordered.
+  In mathematical sense it should be used when relation is totally ordered.
 
-* **std::weak_ordering**. It's a enumeration type of available values - std::strong_ordering::less, std::strong_ordering::greater, std::strong_ordering::equivalent.
+* **std::partial_ordering**. It's a enumeration type of available values:
+  * std::strong_ordering::less
+  * std::strong_ordering::greater
+  * std::strong_ordering::equivalent
+  * std::strong_ordering::unordered
+
+* **std::weak_ordering**. It's a enumeration type of available values:
+  * std::strong_ordering::less
+  * std::strong_ordering::greater
+  * std::strong_ordering::equivalent
+
+Example:
+
+```cpp
+struct Y { 
+    int y;
+
+    std::strong_ordering operator <=> (const Y& rhs) const {
+        return y <=> rhs.y;
+    }
+};
+```
 
 Documentation: [cpp reference details about no_unique_address](https://en.cppreference.com/w/cpp/language/operator_comparison).
 
 ## 3. likely and unlikely Attribute
 
-The `[[likely]]` and `[[unlikely]]` attributes are applicable for `case` branches in the switch statement to give a compiler a hint to optimize certain branches.
+The `[[likely]]` and `[[unlikely]]` attributes are applicable for `case` branches in the switch statement and `if` and `else` branches in conditional statement to give a compiler a hint to optimize certain branches.
 
 ```cpp
 switch(value) {
@@ -3005,7 +3175,9 @@ Documentation: [cpp reference details about likely](https://en.cppreference.com/
 
 ## 4. std::format()
 
-The `std::format()` replaces *sprintf* and *ostringstream*. After importing C++20 `<format>` module or including `<format>` header files, you can use `std::format` in the following way:
+The `std::format()` replaces [sprintf](https://en.cppreference.com/w/cpp/io/c/fprintf) and [ostringstream](https://en.cppreference.com/w/cpp/io/basic_ostringstream). 
+
+After importing C++20 `<format>` module or including `<format>` header files, you can use `std::format` in the following way:
 ```cpp
 std::cout <<
   std::format("diameter required for {} is {:.2f}.\n", x, y);
@@ -3014,15 +3186,21 @@ Slightly simplified general form of the format specifiers is the following:
 
 `[[fill]align][sign][#][0][width][.precision][type]`.
 
+For full information about format specification look into
+[Standard format specification](https://en.cppreference.com/w/cpp/utility/format/formatter#Standard_format_specification)
+
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/utility/format/format).
 
 ## 5. source_location::current()
 
-Compile time information about current source file `source_location::current()`. Defined in `<source_location>`.
+Compile time information about current source file `source_location::current()` defined in `<source_location>`.
+
+Behaves in an implementation-defined way, but essentially it is analogous of predefined macros `__LINE__` and `__FILE__`.
+
 
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/utility/source_location/current).
 
-## 6. nodiscard(reason) Attribute
+## 6. nodiscard(reason) attribute
 
 Attribute `[[nodiscard(reason)]]` applied for function and described the consequence of discarding the return object from the function call. The compiler is encouraged to issue a warning in case of discarding the return value. Example:
 ```cpp
@@ -3032,13 +3210,13 @@ Attribute `[[nodiscard(reason)]]` applied for function and described the consequ
 Documentation: [cpp reference details about nodiscard](https://en.cppreference.com/w/cpp/language/attributes/nodiscard).
 
 ## 7. Only one Signed Integer Representation
-Starting from `C++20`, there is only one signed integer representation, and it's twos-complement-notation.
+Starting from `C++20`, there is only one signed integer representation, and it's **twos-complement-notation**.
 
 Documentation: [cpp reference details about fundamental types](https://en.cppreference.com/w/cpp/language/types).
 
 ## 8. Right Shift is Arithmetic Right Shift
 
-From C++20 the right-shift on signed integral types is an arithmetic right shift, which performs sign-extension. It's not an undefined behaviour.
+From C++20 the right-shift on signed integral types is an **arithmetic right shift**, which performs sign-extension. It's not an undefined behaviour.
 
 Documentation: [cpp reference arithmetic operations details](https://en.cppreference.com/w/cpp/language/operator_arithmetic).
 
@@ -3046,7 +3224,9 @@ Documentation: [cpp reference arithmetic operations details](https://en.cpprefer
 ## 9. Abbreviated Function Templates
 
 Staring from C++20, the template function can be written a bit shorter. That syntax is called *"Abbreviated Function Template"*. If you want your template to instantiate functions where multiple parameters have the same type or related
-types, you still have to use the old syntax. It is so because every occurrence of `auto` in the function parameter list of an abbreviated function template introduces an implicit, unnamed template type parameter. Example:
+types, you still have to use the old syntax. 
+
+It is so because every occurrence of `auto` in the function parameter list of an abbreviated function template introduces an implicit, unnamed *new* template type parameter. Example:
 
 ```cpp
 // Classical syntax
@@ -3073,11 +3253,41 @@ A b{.x = 1, .z = 2};
 
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/aggregate_initialization#Designated_initializers)
 
+## 12. __has_cpp_attribute feature test
+```cpp
+#if __has_cpp_attribute(deprecated)
+#endif
+```
+
+As it has been said in standard: *It is expected that the availability of an attribute can be detected by any non-zero result.*
+
+Documentation: 
+* [Draft C++2020 Standard, p.446, Section 15.2](https://open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf)
+* See also [feature test in cppreference](https://en.cppreference.com/w/cpp/feature_test#Attributes).
+
+# 13. Feature Test Macro
+
+In C++2020 the macroses `__cpp_` has been added to test language and library features under the name
+[feature_test](https://en.cppreference.com/w/cpp/feature_test). The support of this ability has been added from C++2020. Even though some features may be supported in earlier versions, the ability to check with Markose's has been added only in C++2020. 
+
+According to [Draft C++2020 Standard, p.455, Section 15.11](https://open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf):
+> Future versions of this International Standard might replace the values of these macros with greater values.
+
+If you want to produce compatible code, use the following constructions (starting from C++2020) can be used for feature tests:
+
+```cpp
+#if __cpp_char8_t >= 201811L
+///
+#endif
+```
+
+In this conditional compilation block, the right-hand side has been taken from Table 19 of [Draft C++2020 Standard, p.455, Section 15.11](https://open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf).
+
 # Modules (from C++20)
 
-Standard `#include` preprocessor directive helps organize project but at a considerable cost. The desirability of modules due to B.Stroustroup was already well known in 1980.
+Standard `#include` preprocessor directive helps organize the project but at a considerable cost. The desirability of modules due to B.Stroustroup was already well known in 1980.
 
-Modules have come with C++20 to upgrade the understanding of header files. The reasons to include it in standards that B.Stroustrup mentioned in his talks is mostly about improving compilation time:
+Modules have come with C++20 to upgrade the understanding of header files. The reason to include it in standards that B.Stroustrup mentioned in his talks is mainly about improving compilation time:
 - Google reports x2-4 improvements in compile-time
 - Microsoft reports x5-x50 times improvements in compile time
 
@@ -3085,30 +3295,37 @@ Result of applying modules:
 * Reduce compilation time.
 * The order in which you import modules never matters.
 
-So the C++20 has introduced that mechanism to form a self-contained subcomponents of related functionality and called it a *module*.
+C++20 has introduced these modules to form self-contained subcomponents of related functionality and called it a *module*.
 
 Before technical details, let's take a look into several critical conceptual things:
 
 * A module can **export** any number of C++ entities (functions, constants, types, etc.)
-* An exported entity by one module can be used in any source file that **imports** that module.
-* A module can **export entire other modules**.
+* An exported entity by one module can be used in any source file that **imports** this module.
 * The combination of all entities that a module export is called the **module interface**.
+* A module can **export entire other module**.
 
-In real life, compilers are not yet fully supported modules (at the moment of August, 2022), so please be careful if you're going to use them. At least check that your toolchain supports it.
+Documentation dedicated for modules: [cpp reference details](https://en.cppreference.com/w/cpp/language/modules)
 
-We will go example by example to open all features of *modules*.
+In real life, compilers are not yet fully supported modules (at the moment of August 2022), so please be careful if you're going to use them. At least check that your toolchain endorses it from practice and from checking [cpp reference details about compilers support](https://en.cppreference.com/w/cpp/compiler_support) if you are using one of the popular compilers. Modules are replacement of header files and do not have any connection with C++ [namespaces](https://en.cppreference.com/w/cpp/language/namespace).
+
+
+
+Next, we will go example by example to open all features of *modules*.
 
 ## Single Module Interface File/Module Unit
 
 ```cpp
-// math.cppm.
+// math.cppm
+
 // There is no consensus yet on what file extension to use for module files.
 
 // *.cppm is c++ module file/module unit.
 
 // 1. At the start of every module file is a module declaration
 // 2. "export module ..." means that this is module interface file
-export module simple;
+
+export module simple; // declares the primary module interface unit
+
 
 // 3. Within a module name you may use dots to concatenate together multiple identifiers. 
 // Module names are the only names in C++ in which this is allowed.
@@ -3116,6 +3333,7 @@ export module simple;
 
 //---------------------------------------------------------
 // 4. All import declarations must appear after the module declaration
+//---------------------------------------------------------
 // 5. To export an entity from a module, you simply add "export".
 
 export auto square(const auto& x) { return x * x; }
@@ -3154,12 +3372,16 @@ export // The module's interface
 auto square(const auto& x) { return x * x; }
 
 // You can add export, but you do not have to.
+
 // Still valid:
+
 // export auto square(const auto& x) { return x * x; }
 ```
 ## Module Interface File With Separate Implementation
 
-The module interface file then includes the prototypes of all exported functions. In a **module interface file**, all import declarations must appear after the module declaration only.
+The module interface file in this style includes the prototypes of all exported functions. 
+
+In a **module interface file**, all import declarations must appear after the module declaration only.
 
 ```cpp
 // mymodule.cppm – Interface test file
@@ -3168,8 +3390,8 @@ import <string>;
 export std::string to_string(unsigned int i);
 ```
 
-But their definitions, along with any
-module-local entities can also be moved to one or more **module implementation files**.
+Definitions, along with any
+module-local entities can be moved to one or more **module implementation files**.
 
 ```cpp
 // mymodule.cpp – Interface implementation file
@@ -3177,8 +3399,10 @@ module-local entities can also be moved to one or more **module implementation f
 // 1. Unlike module interface files, a module implementation file does not begin with the export keyword.
 // 2. You are not even allowed to repeat the export keyword here in front of the definition of to_string
 
-module mymodule;
-import <string>;
+module mymodule; // declares a module implementation unit for named module 'A' this should be presented in each mymodule implementation files
+
+import <string>; // import declaration
+
 std::string to_string(unsigned int i)
 {
   return std::to_string(i);
@@ -3186,9 +3410,9 @@ std::string to_string(unsigned int i)
 ```
 Every module implementation file implicitly:
 * Imports the module that it belongs to.
-* Gains access to all declarations, even those that are not exported. [5,p.396]
+* Gains access to all declarations, even those that are not exported from module interface file. [5,p.396]
 
-## What you can not Define in a Module Implementation File
+## What You Can not Define in a Module Implementation File
 Some entities must always be defined in a **module interface file**:
 
 1. The definitions of all exported templates,
@@ -3196,13 +3420,15 @@ Some entities must always be defined in a **module interface file**:
 
 ## Using Modules
 
-Compiling a module interface creates a binary representation of all exported entities for the compiler to consult when processing files that import the module quickly.
+Compiling a module interface creates a binary representation of all exported entities for the compiler to consult when processing files. This allows the fast import of modules.
 
-You import the module via the `import mymodule;` declaration. You do not put angle brackets around the name of your modules, and add you should use a semicolon at the end of the expression, which is not the case when you C preprocessor.
+You import the module via the `import mymodule;` declaration. You do need to put angle brackets around the name of your modules. In addition, you should use a semicolon at the end of the expression, which is not necessary when you C preprocessor.
 
-Unlike for header files, the name that you use to *import* a module is not based on the name of the file that contains the module interface. It is based on the name that is declared in the `export module mymodule;` declaration.
+Unlike header files, the name that you use to `import` a module is not based on the name of the file that contains the module interface. 
 
-After import module, you can (only) use these exported entities. Example:
+It is based on the name that is declared in the `export module mymodule;` declaration.
+
+Next, after the import module, you can (only) use these exported entities. Example:
 
 ```cpp
 import <iostream>;
@@ -3213,21 +3439,29 @@ int main() {
 }
 ```
 
-When you import a module into a file not part of the same module, you do not implicitly inherit all imports from the module interface file. In other words, when you import a module, you do not implicitly gain complete access to all other modules that that module relies on.
+When you import a module into a file that is not part of the same module, you do not implicitly inherit all imports from the module interface file. In other words, when you import a module, you do not implicitly gain complete access to all other modules that that module relies on. The C preprocessor includes behaves completely opposite.
 
-If you add export in front of an import declaration in module interface files e.g. in the following way:
+If you want for some reason to provide users with a means to automatically import modules under which your module depends you should add `export` in front of an import declaration in module interface files.
+
+You can do it in the following way:
+
 ```cpp
 export import <string>;
 ```
-Then any file that imports a module implicitly inherits all import declarations that are exported from that module as well.
+Then any file that imports this module implicitly inherits all import declarations that are exported from that module as well.
 
 ## Splitting Modules
 
-1. *Simulating Submodules.* C++20 does not formally support the concept of nested submodules, but they can be simulated quite
-easily. The possibility to use dot (`.`) in the names of modules allows adapting it to make it easier to see the relation between modules and their submodules. Dots were explicitly allowed in module names to facilitate such hierarchical naming.
+This is a last topic regarding modules which we are going to cover.
 
-2. *Use Module Partitions.* Submodules can be imported
-individually by the rest of the application because they are just modules. Module partitions are not. They are only visible within a module.
+*Simulating Submodules.* C++20 does not formally support the concept of nested submodules, but they can be simulated quite
+easily. The possibility to use a dot (`.`) in the names of modules allows adapting it to make it easier to see the relation between modules and their submodules. Dots were explicitly allowed in module names to facilitate such hierarchical naming.
+
+*Module Partitions.* Submodules can be imported individually by the rest of the application because they are just modules. 
+
+But *module partitions* are not. 
+
+They are only visible within a module.
 ```cpp
 // internals.cpp – Module implementation file for the internals partition
 
@@ -3243,7 +3477,7 @@ unsigned int from_c(char c)
 }
 ```
 
-To then use the internals partition and its function in the module implementation file you have to import the partition.
+Then to use the internals module partition and its function in the module implementation file you have to import the partition.
 ```cpp
 // mymodule.cpp – Implementation
 module mymodule;
@@ -3258,9 +3492,12 @@ unsigned int from_abc(std::string roman)
 ```
 
 Outside the module, a partitioned module can only be imported
-as a whole (through `import mymodule;`). Individual partitions can never be imported outside of the module.
+as a whole (through `import mymodule;`). 
 
-You can partition Module Interface as well.
+Individual partitions can never be imported outside of the module.
+
+*Split Module Interface.* You can partition Module Interface as well:
+
 ```cpp
 //a.cppm
 export module mymodule:parta;
@@ -3280,7 +3517,11 @@ export import :partb;
 
 # Templates
 
-A **template** describes a skeleton of code for a set of related classes or related functions. When you instantiate a template with a given set of template arguments the compiler generates a new definition of the class or template function based on provided template arguments. Creating a new definition of a function, class, or member function from specified template arguments for the template class or template function is called **template instantiation**. 
+A **template** describes a skeleton of code for a set of related classes or related functions. 
+
+When you instantiate a template with a given set of template arguments the compiler generates a new definition of the class or template function based on provided template arguments. 
+
+Creating a new definition of a function, class, or member function from specified template arguments for the template class or template function is called **template instantiation**. 
 
 ## Template Parameters
 
@@ -3290,7 +3531,7 @@ There are three types of template parameters that can be used during template cl
 
 2. *Non-type parameters.* In addition to type, template parameters include Non Type Parameters, which can have the type of integral constant, reference, and a pointer to a given function. Pointers to data of function must have an external link type. Starting from C++20, a template parameter can be of any fundamental type (bool, float, int, and so on), enumeration type, pointer type, and reference type. [4, p.380]. The compiler needs to be able to evaluate the arguments corresponding to all non-type parameters at compile time.
 
-3. *Template template parameters.* A template can be customized with a template class. Details are avilable [1], Appendix B. Example:
+3. *Template template parameters.* A template can be customized with a template class. Details are available [1], Appendix B. Example:
 ```cpp
     template<template<class, class> class H, class S>
     struct T {
@@ -3300,7 +3541,7 @@ There are three types of template parameters that can be used during template cl
 ```
 
 ## Template Syntax Remarks
-Starting from C++11 it is not necessary during instantiating a template, write a space in the right shift operator `>>` when it's used during template instantiation. In the case of specifying an integral type in a template parameter and wishing to perform right-shift `>>`, you should enclose the expression in parentheses starting from C++11. Example of using `>>`:
+Starting from C++11 it is not necessary during instantiating a template, to write a space in the right shift operator `>>` when it's used during template instantiation. In the case of specifying an integral type in a template parameter and wishing to perform right-shift `>>`, you should enclose the expression in parentheses starting from C++11. Example of using `>>`:
 ```cpp
 template <class T, int size>
 class AA {
@@ -3309,11 +3550,11 @@ class AA {
 AA<std::vector<int>>, 2> obj;
 ```
 
-The name of a template class or a template function augmented with the list of parameter names for the template between angle brackets is called the **template-id** (See cpp [reference documentation](https://en.cppreference.com/w/cpp/language/templates)).
+The name of a template class or template variable or a template function augmented with the list of parameter names for the template between angle brackets is called the **template-id** (See [cpp reference documentation](https://en.cppreference.com/w/cpp/language/templates)). During the definition of a member function or a static member of a template class, there are two aspects. 
 
-During the definition of a member function or a static member of a template class, there are two aspects. 
+First, it’s not necessary to use the full **template-id** within a template definition. 
 
-First, it’s not necessary to use the full **template-id** within a template definition. Example:
+Example in which both `class ClassA` and `class ClassB` are valid:
 ```cpp
 template <typename T>
 class ClassA
@@ -3330,7 +3571,7 @@ public:
     static void print(const ClassB<T>& ctr) {}
 };
 ```
-Secondary,  if you are defining methods of a template class outside the template class definition then the name of the class must be qualified with **template id**. However syntactically after passing the scope resolution `::` there is no reason to use full qualified **template id**. Example:
+Second, if you are defining methods of a template class outside the template class definition then the name of the class must be qualified with **template id**. But, syntactically after passing the scope resolution `::` there is no reason to use full qualified **template id**. Example:
 ```cpp
 template<class Tx, class Ty> class MyPair {
 private:
@@ -3356,7 +3597,11 @@ MyPair<Tx, Ty>::MyPair<Tx, Ty>(const Tx& theFirst,
 #endif
 ```
 
-It's possible to use different syntaxes for function specialization from longer to shorter syntax (A->B->C). On the complex rules of the admissible derivation of template arguments, functions see ([1], 13.4).
+Next, let's talk about template function specialization. 
+
+It's possible to use different syntaxes for function specialization from longer to shorter syntax (See A->B->C below). 
+
+On the complex rules of the admissible derivation of template arguments, functions see ([1], 13.4).
 
 ```cpp
 template <class T>
@@ -3398,33 +3643,38 @@ int main() {
 }
 ```
 
-Finally, we would like to mention that default template arguments type must occur at the end for class or variable template. However, for function templates, it's not a requirement because, for functions, there is a rich type deduction template mechanism.
+Finally, we would like to mention that the default template argument type must occur at the end of the class or variable template. 
+
+However, for function templates, strictly speaking it's not a requirement because, for functions, there is a rich type deduction template mechanism.
 
 ## Template Instantiation
 
 Templates can be instantiated in two forms: 
 
-* **Implicit instantiation.** The compiler will generate a specialization for the template only when it needs the definition. For example, the compiler instantiates a class template as a result of a definition of an object with of specific template instantiated type. All member function definitions in the class template are templates. When the code for member functions of the class template is needed they are generated by the compiler. If the member of the template class is not needed by the program then the compiler won’t create instances of a member function or anything which is not required.
+* **Implicit instantiation.** The compiler will generate a specialization for the template only when it needs the definition. For example, the compiler instantiates a class template as a result of a definition of an object with of specific template instantiated type. All member function definitions in the class template are templates. When the code for member functions of the class template is needed, they are generated by the compiler. If the member of the template class is not needed by the program, then the compiler won’t create instances of a member function or anything which is not required. Example of implicit template class instantiation:
 
-```cpp
-MyPair<int,int> a;
-```
+  ```cpp
+  MyPair<int,int> a;
+  ```
 
 * **Explicit instantiation.** Explicitly instantiating a class template generates the complete class type definition and in fact, instantiates all member functions. This happens regardless of whether you 
-call the member functions or not. Syntax:
-```cpp
-// explicit instantiation of a class 
-template class MyPair<int, int>;
-// explicit instantiation of a function member
-template void MyPair<int,int>::f(); 
-template void f<int>(int&);
-template void g(double&);
-```
+  call the member functions or not. Syntax:
+  ```cpp
+  // explicit instantiation of a class 
+  template class MyPair<int, int>;
+  
+  // explicit instantiation of a class function member
+  template void MyPair<int,int>::f(); 
+  
+  // explicit instantiation of a function
+  template void f<int>(int&);
+  template void g(double&);
+  ```
 
-Explicit instantiation of a class template instantiates all members. Explicit instantiation can be used to quickly test whether a class template and all its member templates can be instantiated without errors.
+  Explicit instantiation of a class template instantiates all members. Explicit instantiation can be used to quickly test whether a class template and all its member templates can be instantiated without errors.
 
 ## Variadic Templates
-Variadic templates have been introduced in C++11. The motivation is to have the ability to work with a varying number of template parameters during template definition. The smallest example:
+Variadic templates have been introduced in C++11. The motivation is to have the ability to work with a varying number of template parameters during template definition. The smallest example of template function definition with variadic template arguments:
 ```cpp
 template <class T...>
 void f(const T&...arg){}
@@ -3458,27 +3708,31 @@ void printf(const char *s, T value, Args... args)
 **Second thing:** The only way to get the next template argument is to recursively call a function whose template parameters are specified as `<TExtractType, RestTypes...>` via specifying some parameters in the usual way and some parameters via **unpack construction** (see below). If you have ever seen functional programming languages, that construction looks pretty close to that.
 
 Packing operations:
-* `class ...Args` - parameters **pack** in template parameters list with optional name. Non-type template parameters can also be organized in the pack via similar syntax `int...`.  One more time - whitespace around <`...`> does not matter for the compiler.
-* `(Arg&&....params)` - template function arguments parameters **pack**.
+* `class ...Args` - template parameters parameters **pack** with optional name. Non-type template parameters can also be organized in the pack via similar syntax `int...`.  One more time - whitespace around <`...`> does not matter for the compiler.
+* `(Arg&&....params)` - template arguments parameters **pack**.
 
 Unpacking operations:
-* `Args...` - **unpack** parameters (or **pack expansion**). Used inside the body of the template function.
-* `sizeof...(Args)` - the size of parameters in terms of a number of elements in Args. (It is not the size in bytes).
+* `Args...` - **unpack** parameters (or **pack expansion**). Used inside the body of the template function or template class member function.
+* `sizeof...(Args)` - the size of parameters in terms of the number of elements in Args. (It is not the size in bytes).
 
-The last trick with a variadic template is called *fold expression* has been introduced in C++17. The unary syntax for fold expression:
+Variadic templates has been introduced in C++11, but there is one more tick for variadic templates  with name *fold expression*. It has been introduced in C++17. 
+
+The unary syntax for fold expression:
 ```cpp
 template<typename... Args>
-bool allLeftFold(Args... args) { return (... && args); }  // Unary right fold (E op ...) becomes (E1 op (... op (EN-1 op EN)))
+bool allLeftFold(Args... args) { return (... && args); }  
+// Unary right fold (E op ...) becomes (E1 op (... op (EN-1 op EN)))
 
 template<typename... Args>
-bool allRightFold(Args... args) { return (args&& ...); }  // Unary left fold (... op E) becomes (((E1 op E2) op ...) op EN)
+bool allRightFold(Args... args) { return (args&& ...); }  
+// Unary left fold (... op E) becomes (((E1 op E2) op ...) op EN)
 ```
 
 Documentation: [cpp reference details about folding](https://en.cppreference.com/w/cpp/language/fold)
 
 ## Template Specialization
 
-Override the default behavior for template instantiation is called *specialization*. An explicit specialization declaration must appear after the declaration of the primary/general-template at least due to the language requirements. In C++ you can specialize the following things:
+Override the default behavior for template instantiation is called *specialization*. An explicit specialization declaration must appear after the declaration of the primary/general template, at least due to the language requirements. In C++ you can specialize the following things:
 
 1. Function template and class template.
 2. Member function of a class template
@@ -3490,7 +3744,7 @@ Override the default behavior for template instantiation is called *specializati
 A template specialization can be:
 * **Complete.** For example make specialization for some concrete types. A complete class template specialization is a class definition. starting with `template<>`, and it is not a class template. In fact, an empty `template<>` is syntactically reserved for explicit specialization and cannot be used to create a template without parameters. 
 
-* **Partial.** A Partial Specialization is a specialization of template  for specific cases. The partial specialization of the original template is a template. The template uses type T as the basis for something else. Partial specialization only works for classes but doesn't work for template functions. For template functions to obtain behavior similar to the partial specialization you can combine template function definition with function overloading. A partial specialization has both a template argument list and a template parameter list. The compiler uses partial specialization if its template argument list matches a subset of the template arguments of a template instantiation.
+* **Partial.** A Partial Specialization is a specialization of templates for specific cases. The partial specialization of the original template is a template. The template uses type T as the basis for something else. Partial specialization only works for classes but doesn't work for template functions. For template functions to obtain behavior similar to the partial specialization you can combine template function definition with function overloading. A partial specialization has both a template argument list and a template parameter list. The compiler uses partial specialization if its template argument list matches a subset of the template arguments of a template instantiation.
 
 Example of partial and complete class specialization:
 ```cpp
@@ -3529,11 +3783,13 @@ The general template must be declared before any partial or complete specializat
 
 In a function template specialization, a template argument is optional if the compiler can deduce it from the type of the function arguments. 
 
-You can nest member templates within many enclosing class templates. If you explicitly specialize a template nested within several enclosing class templates, you must prefix the declaration with `template<>` for every enclosing class template you specialize. You cannot explicitly specialize a class template unless its enclosing class templates are also explicitly specialized.
+You can nest member templates within many enclosing class templates. If you explicitly specialize a template nested within several enclosing class templates, you must prefix the declaration with `template<>` for every enclosing class template you specialize. 
+
+Importantly, you cannot explicitly specialize a class template unless its enclosing class templates are also explicitly specialized.
 
 Each class template instantiation has its own copy of any static data members.
 
-You can use `template` to create a specialization for the array with a fixed size.
+Example of `template` to create a specialization for the array with a fixed size.
 ```cpp
 #include "stdio.h"
 
@@ -3568,7 +3824,7 @@ For more info: please view "B.13.6 template" in Special Edition, Biern Stroustru
 
 ## Reference Collapsing Rules and Universal Reference
 
-In C++ you can not declare a reference to reference, but when reference collapsing occurs during template types substitution, there are the following rules:
+In C++ you can not declare a reference to reference, but when reference collapsing occurs during template types substitution, the following rules are applied:
 
 `T&&` => `T&` - valid from C++03 (1)
 
@@ -3610,32 +3866,30 @@ If argument `arg` is RValue reference with type `Z&&` the function will be deduc
 
 So in fact, construction
 ```cpp
-void f(Type&& arg);
-```
-obtains as input true RValue reference.
-
-But construction:
-```cpp
 template <class T>
 void f(T&& arg)
 {}
 ```
-can binds everything. The term that has been used to describe that (by Skott Meyers) has obtained a name *universal reference*.
+can bind everything. 
+
+The term that has been used to describe that (by Skott Meyers) has obtained the name *universal reference*. Even though it's not official.
 
 
 # Variants of Casting
 
-`const_cast` - removes `const` and `volatile` modifiers from a pointer.
+[const_cast](https://en.cppreference.com/w/cpp/language/const_cast) - removes `const` and `volatile` modifiers from a pointer or reference.
 
-`static_cast` - casting one type to another using standard or user-defined conversions.
+[static_cast](https://en.cppreference.com/w/cpp/language/static_cast) - casting one type to another using standard or user-defined conversions explicitly.
 
-`dynamic_cast` - the argument to dynamic_cast can be a null pointer - the result of this operation is a null pointer. The argument to dynamic_cast must be a polymorphic type. This requirement simplifies the implementation. The result of dynamic_cast need not be a polymorphic type. If it is impossible to understand what the type needs to be converted to (diamond-shaped inheritance with duplicates), a null pointer will be returned. It will also return a null pointer for the simpler base case when casting is failed.
+[dynamic_cast](https://en.cppreference.com/w/cpp/language/dynamic_cast) - the argument to dynamic_cast can be a null pointer - the result of this operation is a null pointer. The argument to dynamic_cast must be a polymorphic type. This requirement simplifies the implementation. The result of `dynamic_cast` need not be a polymorphic type. If it is impossible to understand what the type needs to be converted to (e.g. in the case of diamond-shaped inheritance with duplicates), a null pointer will be returned. 
 
-`reinterpret_cast` - force casting instructions
+It will also return a null pointer for the simpler base case when casting is failed.
 
-`C-style type casting` - tries to use static_cast, if not, uses reinterpret_cast. Further, if necessary, uses `const_cast`.
+[reinterpret_cast](https://en.cppreference.com/w/cpp/language/reinterpret_cast) - force casting instructions for changing bit representation of integral (various forms of `int`) without reinterpreting bit patterns.
 
-**Private inheritance** - in addition to the invisibility of variables by the user of the derived class of members of the vase class, also does not allow the use of implicit type casting.
+[C-style type casting](https://en.cppreference.com/w/cpp/language/explicit_cast) - tries to use [static_cast](https://en.cppreference.com/w/cpp/language/static_cast), if not, uses [reinterpret_cast](https://en.cppreference.com/w/cpp/language/reinterpret_cast). Further, if necessary, uses [const_cast](https://en.cppreference.com/w/cpp/language/const_cast).
+
+**Private inheritance**. In the context of casting it's worthwhile to mention this as well. In addition to the invisibility of variables by the user of the derived class of members of the vase class, it also does not allow the use of implicit typecasting.
 ```cpp
 struct A{int a;};
 struct B:private A{int b;};
@@ -3652,81 +3906,94 @@ int main() {
 
 ## Define Concepts
 
-A concept is a named set of requirements. It's possible in general, to distinguish three categories of requirements [4,p.512]:
+A [concept](https://en.cppreference.com/w/cpp/language/constraints) is a named set of requirements. It's possible in general, to distinguish three categories of requirements [4,p.512] for types and logic:
 * Syntactic requirements.
 * Semantic requirements.
 * Complexity requirements.
 
-The only requirements that we can express with C++ concepts are syntactic ones. Explicitly specify any and all non-obvious semantic and complexity requirements of a concept right now should be done in the form of code comments or other documentation. First, let's describe example how concepts are defined:
+The only requirements that we can express with C++ concepts are syntactic ones. Explicitly specifying any and all non-obvious semantic and complexity requirements of a concept right now should be done in the form of code comments or other documentation. 
+
+General things about [concept](https://en.cppreference.com/w/cpp/language/constraints):
+
+1. Concepts are never instantiated by the compiler. They never give rise to executable code.
+2. Concepts should be seen as functions that the compiler evaluates at compile time to determine whether a set of arguments satisfies the given constraints.
+3. A *constant expression* is any expression that the compiler can evaluate at compile time.
+
+The first way to define [concept](https://en.cppreference.com/w/cpp/language/constraints) is to express it via **Constraints**. Example of concepts with a simple constraint:
 
 ```cpp
 template <typename T>
 concept Small = sizeof(T) <= sizeof(int);
 ```
 
-General things about concepts:
+In this example, concept Small is defined with a single *constraint expression*. A single *Constraint Expressions* are named as [atomic constraint](https://en.cppreference.com/w/cpp/language/constraints).
 
-1. Concepts are never instantiated by the compiler. They never give rise to executable code.
-2. Concepts should be seen as functions that the compiler evaluates at compile time to determine whether a set of arguments satisfies the given constraints.
-3. A *constant expression* is any expression that the compiler can evaluate at compile time.
-4. The constraints in the body of a concept definition are logical expressions connected with `&&` or `||` .
-5. Expressions that are connected with logical symbols are **atomic constraint**.
+The [atomic constraints](https://en.cppreference.com/w/cpp/language/constraints) in the body of a concept definition can be combined with logical expressions connected with `&&` or `||`. Such constraint is formally called a *Disjunction Constraint* and *Conjunction Constraint*.
 
-You can define concept in terms of another concepts. Example:
+Next, you can define concepts in terms of other constraints in a cascading style. Example:
 ```cpp
 template <typename I>
 concept Integer = SignedInteger<I> || UnsignedInteger<I>;
 ```
 
-So concept is defined in the following way:
+So, to define the concept in the form of constraint you should make it in the following way:
 ```cpp
 template <parameter list>
 concept name = constraints;
 ```
-To express the actual syntactical requirements of a **concept** you can use *requires* expression. In that context *requires* specifies a constant expression on template parameters that evaluate a requirement (since C++20).
+
+Constraints (Atomic, Conjunction, Disjunction) is not the only way to define [concept](https://en.cppreference.com/w/cpp/language/constraints). Constraints provide you with a means to constrain the template type. But to express the actual syntactical requirements of you should use [requires](https://en.cppreference.com/w/cpp/keyword/requires) expression. 
+
+In that context *requires* specifies a constant expression on template parameters that evaluate a requirement (since C++20). Its syntax is the following:
 ```cpp
 requires { requirements }
 requires (parameter list) { requirements }
 ```
-All the compiler does with requirements is check whether they form valid C++ code or not. The body of a requires expression consists of a sequence of requirements. Each requirement ends
-with a semicolon and is one of the following types:
+All the compiler does with requirements is check whether they form valid C++ code or not.
 
-* **A simple requirement.**
+The concept defined via [requires](https://en.cppreference.com/w/cpp/keyword/requires) can have one of the following types:
+
+* **A Simple Requirement.**
+Example of create concept with using *constraint* and *requires*:
+  ```cpp
+  template <typename Iter>
+  concept RandomAccessIterator = BidirectionalIterator<Iter>
+  && requires (Iter i, Iter j, int n)
+  {
+    //int n; // Error: not an expression
+    i + n; i - n; n + i; i += n;
+    i < j; i > j; i <= j; i >= j;
+  };
+  ```
+
+  A simple requirement consists of an arbitrary C++ expression statement and is satisfied if the corresponding
+  expression would compile without errors. All variables you use in these expressions must either be global variables or variables introduced in the parameter list. You cannot declare local variables in the usual way.
+
+* **A Compound Requirement.**
 Example:
-```cpp
-template <typename Iter>
-concept RandomAccessIterator = BidirectionalIterator<Iter>
- && requires (Iter i, Iter j, int n)
- {
-   //int n; // Error: not an expression
-   i + n; i - n; n + i; i += n;
-   i < j; i > j; i <= j; i >= j;
- };
-```
+  ```cpp
+  template <typename T>concept NoExceptDestructible = requires (T& value) { { value.~T() } noexcept; };
+  ```
 
-A simple requirement consists of an arbitrary C++ expression statement and is satisfied if the corresponding
-expression would compile without errors. All variables you use in these expressions must either be global variables or variables introduced in the parameter list. You cannot declare local variables in the usual way.
+  A compound requirement is similar to a simple requirement. But only besides asserting that a given expression must be valid, a compound requirement can also prohibit this expression from ever throwing an exception and/or constraint type that it evaluates to. 
 
-* **A compound requirement.**
-Example:
-```cpp
-template <typename T>concept NoExceptDestructible = requires (T& value) { { value.~T() } noexcept; };
-```
+  There is no semicolon after the expression inside the curly braces of a compound requirement. 
 
-A compound requirement is similar to a simple requirement; only
-besides asserting that a given expression must be valid, a compound requirement can also prohibit this expression from ever throwing an exception and/or constraint type that it evaluates to. There is no semicolon after the expression inside the curly braces of a compound requirement. All possible types of compound requirements:
+  All possible types of compound requirements:
 
-```cpp
-// expr is a valid expression
-{ expr };
-// expr is valid and never throws an exception
-{ expr } noexcept;
-// expr is valid and its type satisfies type-constraint
-{ expr } -> type-constraint;
-{ expr } noexcept -> type-constraint;
-```
+  ```cpp
+  // expr is a valid expression
+  { expr };
+  // expr is valid and never throws an exception
+  { expr } noexcept;
+  // expr is valid and its type satisfies type-constraint
+  { expr } -> type-constraint;
+  { expr } noexcept -> type-constraint;
+  ```
 
-* **A type requirement and nested requirement.** Example:
+  In this type of requirement, the body of a `requires` expression consists of a *sequence of requirements*, and each requirement is introduced with curly braces `{}`. Each requirement ends with a semicolon.
+
+* **A Type Requirement and Nested Requirement.** Example:
 ```cpp
 template <typename S>
 concept String = requires
@@ -3738,12 +4005,12 @@ concept String = requires
 
 ## Use Concepts
 
-The general outline for a constrained template thus becomes as follows:
+The general outline for a constrained template user is as follows:
 ```cpp
 template <parameter list> requires constraints
 template body;
 ```
-Example of using concept to restrict template using:
+Example of using the concept to restrict template using:
 ```cpp
 template <typename T>
 requires MyConcept<T> && std::destructible<T>
@@ -3751,11 +4018,9 @@ const T& function(const T& a, const T& b)
 { return a > b ? a : b; }
 ```
 
-In a template, declaration keyword **requires** specifying the used constraint.
+In a template, the declaration keyword **requires** specifying the used constraint.
 
-
-
-Starting from C++20 there is a shorthand notation for using concept:
+Starting from C++20 there is a shorthand notation for using the concept. Example:
 
 ```cpp
 template <typename S>
@@ -3772,36 +4037,324 @@ const T& function(const T & a, const T & b)
 ```
 
 # Coroutines (C++20)
-The execution of function includes the ability to peform the following:
-* created stack frame
-* execute function
-* return value
-* delete stack frame
+The execution of usual function includes the ability for perform the following action in underlying platform:
+* Create stack frame
+* Execute function
+* Return value
+* Delete stack frame
 
-The Coroutines conceptually the same as functions, but they allow two extra actions:
-* suspend execution.
-* resume execution.
+The Coroutines are conceptually the same as functions, but they allow two extra actions:
+* Suspend execution
+* Resume execution
 
-Coroutines in some sense are stackless they reuse stack frame of the caller.
+Coroutines are stackless. They reuse the stack frame of the caller to resume execution after return. In another languages as [Python](https://www.python.org/) the close by thing for C++ coroutines is *generator*.
 
-`co_return` - return from coroutine. The `return` statement is prohibited in coroutine. Example:
+In C++ the `return` statement is prohibited in a coroutine, instead to finish the execution of a coroutine you should use `co_return` and it is the correct way to return from a coroutine. Falling to the end of the coroutine without using `co_return` is equivalent to using (or not using) `return ` for usual functions, which is only allowable for functions with `void` return type.
+
+Example:
 ```cpp
 task<int> func(int a, int b)
 {
   co_return x;
 }
 ```
+`co_yeild` - returns a value from the coroutine to the caller. Suspend execution of coroutine, until subsequently calling the coroutine.
+
+`co_return` - complete execution returning a value from coroutines.
+
 `co_await` - suspend coroutine while waiting for another computation to finish.
 
-`co_yeild` - returns a value from coroutine to the caller. Suspend execution of coroutine, until subsequently calling the coroutine.
+# Appendices
 
-To execture coroutine until it's not ready:
+## Virtual Inheritance Inside
+
+The detailed document with some details regarding this topic in GCC compiler was in the past available in the website http://phpcompiler.org/articles/virtualinheritance.html. However right now this website is not available.
+
+Regarding implementation of virtual inheritance inside MSVC compiler please take a look into this archive article http://www.openrce.org/articles/files/jangrayhood.pdf with title "C++: Under the Hood" by Jan Gray, March 1994. Jan Gray is a Software Design Engineer in Microsoft Visual C++ Business Unit.
+
+The first question which we're going to address is what program #1 will output:
 ```cpp
-task<int> x = func(1,2)
-while (!x.is_ready())
-  x.resume();
-return x.result();
+#include <stdio.h>
+class A{};
+class B1: virtual public A{};
+class B2: virtual public A{};
+class B3: virtual public A{};
+class B4: virtual public A{};
+class FROM_B1_B2 : public B1, public B2{};
+class FROM_B1_B2_B3_B4 : public B1, public B2, public B3, public B4{};
+
+#define PRINTSIZE(class_name) printf("sizeof class '" #class_name "' is equal to %u bytes\ n", sizeof(class_name))
+
+int main(int argc, const char** argv)
+{ 
+  PRINTSIZE(FROM_B1_B2); 
+  PRINTSIZE(FROM_B1_B2_B3_B4); 
+  return 0;
+}
 ```
+
+In this program, we measure the size of the class by using `sizeof` operator. This information about the sizeof operator can be e.g. obtained from 
+ANSI ISO IEC 14882 C++ 2003, 5.3.3:
+
+> The sizeof operator yields the number of bytes in the object representation of its operand. The operand is either an expression, which is not evaluated or a parenthesized type-id...
+When applied to a class, the result is the number of bytes in an object of that class including any padding required for
+placing objects of that type in an array...
+
+
+The hidden fields of the objects and padding are stored and are taken into account during apply `sizeof`. So honest answer that size of object is implementation specific, but in most systems objects of class `FROM_B1_B2_B3_B4` will occupy $4 \cdot sizeof(pointer)$ bytes, and objects of class `FROM_B1_B2` will occupy $2 \cdot sizeof(pointer)$ bytes.
+
+
+The essence of type casting in C++ is shifting the memory window so that the data of the base type that we look at in the memory layout would be identical to what we would look at if we created an object of the base class, without a derived type. Such thing can be accomplished if sequence of class inheritance is linear and memory for object of each class is just stacked to the tail of base class object. You can play with the following code snippet and observe that more likely your toolchain will generate the same address:
+
+```cpp
+#include <stdio.h>
+
+#define PRINTADRESS(lvalue) printf("adress of '" #lvalue " is: %08X\n", (void*)&(lvalue))
+
+class Simple
+{
+public: 
+  int base1; 
+  int base2;
+};
+
+class SimpleBased : public Simple 
+{
+public: 
+  int der1; 
+  int der2;
+};
+
+int main(int argc, const char** argv)
+{ 
+  SimpleBased simple_based; 
+  PRINTADRESS(simple_based.der1); 
+  PRINTADRESS(simple_based.der2); 
+  PRINTADRESS(simple_based.base2); 
+  printf("NOW IT IS MORE LIKELY THAT ALL ADDRESSES WILL BE THE SAME\n");
+  PRINTADRESS(simple_based.base1);
+  PRINTADRESS(simple_based);
+  PRINTADRESS((Simple&)(simple_based));  
+  return 0;
+}
+```
+
+But with using virtual inheritance, for example, diamond-shaped, a common data is created for two inheritance paths from the base class.
+
+```cpp
+
+#include <stdio.h>
+
+#define VIRTUAL virtual
+
+#ifndef VIRTUAL
+    #define VIRTUAL
+#endif
+
+class Top
+{
+public:
+    // ~Top() { printf("~Top()\n"); } 
+    Top() { printf("Top()\n"); }
+    Top(int) { printf("Top(int)\n"); }
+};
+
+class Left : VIRTUAL public Top
+{
+public:
+    // ~Left() { printf("~Left()\n"); } 
+    Left()
+    {
+        printf("Left()\n");
+    }
+
+    Left(int a) : Top(a)
+    {
+        printf("Left(int)\n");
+    }
+};
+
+class Right : VIRTUAL public Top
+{
+public:
+    // ~Right() { printf("~Right()\n"); } 
+    Right()
+    {
+        printf("Right()\n");
+    }
+
+    Right(int a) : Top(a)
+    {
+        printf("Right(int)\n");
+    }
+};
+
+class Bottom : public Left, public Right
+{
+public:
+    // ~Bottom() { printf("~Bottom()\n"); } 
+    Bottom()
+    {
+        printf("Bottom()\n");
+    }
+
+    Bottom(int a) : Left(a), Right(a)
+    {
+        printf("Bottom(int)\n");
+    }
+};
+
+int main(int argc, const char** argv)
+{
+    Bottom b(123); 
+    return 0;
+}
+```
+
+In example above we use `virtual` keyword that should be used for inheritance branches that come from a common ancestor for different inheritance paths.  And example represents classical diamond shape inheritance. In such situation with such memory layout it is less possible to create a simple strategy with sliding window which look *"beautifully"* at the given object and during upcasting and downcasting shifts the windows. To mitigate this the following trick is used. 
+
+In our original example with several `B` classes in fact for each `B1,B2,B3,B4` class the compiler to provide accesses to the shared data in `class A` create a field of type `vptr.B1, vptr.B2, vptr.B3, vptr.B4`.
+All this pointers are pointed to the `vtable` table.
+
+For non-virtual function calls, the member function to call is statically determined, at compile time. For virtual functions a derived
+class can override, or replace, the actual function definition to be used when an inherited member. 
+
+Whether the `override` should be used for specific class depends upon whether the member function is declared `virtual`. Firstly for each class we construct such Table of virtual functions. A `vptr` pointer is added to a class instance to address virtual function table (`vtable`).
+
+Each virtual function in a class has a corresponding entry in that classs vtable. Each entry holds the address of the virtual function override appropriate to **that class**.  Calling a virtual function requires:
+* Fetching the instances `vptr`.
+* Indirectly calling.
+
+Each virtual table consists of:
+1. **virtual base offset** - number of bytes to be added to the `vptr.B1` field address to get the address of shared variables from `class A`.
+2. **top** - offset of the `vptr.B1` field from the beginning of the structure. May be required for complex situations with casting.
+3. **std::type_info** - value which stores information about the actual type which can be queried in runtime via [typeid](https://en.cppreference.com/w/cpp/language/typeid).
+4. If there are pointers to real called functions tables `sizeof` class 'FROM_B1_B2_B3_B4' is equal to 32 bytes, if the size of a pointer is 8 bytes.
+5. **Table of virtual functions** - is essentially an array of pointers to (virtual) functions. These pointers are used at runtime to invoke the appropriate function. At compile time it may not yet be known which function should be called. A derived one implemented in a class that inherits from the base class, or a base class.
+
+The C++ standards do not specify exactly how dynamic dispatch is implemented. In addition, the compiler creates a separate virtual method table for each class. When an object is created, a pointer to this table)vptr) is added as a hidden member of the class. 
+
+The compiler must also generate "hidden" code in the constructors of each class to initialize a new object's virtual table.
+
+## Object Orientated Design
+
+The C++ is multi paradigm language. Even that the big part of it is devoted for Object Orientated Programming (OOP). OOP can be implemented in different ways. In this section we will share background about the subject. This materials is based on vision T.Hoare.
+
+
+In context of OOP:
+* *type* - is a set of objects with operations on them.
+* *polymorphism* - literally translated as "many forms". And in the context of OOP, it means working with objects of different shapes in the same way. 
+
+***From which place OOP come from?** 
+
+OOP was born from the shortcomings of structured programming. 
+Structure programming essentially means C-style development when there are structures and there are functions.
+
+Advantages of structured programming:
+* Errors are coming at the early stages of development.
+* Distribution of work.
+
+Disadvantages of structured programming:
+* Any modification changes the structure of data types.
+* Any modification changes the structure of the logic of the function. The underlying reason is that data is located in the lowest level of hierarchical calls.
+
+To best of knowledge of one of the authors (Konstantin Burlachenko) basic concepts of OOP was strongly born in 1966 by Tony Hoare, even though the first thinking about this may be from 1950-1960. In 1966 by Tony Hoare gave lectures on sharing records and proposed:
+
+1) Select actions on data and use an add-on to modify data. This has been called **encapsulation.**
+2) To modify software entities, if possible, use an add-on over existing entities. It's been called **inheritance.**
+3) T.Hoare proposed to make the interaction in the program of objects the same as in the real world and singled out:
+
+    * **accessory interaction**, which is like reading the characteristics of an object. This type of interaction is sometimes called **static** in programming languages.
+    * **event interaction**, which is interaction associated with a change in the state of an object. This type of interaction is called dynamic.
+
+Next, there are several another concepts which has been formalized during born of OOP:
+
+* An *object* is a concrete implementation of an abstract type that has the characteristics of state, behavior, and identity.
+* The *behavior* os a description of an object in terms of changing its state and the transmission of messages in the process of exposure to or under the influence of other objects.
+* The *individuality* is the essence of an object that distinguishes it from other objects
+
+**Relationships between objects:**
+
+* *Relationship of use* or *Delegation*. An object can play the role of influence, performance, mediation.
+* *Inclusion.* An object can be composed of other objects:
+    * *Aggregation by reference* -  situation when object reference to parts.
+    * *Composition* - situation when object consist of parts.
+
+**Categories of objects in OOP:**
+
+* *Real objects.* An abstraction of the actual existence of objects in the physical world (table).
+* *Roles.* An abstraction of purpose, purpose (student, person).
+* *Incidents.* An abstraction of something that happened or happened (power surge)
+* *Interaction.* Objects obtained from the interaction between objects
+* *Specifications.* Used as a rule representation or quality criterion
+
+**What is Class:**
+
+A class is an abstraction of things in the real world such that all items in this set have the same characteristics. All objects are subject to and conform to the same set of rules and behaviors.
+
+**Relationships between classes:**
+1) *Inheritance.* One class is built on top of another
+2) *Usage.* An object of one class calls methods on an object of another class
+3) *Include.* A class includes other classes.
+4) *Meta-Classes.* A class whose objects are classes.
+
+**What is Domain:**
+
+A domain is a separate real hypothetical world inhabited by a distinct set of objects that behave according to the rules or behaviors characteristic of the domain. The class is defined in one domain. A class in a domain can only require the existence of other classes in that domain.
+
+Now you know what *Object Orientated Design* is. To the best of our knowledge, it's more an art than a science.
+
+## Object Orientated Design Patterns
+
+In the book [Design Patterns (Gamma, Helm, Johnson, Vlissides) 2011"](https://www.amazon.com/Design-Patterns-Object-Oriented-Addison-Wesley-Professional-ebook/dp/B000SEIBB8) in the preface it says
+*"You shouldn't have to go to the dictionary to explain the terms type and polymorphism"*.  In our technical note, we have covered this in the previous section [Object Orientated Design](#object-orientated-design).
+
+
+Whether they are needed or not, it's not bad to be aware of them. Unfortunately, when Software Projects contain a lot of them it is impossible to work with a project to make an actual work and create actual algorithms.
+
+**Main Theses:**
+
+1) Program according to interfaces, not according to implementation
+2) Prefer *composition*(another term is *inclusion*) over class inheritance. With delegation (another term is *use*), the composition becomes as powerful a concept as an inheritance.
+3) Type *parametrization* after inheritance and composition, is one more way to solve a problem in the OOP style.
+4) The patterns can be useful when reorganizing reusable software.
+
+**List of patterns that are described in the book:**
+
+| **Pattern**      | **Meaning**   |
+|---------------|--------------|
+| Abstract Factory |Create a family of related objects. |
+| Factory|Defines an interface for creating a collection of objects. Interface methods are essentially Factory Methods in form of *create**.|
+| Builder |   Construction of a complex object. The manager (director) is configured by the desired builder (builder). The director then tells the builder to build the part. The builder builds the part and adds it to the product. The customer picks up the product from the builder. |
+| Factory Method (virtual constructor)|Create an instance of an object by it's ID.|
+| Prototype| You want to create an instance of the class and you use factory via for example `CreateInstance`. However, you cannot call `CreateInstance` from the class, because it is unknown. One way to resolve this is for Objects to inherit the `Prototype` interface, which has a `Clone` method to clone itself returning a Prototype and from obtained `Prototype` you can call `Initialize`.|
+| Singleton| Ensures that the class has one instance.|
+| Adapter(Wrapper)|Converts an interface from one class to another. Implementations: **(A1)** Openly inherited from the `Target` interface and closed from `Adaptee`. Thus, access to Adaptee will be only inside the adapter. Exploit this to implement `Target`. **(A2)** Openly inherited from the `Target` interface. Take a pointer to `Adaptee` in the constructor. When implementing the` Target` interface, exploit this object.|
+| Bridge|Separate the implementation from the interface so that both can be developed in parallel. The implementation is similar to A2 for the `adapter`. It differs only philosophically. Also, the pattern interface can be more complete and provide higher work primitives (draw a square). While the implementation provides more low-level primitives (draw a line)|
+| Composite|Tree structure of objects with Parent-Child relationships.|
+| Decorator|Adds new responsibilities. The implementation is similar to `A2` of Adapter.E.g. before/after drawing an an object in the decorator we draw a decorated rig and then call at the Draw object being decorated.|
+| Facade|Unified interface to the subsystem. Simple and intuitive interface for working with the system. 
+| FlyWeight|Separation to effectively support many small objects.|
+| Proxy|Proxy access to an object. For example, using this approach, the creation of a heavy part of an object only on demand can be implemented. As well as caching calculations. |
+| Chain of Responsibility|Links objects - recipients of a request into a chain, and passes the request along the chain in turn until it is processed. The chain can be organized by having a pointer in the next object - the recipient object in a chain list. Using the pattern, you can implement Help in the system. |
+| Comand|Wrap the command in an object. You can queue requests in this way, log them, and support the cancellation of operations.|
+| Iterator|Just iterator similar to iterator in C++ Standart Library.|
+| Mediator|Intermediary. System objects do not refer to each other, but work through an intermediary. The pattern allows you to reduce the connectivity of objects in the system.|
+| Memento|Fixes the internal representations of an object so that the state can be restored later.|
+| Observer (publish-subscribe)| When the state of an object changes, all dependents on it are notified. |
+| State|Variation of object behavior depending on the internal state. Models behavior based on state. The table method for a state machine focuses on defining transitions between states.|
+| Strategy(Policy) | Allows the implementation of interchangeable algorithms. **Static polymorphism** can be implemented via a template parameter. A strategy instance is simply a member of an algorithm object. The type of this member is obtained from the template parameter. **Dynamic polymorphism** is implemented through virtual methods.|
+ | Template Method | There is an algorithm and it consists of steps of **primitive operations**. The idea is to let subclasses override some of these **primitive operations**. The algorithm implemented in **template method** defines the skeleton of an Algorithm, but it relies on this primitive operation. In the context of this approach, we can recall the principle of Hollywood - *"Do not call us, we will call you ourselves"*.|
+ Visitor| An operation to be performed on each object in the collection. As a rule, vistor has typed visit methods. When the container is traversed, the element of container called has interface `Accept` and visitor passed into element accept as argument.Then this `Accept` method calls the desired `visitSmth` method from the visitor, passing a reference to *this.|
+ Allocator | Proxy to real storage|
+
+**Several another design principles:**
+
+1. *"Functions placed at the lower levels may be redundant or of a little value when compared to providing them at the higher level."* Saltzer, 1984
+
+2. The needs of the many (all the people reusing your class) outweigh the needs of the few (those who maintain your classs implementation) or the one (the class's original author). (Also known as Fun.Principle).
+
+3. Brittle Base Class problem. what should a base class have to serve all conceivable derived classes without having any dummy data and methods.
 
 # Acknowledgements
 
@@ -3847,6 +4400,8 @@ The mindset that C++ is shaping, helps to look into details and abstract when ne
 [10] [Useful catalog of resources from CppReference: Standards, ABI](https://en.cppreference.com/w/cpp/links)
 
 [11] [Compiler Explorer. An interactive online compiler which shows the assembly output of compiled C++, Rust, Go](https://godbolt.org/)
+
+[12][CS 5220 Applications of Parallel Computers ](https://www.cs.cornell.edu/~bindel/class/cs5220-s10/) by [David Bindel](https://www.cs.cornell.edu/~bindel/).
 
 # How to cite this C++ Technical Note
 
