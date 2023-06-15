@@ -105,10 +105,12 @@ Revision Update: June 15, 2023
 - [Compute Optimization Relative Information](#compute-optimization-relative-information)
   - [Return Value Optimization](#return-value-optimization)
   - [Inline Function Call](#inline-function-call)
+  - [Force Inline Function Call](#force-inline-function-call)
   - [Allowable Reformulations](#allowable-reformulations)
   - [Compiler Implementation Relative Questions](#compiler-implementation-relative-questions)
   - [std::aligned_storage](#stdaligned_storage)
   - [Memory Aliasing and restrict](#memory-aliasing-and-restrict)
+  - [Clobbered by call](#clobbered-by-call)
   - [Popular Compiler Flags for Optimization](#popular-compiler-flags-for-optimization)
   - [Several Principles for Code Optimization](#several-principles-for-code-optimization)
 - [Lambda Functions](#lambda-functions)
@@ -2149,6 +2151,31 @@ int main() {
 }
 ```
 
+Reasons why the compiler can not inline function:
+
+* During the compilation of a source file the definition of function is not available.
+
+* The compiler performs a cost-benefit analysis to decide whether to inline a function or not. Specifically, the inlining function has some **cost** and compilers have a threshold for **inlining**.
+
+## Force Inline Function Call
+One way to force the inline of some function change `inline-threshold` in your toolchain. 
+
+The alternative is to use `__forceinline`. Example:
+
+```cpp
+__forceinline static int max(int x, in y) 
+{ 
+  return x > y ? x : y; // always inline if possible 
+}
+```
+
+The `__forceinline` due to the first two underscores is a compiler extension. This asks the compiler to insert a copy of the function body into each place the function is called. This can make the program faster by eliminating the overhead of function calls, but it can also increase the code size. The `__forceinline` overrides this analysis. You should use `__forceinline` only when you are sure that inlining the function will improve the performance of your program. For example:
+
+* In GCC instead of `inline` use `inline __attribute__((__always_inline__))`.
+* In MSVC instead of `inline` use `__forceinline`.
+
+However `__forceinline` still does not guarantee inlining e.g. in MSVC there are various reasons when inline can not be done [__forceinline in msvc](https://learn.microsoft.com/en-us/cpp/cpp/inline-functions-cpp?view=msvc-170#inline-__inline-and-__forceinline).
+
 ## Allowable Reformulations
 In C++ and C, the order in which subexpressions are evaluated is not defined `A(F(), G())`.
 
@@ -2204,11 +2231,119 @@ However, in C99 there is a way to specify pointers as `restrict` via the followi
 void f(int* restrict a, int* restrict b)
 {}
  ```
-The C++ does not have such a keyword even up to C++20, but toolchains typically provide C++ extension via the `__restrict`  extension.
+The C++ does not have such a keyword even up to C++20, but toolchains typically provide C++ extension via the `__restrict`  extension (it is supported in GCC, MSVC, CLANG with this name).
 
-The essence of `restrict` is described in [2,p.94], and here we repeat it shortly. Restrict means that within the scope in which such a pointer is defined, the pointers are the only way to access the object where the pointer is pointed. For functions parameters in the form of pointers with `restrict,` means that within the function scope, pointers `a` and `b` always point to different memory locations. An essential aspect of the `restrict` pointer is that due to [2,p.95] and the formal definition of `restrict` from C99, it would have an effect if the use of pointed objects as LValues, i.e., memory in pointers are pointed is used for the *write*. 
+The essence of `restrict` is described in [2,p.94], and here we repeat it shortly. Restrict means that within the scope in which such a pointer (and reference in context of C++) is defined, the pointers are the only way to access the object where the pointer is pointed. For functions parameters in the form of pointers with `restrict,` means that within the function scope, pointers `a` and `b` always point to different memory locations. An essential aspect of the `restrict` pointer is that due to [2,p.95] and the formal definition of `restrict` from C99, it would have an effect if the use of pointed objects as LValues, i.e., memory in pointers are pointed is used for the *write*. In the case of using objects by `RValue,` the restriction does not impose any semantic restriction of memory not overlapping where pointed objects are located.
 
-In the case of using objects by `RValue,` the restriction does not impose any semantic restriction of memory not overlapping where pointed objects are located.
+With aliasing there are several problems. To explore problems with restrict one way is to use tool [OptView](https://github.com/OfekShilon/optview2) from Ofek Shilon. [OptView](https://github.com/OfekShilon/optview2) is in process of merging to LLVM master. This tool is a step forward to dialog with compiler.
+
+**Clobbered by Store or Load.** To visualize this effect you can use the following code snippet and compile it with [godbolt](https://godbolt.org/) for clang with flags `--std c++20 -O3`:
+```cpp
+#if 0
+// First way to get rid of alliasing
+void f1(int* out, const int & __restrict input_to_add, int n)
+{
+    for (int i = 0; i < n; ++i)
+    {
+        out[i] += input_to_add;
+    }
+}
+#endif
+
+#if 0
+// Second way to get rid of alliasing
+void f2(int* out, const int & input_to_add_, int n)
+{
+    int input_to_add = input_to_add_;
+    for (int i = 0; i < n; ++i)
+    {
+        out[i] += input_to_add;
+    }
+}
+#endif
+
+#if 0
+// Alliasing
+void f3(int* out, const int & input_to_add, int n)
+{
+    for (int i = 0; i < n; ++i)
+    {
+        out[i] += input_to_add;
+    }
+}
+#endif 
+```
+
+To observe CLang compiler optimization problems with [godbolt](https://godbolt.org/) please select **New->Optimization**.
+
+Clobbered by Store/Load - is a compiler problem that occurs due to aliasing in C++. The compiler protects himself from cases when there is a sequence of *writes* and one of these writes can potentially overwrite read arguments for a function. Problem can occur with variable from which read happens though reference or pointer. In example below it will happen if `{a[0],...,a[n-1]}` and `&input_to_add_` overlaps in memory. 
+
+There are several ways to resolve this problem:
+1.	One way declare pointer and reference by `restrict`.
+2.	Second way is to copy variable that causes aliasing into temporaly variable. It's bad for code readability, but good for compiler.
+3.	In C++ objects of different types will never refer to the same memory locations (objects are not aliased). In practice it may not not work. This solution is called as *strict aliasing*.
+
+## Clobbered by call
+
+This section is based on the presentation [LLVM Optimization Remarks - Ofek Shilon - CppCon 2022](https://www.youtube.com/watch?v=qmEsx4MbKoc&t=2407s&ab_channel=CppCon) in which author presents [OptView](https://github.com/OfekShilon/optview2). 
+
+If a function obtains a thing by reference or pointer then the potential object can potentially be escaped and the technical term of this situation is *pointer escape*. Once a function obtains an argument by reference or pointer the function (potentially) stores in some global state and this value is used. Once the pointer is escaped a lot of things can happen unfortunately, e.g. some global function can read/write this state during calls, even if this global function has no arguments. If you have such a function and you want to optimize it there are several things to do:
+
+**1. Make a promise that the function does not modify the global state (pure).**
+
+In toolchains, there is exist a C++ extension devote to function attributes. 
+
+* In GCC and CLANG the function attributes are introduced by the `__attribute__` keyword in the declaration of a function, followed by an attribute specification enclosed in double parentheses. (See [Function-Attributes in GCC](https://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html))
+  ```cpp
+  int f(int& a) __attribute__((pure));
+  int f(int& a)
+  {return a + a;}
+  ```
+
+**2. Make a promise that the function does not modify and even read global state (const).**
+In GCC and CLANG:
+```cpp
+int f(int& a) __attribute__((const));
+int f(int& a)
+{return a + a;}
+```
+
+**3. Make a promise that address of the function argument does not escape from the function call(noescape).**
+
+In GCC this function attribute is not supported. In CLANG it is supported:
+```cpp
+int f(int& a) __attribute__((noescape));
+int f(int& a)
+{return a + a;}
+```
+
+**4.	Other ways**
+
+ Create a temporary object and transfer the temporary object into a function by reference. Temporary objects can also help be useful in situations for moving load from loop invariant code. This is considered bad practice.
+
+**About MSVC**
+
+One header-only library that contains various compiler-specific extensions is [Hedley](https://github.com/nemequ/hedley/blob/master/hedley.h). The MSVC does not provide *pure*, *noescape* function semantics. 
+
+It provides with [__declspec(noalias)](https://learn.microsoft.com/en-us/cpp/cpp/noalias?view=msvc-170) semantics similar to  `__attribute__(const)`. Example:
+```cpp
+__declspec(noalias) void multiply(float* a, float* b);
+void multiply(float* a, float* b)  {
+    a[0] = b[0];
+}
+```
+According to the Microsoft documentation, we can use `__declspec(noalias)` in the function declaration to indicate that the function does not modify memory outside the first level of indirection from the function's parameters. However, there are several differences between GCC/CLANG:
+
+1. Grammatically in MSVC decl specifier `__declspec()` should come before function declaration. In GCC/CLANG the function attributes should come at the end of a function declaration.
+
+2. Next there is a difference with the first level of indirection. The following example is not a valid GCC/CLANG code: 
+    ```cpp
+    void multiply(float* a, float* b) __attribute__((const));
+    void multiply(float* a, float* b) {
+        a = b;
+    }
+    ```
+    The attribute((const)) syntax is used to indicate that the function results are entirely dependent on the provided arguments and do not mutate state. But `multiply` modifies the value of a, which violates the const attribute.
 
 ## Popular Compiler Flags for Optimization
 
@@ -2221,7 +2356,7 @@ Below are compiler flags for GCC/CLANG which can be useful for your code optimiz
 * **-ffast-math:** Unsafe floating-point optimizations.
 * **-fno-rtti:** Turn of RTTI (no dynamic_cast, typeid)
 * **-fno-exceptions:** Turn of exception support from C++
-* **-flto:** Turn on global program optimization (link time optimization).
+* **-flto:** Turn on global program optimization (link-time optimization). LTO can help with aliasing, inlining theoretically, however, in practice, it is not always the case.
 
 ## Several Principles for Code Optimization
 * Sometimes recomputing is faster than saving/loading
@@ -2230,8 +2365,11 @@ Below are compiler flags for GCC/CLANG which can be useful for your code optimiz
 * You should decide what to use for function calculation or table of precomputed values
 * You can make several (independent) passes over a data structure or one combined pass
 * Dense operations or operation that exploits sparsity
-
 These principles have been taken from a course [12] at Cornell University.
+
+Another two important aspects of code optimization during compilation:
+* The `const` of references or pointers garantees almost nothing.
+* The `private, protected` class fields garantees nothing.
 
 # Lambda Functions
 
