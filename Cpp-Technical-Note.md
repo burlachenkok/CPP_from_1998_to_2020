@@ -4511,6 +4511,8 @@ particular optimization, look at the assembly code.
 
 **Optimization:**
 
+Here we present materials presented by Charles E. Leiserson and his peers during the course [15].
+
 1. **Select Good Algorithm.** The good assymptotically rate algorithm is not nessesary the fastest, however it's a good start heuristic.
 
 2. **Pack structure into bits.** If you have structure that stores intgeger with values you can facilitates bitfields in C/C++. This method save space, but to extract and set bits the read and write will be really coupled with bit operations.
@@ -4571,6 +4573,8 @@ of loop control.  In addition this tenchnique is good for cache locality, and du
 
 21. **Coarsening Recursion.** The idea of coarsening recursion is to increase the size of the base case and handle it with more efficient code that avoids function-call overhead.
 
+22. **Bit Tricks.** The `min` and `max` functions executed during conditions `if/else` can sometimes be expressed in bits and logical operations. If you are eliminating the not necessary `if/else` statement is useful for low-level details of how the CPU actually works (namely pipelining). Sometimes the compiler does not perform such optimizations, and you must do it by hand. Materials about bit tricks are presented in [13], [14].
+
 
 # Acknowledgements
 
@@ -4618,6 +4622,12 @@ The mindset that C++ is shaping, helps to look into details and abstract when ne
 [11] [Compiler Explorer. An interactive online compiler which shows the assembly output of compiled C++, Rust, Go](https://godbolt.org/)
 
 [12][CS 5220 Applications of Parallel Computers ](https://www.cs.cornell.edu/~bindel/class/cs5220-s10/) by [David Bindel](https://www.cs.cornell.edu/~bindel/).
+
+[13] [Bit Twiddling Hacks by Sean Eron Anderson (seander@cs.stanford.edu)](http://graphics.stanford.edu/~seander/bithacks.html)
+
+[14] [Hacker's Delight. Second Editiond by Henry S. Warren, Jr.](https://doc.lagout.org/security/Hackers%20Delight.pdf)
+
+[15] [MIT.6.172 Performance Engineering Of Software Systems, 2018. Prof. Charles Leiserson, Prof. Julian Shun](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)
 
 # How to cite this C++ Technical Note
 
