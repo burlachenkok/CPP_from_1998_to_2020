@@ -1317,7 +1317,6 @@ Such a concept allows a portable way to perform varying allocations of automatic
 
 34. In C, there must be at least one element in the initialization list when a structure or array is initialized. For C++ if provide empty intialization parethesis for built-in array the array will be zero initialized [zero initializated](https://en.cppreference.com/w/cpp/language/zero_initialization).
 
-
 35. Before C99, i.e. in C89, C89 with the extension, there was a restriction on where automatic (stack) variables can be defined - only at the beginning of a local block. In C++98 already, you can declare local variables anywhere in local scope.
 
 # Memory
@@ -2153,9 +2152,12 @@ int main() {
 
 Reasons why the compiler can not inline function:
 
-* During the compilation of a source file the definition of function is not available.
+* During the compilation of a source file the definition of function is not available (unless you do not use whole program optimization in modern compilers).
 
-* The compiler performs a cost-benefit analysis to decide whether to inline a function or not. Specifically, the inlining function has some **cost** and compilers have a threshold for **inlining**.
+* The compiler performs a cost-benefit analysis to decide whether to inline a function or not. Specifically, the inlining function has some **cost** and compilers have a threshold for **inlining**. The underlying reason is that if inline code infinitely then it affect the size of the code, and it affeact performace as well.
+
+* The compiler designers may have problems with inlining recursive function calls (except the tail recursion).
+
 
 ## Force Inline Function Call
 One way to force the inline of some function change `inline-threshold` in your toolchain. 
@@ -2163,8 +2165,13 @@ One way to force the inline of some function change `inline-threshold` in your t
 The alternative is to use `__forceinline`. Example:
 
 ```cpp
-__forceinline static int max(int x, in y) 
-{ 
+// MSVC
+__forceinline static int max(int x, in y) { 
+  return x > y ? x : y; // always inline if possible 
+}
+
+// GCC/CLANG
+inline __attribute__((always_inline)) int max(int x, int y) {
   return x > y ? x : y; // always inline if possible 
 }
 ```
@@ -2175,6 +2182,8 @@ The `__forceinline` due to the first two underscores is a compiler extension. Th
 * In MSVC instead of `inline` use `__forceinline`.
 
 However `__forceinline` still does not guarantee inlining e.g. in MSVC there are various reasons when inline can not be done [__forceinline in msvc](https://learn.microsoft.com/en-us/cpp/cpp/inline-functions-cpp?view=msvc-170#inline-__inline-and-__forceinline).
+
+The underlying reasons for using force inline is that compilers use only heuristics to make a decision about inlining, and sometimes this heuristics are wrong.
 
 ## Allowable Reformulations
 In C++ and C, the order in which subexpressions are evaluated is not defined `A(F(), G())`.
@@ -3857,17 +3866,17 @@ Unpacking operations:
 * `Args...` - **unpack** parameters (or **pack expansion**). Used inside the body of the template function or template class member function.
 * `sizeof...(Args)` - the size of parameters in terms of the number of elements in Args. (It is not the size in bytes).
 
-Variadic templates has been introduced in C++11, but there is one more tick for variadic templates  with name *fold expression*. It has been introduced in C++17. 
+Variadic templates has been introduced in C++11, but there is one more tick for variadic templates  with name **fold expression**. And it has been introduced in C++17. 
 
 The unary syntax for fold expression:
 ```cpp
 template<typename... Args>
 bool allLeftFold(Args... args) { return (... && args); }  
-// Unary right fold (E op ...) becomes (E1 op (... op (EN-1 op EN)))
+// Unary left fold (... op E) becomes (((E1 op E2) op ...) op EN)
 
 template<typename... Args>
-bool allRightFold(Args... args) { return (args&& ...); }  
-// Unary left fold (... op E) becomes (((E1 op E2) op ...) op EN)
+bool allRightFold(Args... args) { return (args&& ...); }
+// Unary right fold (E op ...) becomes (E1 op (... op (EN-1 op EN)))
 ```
 
 Documentation: [cpp reference details about folding](https://en.cppreference.com/w/cpp/language/fold)
@@ -4136,14 +4145,20 @@ Example:
   In this type of requirement, the body of a `requires` expression consists of a *sequence of requirements*, and each requirement is introduced with curly braces `{}`. Each requirement ends with a semicolon.
 
 * **A Type Requirement and Nested Requirement.** Example:
-```cpp
-template <typename S>
-concept String = requires
-{
- typename S::value_type;
- requires Character<typename S::value_type>;
-}
-```
+    ```cpp
+    template <typename S>
+    concept String = requires
+    {
+      // The requirement is that the named type is valid
+      typename S::value_type;                      
+      //Additional constraints in terms of 
+      //  local parameters or input type
+      requires Character<typename S::value_type>;      
+    }
+    ```
+
+See also [cpp reference details](https://en.cppreference.com/w/cpp/language/requires).
+
 
 ## Use Concepts
 
@@ -4498,7 +4513,7 @@ Whether they are needed or not, it's not bad to be aware of them. Unfortunately,
 
 3. Brittle Base Class problem. what should a base class have to serve all conceivable derived classes without having any dummy data and methods.
 
-# Another Code Optimization Methods
+# Performance Optimization for general CPU
 
 Based on materials from [MIT 6-172, 2018](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/1a57adbec9520270d4485b42a2e1a316_MIT6_172F18_lec2.pdf).
 
@@ -4509,13 +4524,14 @@ optimizations. To tell if the compiler is actually performing a
 particular optimization, look at the assembly code.
 
 
-**Optimization:**
+**Performance Optimization:**
 
-Here we present materials presented by Charles E. Leiserson and his peers during the course [15].
+Here we present materials presented by Prof. Charles Leiserson, Prof. Julian Shun (and invited speakers) during the course [15] [Performance Engineering Of Software Systems, 2018](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/).
 
-1. **Select Good Algorithm.** The good assymptotically rate algorithm is not nessesary the fastest, however it's a good start heuristic.
+1. **Select Good Algorithm.** The good asymptotically rate algorithm is not necessarily the fastest, however, it's a good start heuristic. 
+However, in some cases, reducing the work does not automatically reduce the algorithm running time due to computer hardware's complex nature, including instruction-level parallelism, caching, vectorization, branch prediction, etc.
 
-2. **Pack structure into bits.** If you have structure that stores intgeger with values you can facilitates bitfields in C/C++. This method save space, but to extract and set bits the read and write will be really coupled with bit operations.
+2. **Pack structure into bits.** If you have a structure that stores integers with values you can facilitate bitfields in C/C++. This method saves space, but to extract and set bits, the read and write will be coupled with bit operations.
 
     > Sometimes unpacking and decoding are the
     optimization, depending on whether more work is
@@ -4523,18 +4539,18 @@ Here we present materials presented by Charles E. Leiserson and his peers during
 
 3. **Data structure augmentation.** Motivation is to add information to a data structure to make common operations do less work.
 
-4. **Precomputation.** The idea of precomputation is to perform calculations in advance so as to avoid doing them at "missioncritical" times. We precompute the table of coefficients when initializing, and perform table look-up at runtime.
+4. **Precomputation.** The idea of precomputation is to perform calculations in advance to avoid doing them at "mission-critical" times. We precompute the table of coefficients when initializing, and perform table look-up at runtime.
 
-5. **Compile-Time Initialization.** The idea of compile-time initialization is to store the values of constants during compilation, saving work at execution time. One way is create code snippet which generate function for you. (Such technic is called meta programming).
+5. **Compile-Time Initialization.** The idea of compile-time initialization is to store the values of constants during compilation, saving work at execution time. One way is to create a code snippet that generates a function for you. (Such a technique is called metaprogramming).
 
 6. **Caching.** The idea of caching is to store results that have been accessed recently so that the program need not
 compute them again.
 
-7. **Exploit Sparsity.** The idea of exploiting sparsity is to avoid storing and computing on zeroes. Structures such as Compressed Sparse Row(CSR) can be used for compress information about sparse matrix, sparse graphs, sparse weighted graph.
+7. **Exploit Sparsity.** The idea of exploiting sparsity is to avoid storing and computing on zeroes. Structures such as Compressed Sparse Row(CSR) can be used to compress information about sparse matrices, sparse graphs, and sparse weighted graphs.
 
 8. **Constant folding and propagation.** The idea of constant folding and propagation is to
 evaluate constant expressions and substitute the
-result into further expressions during compilation.
+result in further expressions during compilation.
 
 9. **Common-Subexpression Elimination.** Avoid computing the same expression multiple times by evaluating the expression once and storing the result for later use.
 
@@ -4544,36 +4560,92 @@ result into further expressions during compilation.
 are short-circuiting logical operators from C/C++.
 
 12. **Ordering Tests.** Perform those tests which are more often successful or alternative is selected by the test before tests that are rarely successful. Inexpensive tests
-should precede expensive ones. 
+should precede expensive ones (*Compilers can not do it right now*).
 
-13. **Creating a Fast Path.** In Computer Graphics people apply checks based on Axis Aligned Boundinx Boxes. Try construct the same thing for your situation.
+13. **Creating a Fast Path.** In Computer Graphics people apply checks based on Axis Aligned Bounding Boxes. Try to construct the same thing for your situation (*Compilers can not do it right now*).
 
 14. **Combining Tests.** Replace a sequence of tests with one test or switch.
 
 15. **Hoisting.** Hoisting (also called loop-invariant code
 motion) is to avoid recomputing loop-invariant code.
-in the the body of a loop.
+in the body of a loop.
 
-16. **Sentinels.** Sentinels are special dummy values placed in a data structure to simplify the logic of boundary conditions and in particular, the handling of loop - exit tests.
+16. **Sentinels.** Sentinels are special dummy values placed in a data structure to simplify the logic of boundary conditions and in particular, as the handling of loop exit tests (*Compilers can not do it right now*).
 
 17. **Loop Unrolling.**  Attempt to save work by combining
 several consecutive iterations of a loop into a single
-iteration. Another benefit of loop unrolling it opens more compiler otptimization to apply.
+iteration. Another benefit of loop unrolling it opens more compiler optimization to apply.
     * *Full loop unrolling:* All iterations are unrolled
     * *Partial loop unrolling:* Several, but not all, of the
     iterations are unrolled.
 
 18. **Loop Fusion.** Loop fusion(also called jamming) is to
 combine multiple loops over the same index, saving the overhead
-of loop control.  In addition this tenchnique is good for cache locality, and during loop fusion common subexpression may be obtained.
+of loop control.  In addition, this technique is good for cache locality, and during loop fusion common subexpression may be obtained (*Compilers can not do it right now in full details*).
 
 19. **Eliminating Wasted Iterations.** Modify loop bounds to avoid executing loop iterations over empty loop bodies.
 
 20. **Tail-Recursion Elimination.** For recursive functions replace a recursive call that occurs as the last step of a function with a branch, saving function-call overhead.
 
-21. **Coarsening Recursion.** The idea of coarsening recursion is to increase the size of the base case and handle it with more efficient code that avoids function-call overhead.
+21. **Coarsening Recursion.** The idea of coarsening recursion is to increase the size of the base case and handle it with more efficient code that avoids function-call overhead (*Compilers cannot do it right now in full details*).
 
-22. **Bit Tricks.** The `min` and `max` functions executed during conditions `if/else` can sometimes be expressed in bits and logical operations. If you are eliminating the not necessary `if/else` statement is useful for low-level details of how the CPU actually works (namely pipelining). Sometimes the compiler does not perform such optimizations, and you must do it by hand. Materials about bit tricks are presented in [13], [14].
+22. **Bit Tricks.** The `min` and `max` functions executed during conditions `if/else` can sometimes be expressed in bits and logical operations. If you are eliminating the not necessary `if/else` statement it is useful for low-level details of how the CPU works (namely pipelining). Sometimes the compiler does not perform such optimizations, and you must do it by hand. Materials about bit tricks are presented in [13], [14].
+
+23. **Stack Frame Pointer Omission.** A *stack frame* is the area on the stack used by the current function and it includes stack space for function arguments(linkage block), return address, base pointer, local variables for function code itself, and local variables for functions that are called from this function. The frame pointer is implemented as a used register that is used to address local variables and address arguments. If functions don't need a frame pointer for their operation and use Stack Pointer during their logic or if the difference between stack pointer and frame pointer is a compiler time constant of the function body the compiler can keep track of the stack pointer offset on all code paths through the function and generate local variable accesses through stack pointer.
+
+    The benefit is this in this case - the compiler will have one more register in case of this optimization. To specify this in MSVC use [/Oy](https://learn.microsoft.com/en-us/cpp/build/reference/oy-frame-pointer-omission?view=msvc-170) for GCC/CLANG use [-fomit-frame-pointer](https://gcc.gnu.org/onlinedocs/gcc-4.9.2/gcc/Optimize-Options.html).
+
+24. **Minimize write from different threads to the same memory.** Technically if you have CPU threads that are assigned for different CPUs you can write to the same memory location. Between CPU cores there are two aspects: *cache consistency* protocol guarantees that all copies of DRAM cache lines are the same in all caches in the system; *cache coherence* protocol guarantees any read of memory returns the most recent update anywhere in the system. Technically you can write in the same place. In reality in real hardware, it leads to phenomena called **invalidation storm**. And it can lead to big performance bottlenecks in such protocols as [MSI](https://en.wikipedia.org/wiki/MSI_protocol).
+
+25. **Read after Read is not a race.** If two instructions perform a read and another performs a read as well from another thread, then in this case - there is no race condition. So, you can safely perform read after read without any synchronization. Another pair's read/write, write/read, write/write lead to race and nondeterministic behavior.
+
+26. **If you are using parallel algorithms, then use work-efficient algorithms.** If you want to use the instead of one sequential algorithm parallel version then interesting practical algorithms should be work-efficient. This property means that if the launch algorithm is in a single core it should have the same asymptotic behavior in terms of compute complexity.
+
+27. **Use modern compilers.** Compiler developers create new optimization with each release of modern compilers.
+
+28. **Eliminate as possible integer modulus and division.** The modulus division and integer division are typically expensive. The information about instruction latency (the delay in a dependency chain under the assumption that input data is available in the register file), throughput (the maximum number of instructions of the same kind which can be executed per clock cycle), required execution port for INTEL and AMD CPUs are available in this technical document [[16]](https://www.agner.org/optimize/instruction_tables.pdf).
+
+29. **Order of linked files in some compilers can have a bigger effect than O2 or O3**. The order of linked files affects the placement of the generated code in the final binary file. Performance varies due to changes in cache alignment and page alignment. LLVM/CLANG has several compile options to handle code alignment: `-align-all-functions`, `-align-all-blocks`, `-align-all-nofallthru-blocks` (See this [blog post](https://easyperf.net/blog/2018/01/25/Code_alignment_options_in_llvm)).
+
+30. **Try to precompute tables of values in compile-time or during runtime.** These methods has both their pros. and cons. If you compute values at compile time you will need to put this information finally into the `data` segment of the binary image. Increasing the size of the `data` segment will increase the loading time. 
+
+    In another hand, if the store has not yet computed values globally, because all uninitialized or initialized global variables by zero are stored in the `bss` segment - they do not require to be stored in the binary image. In this case, binary image file loading time is decreasing, but you need to fill values by yourself in runtime.
+
+33. **If you are using spinlock be aware of yielding time for OS.** The cost of creating a thread in Linux/Posix is more than $10 000$ cycles. In Windows, the actual time for thread execution is about 30 milliseconds and call system API cost about $1000$ cycles. So in Windows and Linux if performance is the goal you at least some amount of time in spinlock (at least $3000$-$4000$ times) and after this yield time for OS during spinning. Sometimes this kind of synchronization mutes is denoted as *Competitive Mutex*. If the mutex is released during spinning in terms of compute spinning is optimal, if the mutex is released after yielding this algorithm 2 is optimal. There exists a randomized algorithm that can achieve a $1.58$ competitive ratio.
+
+33. **Force uses sequential consistency with memory fences.** For restoring sequential consistency in the multithread program you have to use a memory fence. Memory fences can be issued explicitly or implicitly by locking, exchanging, and some other syncretization commands. The typical cost of a memory fence is comparable to L2-cache access. 
+
+34. **Consider the Latency of memory accesses from different levels.** Take into assumption multicore cache hierarchy and different times for memory access. The relative latency for access for CPU Caches is the following: *L1 - 2ns, L2 - 4ns, LLC/L3 - 6ns, DRAM Memory 50 ns*.
+
+36. **Use Cache-Efficient and Cache-Oblivious Algorithms.** One way to solve issues with caching use or create cache-efficient or cache-aware algorithms (Example: k-way merge sort). The harder alternative is to use or create cache-oblivious algorithms:
+
+    * They do not have parameters to tune
+    * They do not have explicit knowledge of cache size in the machine
+    * However, they handle multilevel caches automatically and passively autotuned
+
+    Example of Optimal Cache-Oblivious Sorting via Funnelsort. A list of some Cache-Oblivious algorithms is presented in [MIT 6.172 course lecture 15, 2018](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/cef17369f91d3140409f2be4ad9246a4_MIT6_172F18_lec15.pdf).
+
+
+35. **Do not underestimate the algorithmic level.** Several tricks that can be done at the algorithm level:
+    * Store pre-computed results
+    * Early cutoffs
+    * Use a clever pruning strategy if the algorithm has combinatorial search nature.
+
+37. **If the algorithm has internal/meta parameters to tune decide how to choose them.** Several strategies to decide internal parameters in the algorithm to use:
+
+    * Construct the model of the computation device. Can explain exact magic constants in the algorithm, but hard to build, cannot model everything)
+    * Heuristic-based solution. Works most of the time, however always suboptimal performance.
+    * Exhaustive search. The method tries all possible internal parameters of the algorithm and will find the optimal. It can take too long time.
+    * Autotuning-based solution. Try parameters, if satisfied then finish, if not select a new candidate heuristically.
+
+
+37. **Be aware of the underlying reasons for slow speed.** 
+The popular reasons for slow speed are the following:
+
+    * *Insufficient parallelism.* You need parallelism to keep multicores, vector units, and GPU busy.
+    * *Scheduling overhead.* Too much parallelism is at best useless, but in fact, even hurt performance due to scheduling overheads.
+    * *Lack of memory bandwidth.* Faster memory reuse means better cache locality. Locality takes place at different levels L1, L2, and L3. To check if is this a reason for slow execution run P identical copies of the serial code in parallel.
+    * *Contention.* locking primitives for synchronization, true sharing, false sharing
 
 
 # Acknowledgements
@@ -4628,6 +4700,10 @@ The mindset that C++ is shaping, helps to look into details and abstract when ne
 [14] [Hacker's Delight. Second Editiond by Henry S. Warren, Jr.](https://doc.lagout.org/security/Hackers%20Delight.pdf)
 
 [15] [MIT.6.172 Performance Engineering Of Software Systems, 2018. Prof. Charles Leiserson, Prof. Julian Shun](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)
+
+[16] [Instruction tables By Agner Fog. Technical University of Denmark, 1996 – 2022.](https://www.agner.org/optimize/instruction_tables.pdf)
+
+[17] [Windows via C/C++ (softcover) Fifth Edition by J.Richter, C.Nasarre, 2011](https://www.amazon.com/Windows-via-softcover-Developer-Reference/dp/0735663777)
 
 # How to cite this C++ Technical Note
 
