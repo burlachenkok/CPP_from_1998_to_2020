@@ -16,7 +16,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision Update: June 15, 2023
+Revision Update: June 26, 2023
 
 © 2022-2023 Konstantin Burlachenko, all rights reserved.
 
@@ -195,12 +195,14 @@ Revision Update: June 15, 2023
   - [Define Concepts](#define-concepts)
   - [Use Concepts](#use-concepts)
 - [Coroutines (C++20)](#coroutines-c20)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+
 - [Appendices](#appendices)
   - [Virtual Inheritance Inside](#virtual-inheritance-inside)
   - [Object Orientated Design](#object-orientated-design)
   - [Object Orientated Design Patterns](#object-orientated-design-patterns)
-- [Acknowledgements](#acknowledgements)
-- [References](#references)
+  - [Performance optimization for general purpose CPU](#performance-optimization-for-general-purpose-cpu)
 
 *[Table of contents generated with markdown-toc](http://ecotrust-canada.github.io/markdown-toc/)*
 
@@ -4221,6 +4223,66 @@ task<int> func(int a, int b)
 
 `co_await` - suspend coroutine while waiting for another computation to finish.
 
+
+# Acknowledgements
+
+Me, Konstantin Burlachenko, would like to acknowledge:
+
+* Editors of that document [Vadim Sofin](https://github.com/sovadim), [Mikhail Filimonov](https://github.com/dosvidos) for producing useful feedback.  Editor [Dmytro Ovdiienko](https://github.com/ujos) for producing very big feedback, and constructive suggestions, and his big contributions to document improvement.
+
+* [Acronis](https://www.acronis.com/en-us/) company. In 2011-2012, it invited [Dr. B.Stroustroup](https://www.stroustrup.com/) to give a long one-day talk for Acronis, HQ and Parallels, HQ in Moscow employees. [Dr. B.Stroustroup](https://www.stroustrup.com/) gave an excellent and practical talk by appealed to everybody, which I highly appreciated.
+
+* [Yandex](https://yandex.ru/) company that, around 2014, invited [Dr. Scott Meyers](https://www.aristeia.com/) to [Yandex HQ](https://yandex.ru/) in Moscow. He gave a pretty sophisticated three days overview of several features of C++11 and some parts of C++14 for Yandex employees.
+
+* Thanks to [NVIDIA](http://nvida.com/) and [HUAWEI](https://www.huawei.com/en/), the places where I have used those languages a lot while creating complex software systems.
+
+* Thanks to all colleagues and friends from the past with whom I went through various steps of figuring out subtle details of C/C++. Between 2010 and 2020, I have created personal engineering drafts, some of which are available here [(old home page K.Burlachenko)](https://sites.google.com/site/burlachenkok/articles). All C/C++ information from it has been evolved into that document.
+
+Thanks to [Dr. B.Stroustroup](https://www.stroustrup.com/). He created a language that is used to create the most important software in that world. Interestingly, this language has an artificial force that makes people better in all aspects of science and engineering. The quote that I have learned from [Tim Roughgarden](http://timroughgarden.org/) is the following:
+
+> Perhaps the most essential principle for the good algorithm designer is to refuse to be content - Aho, Hopcroft, Ulman, 1974
+
+The mindset that C++ is shaping, helps to look into details and abstract when needed. That kind of mindset can not be obtained for free, so it's a part of why C++ is complicated. I believe such a mindset is one of many reasons that helped me join the Laboratory of [Prof. Peter Richtarik](https://richtarik.org/) and helping me in producing research. The Lab conducts world-level research in Math Optimization and Machine Learning. The Lab is a part of the [KAUST AI Initiative](https://cemse.kaust.edu.sa/ai) leaded by [Jürgen Schmidhuber](https://people.idsia.ch/~juergen/).
+
+
+# References
+
+[1] [The C++ Programming Language: Special Edition, B.Stroustrup](https://www.amazon.com/Programming-Language-Special-3rd/dp/0201700735)
+
+[2] [C: A Reference Manual, 5th Edition. Samuel Harbison, Guy Steele Jr.](https://www.amazon.com/Reference-Manual-Samuel-P-Harbison/dp/013089592X)
+
+[3] [The continuing evolution of C++. Bjarne Stroustrup. Presentation](https://www.youtube.com/watch?v=ooehrkYkGdA)
+
+[4] [Beginning C++20. From Novice to Professional. Sixth Edition. Ivor Horton, Peter Van Weert](https://www.amazon.com/Beginning-C-20-Novice-Professional-ebook/dp/B08KP34XTS)
+
+[5] [C++17 Standard Library Quick Reference. Peter Van Weert and Marc Gregoire](https://www.amazon.com/Standard-Library-Quick-Reference-Structures/dp/1484249224)
+
+[6] [ISO/IEC 14882:2003 Programming languages — C++](http://staff.ustc.edu.cn/~zhuang/cpp/specs/ISO_IEC%2014882%202003.pdf)
+
+[7] [C++ language Reference. cppreference.](https://en.cppreference.com/w/cpp/language)
+
+[8] [Bjarne Stroustrup's C++ Style and Technique FAQ](https://www.stroustrup.com/bs_faq2.html)
+
+[9] [Bjarne Stroustrup's C++11 FAQ](https://www.stroustrup.com/C++11FAQ.html)
+
+[10] [Useful catalog of resources from CppReference: Standards, ABI](https://en.cppreference.com/w/cpp/links)
+
+[11] [Compiler Explorer. An interactive online compiler which shows the assembly output of compiled C++, Rust, Go](https://godbolt.org/)
+
+[12][CS 5220 Applications of Parallel Computers ](https://www.cs.cornell.edu/~bindel/class/cs5220-s10/) by [David Bindel](https://www.cs.cornell.edu/~bindel/).
+
+[13] [Bit Twiddling Hacks by Sean Eron Anderson (seander@cs.stanford.edu)](http://graphics.stanford.edu/~seander/bithacks.html)
+
+[14] [Hacker's Delight. Second Editiond by Henry S. Warren, Jr.](https://doc.lagout.org/security/Hackers%20Delight.pdf)
+
+[15] [MIT.6.172 Performance Engineering Of Software Systems, 2018. Prof. Charles Leiserson, Prof. Julian Shun](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)
+
+[16] [Instruction tables By Agner Fog. Technical University of Denmark, 1996 – 2022.](https://www.agner.org/optimize/instruction_tables.pdf)
+
+[17] [Windows via C/C++ (softcover) Fifth Edition by J.Richter, C.Nasarre, 2011](https://www.amazon.com/Windows-via-softcover-Developer-Reference/dp/0735663777)
+
+----
+
 # Appendices
 
 ## Virtual Inheritance Inside
@@ -4461,6 +4523,8 @@ A domain is a separate real hypothetical world inhabited by a distinct set of ob
 
 Now you know what *Object Orientated Design* is. To the best of our knowledge, it's more an art than a science.
 
+----
+
 ## Object Orientated Design Patterns
 
 In the book [Design Patterns (Gamma, Helm, Johnson, Vlissides) 2011"](https://www.amazon.com/Design-Patterns-Object-Oriented-Addison-Wesley-Professional-ebook/dp/B000SEIBB8) in the preface it says
@@ -4513,7 +4577,9 @@ Whether they are needed or not, it's not bad to be aware of them. Unfortunately,
 
 3. Brittle Base Class problem. what should a base class have to serve all conceivable derived classes without having any dummy data and methods.
 
-# Performance Optimization for general CPU
+----
+
+## Performance Optimization for general-purpose CPU
 
 Based on materials from [MIT 6-172, 2018](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/1a57adbec9520270d4485b42a2e1a316_MIT6_172F18_lec2.pdf).
 
@@ -4640,70 +4706,12 @@ of loop control.  In addition, this technique is good for cache locality, and du
 
 
 37. **Be aware of the underlying reasons for slow speed.** 
-The popular reasons for slow speed are the following:
+    The popular reasons for slow speed are the following:
 
     * *Insufficient parallelism.* You need parallelism to keep multicores, vector units, and GPU busy.
     * *Scheduling overhead.* Too much parallelism is at best useless, but in fact, even hurt performance due to scheduling overheads.
     * *Lack of memory bandwidth.* Faster memory reuse means better cache locality. Locality takes place at different levels L1, L2, and L3. To check if is this a reason for slow execution run P identical copies of the serial code in parallel.
     * *Contention.* locking primitives for synchronization, true sharing, false sharing
-
-
-# Acknowledgements
-
-Me, Konstantin Burlachenko, would like to acknowledge:
-
-* Editors of that document [Vadim Sofin](https://github.com/sovadim), [Mikhail Filimonov](https://github.com/dosvidos) for producing useful feedback.  Editor [Dmytro Ovdiienko](https://github.com/ujos) for producing very big feedback, and constructive suggestions, and his big contributions to document improvement.
-
-* [Acronis](https://www.acronis.com/en-us/) company. In 2011-2012, it invited [Dr. B.Stroustroup](https://www.stroustrup.com/) to give a long one-day talk for Acronis, HQ and Parallels, HQ in Moscow employees. [Dr. B.Stroustroup](https://www.stroustrup.com/) gave an excellent and practical talk by appealed to everybody, which I highly appreciated.
-
-* [Yandex](https://yandex.ru/) company that, around 2014, invited [Dr. Scott Meyers](https://www.aristeia.com/) to [Yandex HQ](https://yandex.ru/) in Moscow. He gave a pretty sophisticated three days overview of several features of C++11 and some parts of C++14 for Yandex employees.
-
-* Thanks to [NVIDIA](http://nvida.com/) and [HUAWEI](https://www.huawei.com/en/), the places where I have used those languages a lot while creating complex software systems.
-
-* Thanks to all colleagues and friends from the past with whom I went through various steps of figuring out subtle details of C/C++. Between 2010 and 2020, I have created personal engineering drafts, some of which are available here [(old home page K.Burlachenko)](https://sites.google.com/site/burlachenkok/articles). All C/C++ information from it has been evolved into that document.
-
-Thanks to [Dr. B.Stroustroup](https://www.stroustrup.com/). He created a language that is used to create the most important software in that world. Interestingly, this language has an artificial force that makes people better in all aspects of science and engineering. The quote that I have learned from [Tim Roughgarden](http://timroughgarden.org/) is the following:
-
-> Perhaps the most essential principle for the good algorithm designer is to refuse to be content - Aho, Hopcroft, Ulman, 1974
-
-The mindset that C++ is shaping, helps to look into details and abstract when needed. That kind of mindset can not be obtained for free, so it's a part of why C++ is complicated. I believe such a mindset is one of many reasons that helped me join the Laboratory of [Prof. Peter Richtarik](https://richtarik.org/) and helping me in producing research. The Lab conducts world-level research in Math Optimization and Machine Learning. The Lab is a part of the [KAUST AI Initiative](https://cemse.kaust.edu.sa/ai) leaded by [Jürgen Schmidhuber](https://people.idsia.ch/~juergen/).
-
-
-# References
-
-[1] [The C++ Programming Language: Special Edition, B.Stroustrup](https://www.amazon.com/Programming-Language-Special-3rd/dp/0201700735)
-
-[2] [C: A Reference Manual, 5th Edition. Samuel Harbison, Guy Steele Jr.](https://www.amazon.com/Reference-Manual-Samuel-P-Harbison/dp/013089592X)
-
-[3] [The continuing evolution of C++. Bjarne Stroustrup. Presentation](https://www.youtube.com/watch?v=ooehrkYkGdA)
-
-[4] [Beginning C++20. From Novice to Professional. Sixth Edition. Ivor Horton, Peter Van Weert](https://www.amazon.com/Beginning-C-20-Novice-Professional-ebook/dp/B08KP34XTS)
-
-[5] [C++17 Standard Library Quick Reference. Peter Van Weert and Marc Gregoire](https://www.amazon.com/Standard-Library-Quick-Reference-Structures/dp/1484249224)
-
-[6] [ISO/IEC 14882:2003 Programming languages — C++](http://staff.ustc.edu.cn/~zhuang/cpp/specs/ISO_IEC%2014882%202003.pdf)
-
-[7] [C++ language Reference. cppreference.](https://en.cppreference.com/w/cpp/language)
-
-[8] [Bjarne Stroustrup's C++ Style and Technique FAQ](https://www.stroustrup.com/bs_faq2.html)
-
-[9] [Bjarne Stroustrup's C++11 FAQ](https://www.stroustrup.com/C++11FAQ.html)
-
-[10] [Useful catalog of resources from CppReference: Standards, ABI](https://en.cppreference.com/w/cpp/links)
-
-[11] [Compiler Explorer. An interactive online compiler which shows the assembly output of compiled C++, Rust, Go](https://godbolt.org/)
-
-[12][CS 5220 Applications of Parallel Computers ](https://www.cs.cornell.edu/~bindel/class/cs5220-s10/) by [David Bindel](https://www.cs.cornell.edu/~bindel/).
-
-[13] [Bit Twiddling Hacks by Sean Eron Anderson (seander@cs.stanford.edu)](http://graphics.stanford.edu/~seander/bithacks.html)
-
-[14] [Hacker's Delight. Second Editiond by Henry S. Warren, Jr.](https://doc.lagout.org/security/Hackers%20Delight.pdf)
-
-[15] [MIT.6.172 Performance Engineering Of Software Systems, 2018. Prof. Charles Leiserson, Prof. Julian Shun](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)
-
-[16] [Instruction tables By Agner Fog. Technical University of Denmark, 1996 – 2022.](https://www.agner.org/optimize/instruction_tables.pdf)
-
-[17] [Windows via C/C++ (softcover) Fifth Edition by J.Richter, C.Nasarre, 2011](https://www.amazon.com/Windows-via-softcover-Developer-Reference/dp/0735663777)
 
 # How to cite this C++ Technical Note
 
