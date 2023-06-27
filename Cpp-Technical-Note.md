@@ -16,7 +16,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision Update: June 26, 2023
+Revision Update: June 28, 2023
 
 © 2022-2023 Konstantin Burlachenko, all rights reserved.
 
@@ -92,7 +92,7 @@ Revision Update: June 26, 2023
   - [Logic behind executing Constructors](#logic-behind-executing-constructors)
   - [Logic behind Executing Destructors](#logic-behind-executing-destructors)
   - [Deleting Object of Incomplete Type](#deleting-object-of-incomplete-type)
-  - [Generate/Suppress Generation of Special Class Members](#generatesuppress-generation-of-special-class-members)
+  - [Generate And Suppress Generation of Special Class Members](#generate-and-suppress-the-generation-of-special-class-members)
   - [Some Class Special Members (since C++11)](#some-class-special-members-since-c11)
 - [Initialization](#initialization)
   - [C++ Variable Initialization](#c-variable-initialization)
@@ -293,7 +293,7 @@ public:
 
 > Unfortunately, starting from C++11, the *object type* and *reference type* do not match each other due to a more complicated picture with values (expressions) and references.
 
-**XValue (expression)**. Objects in memory that would be destroyed very soon. It's an object for which it is reasonable to use move semantics to take data via `T&&` notation from C++11.
+**XValue (expression)**. Objects in memory that would be destroyed very soon. It's an object for which it is reasonable to use move semantics to take data via `T&&` notation from C++11. The **X**Value stands for expiring value.
 
 **LValue Reference (for all C++)**. Typically, an LValue reference is an alias for another variable. Lvalue object may be bound to the LValue reference through the following syntax which essentially creates one more name (alias) to a variable:
 ```cpp
@@ -1837,17 +1837,17 @@ The order of working out the initialization of a class object in C++ is describe
 
 The order of initialization of classes and execution of constructors:
 
-1. Depth-first, left to right constructors of virtually inherited classes whenever they are located in the inheritance tree.
+1. Depth-first, left-to-right constructors of virtually inherited classes whenever they are located in the inheritance tree.
 
-2. Execution of constructors of directly base classes in the order from left to right from the class description (and not in the order specified in the initialization list).
+2. Execution of constructors of directly base classes in the order from left to right from the class description (and **not in the order specified in the initialization list**).
 
-3. Initialization of class members in the order specified in the class description (again, not in the order specified in the initialization list).
+3. Initialization of class members in the order specified in the class description (and **not in the order specified in the initialization list**).
 
 4. Execution of the function body of the constructor.
 
 5. The constructor also introduces an implicit conversion. To suppress implicit conversion, the constructor must be declared with the `explicit` parameter. ([1], p.333)
 
-6. In C/C++, when using custom conversions via constructors without `explicit` keyword or defined `type conversions` - only one level of implicit conversions is allowed.
+6. In C/C++, when using custom conversions via constructors without an `explicit` keyword or defined `type conversions` - only one level of implicit conversions is allowed.
 
 Example:
 
@@ -1915,7 +1915,7 @@ delete ptr; // undefined behavior for incomplete types
 For POD and an object without a destructor, something like C runtime free will be done, which does not need to know about the object's size.
 In this case, you're lucky, and you can typically delete dynamically allocated objects, but in general, it results in undefined behavior. (5.3.5 Delete C++2003).
 
-## Generate/Suppress the Generation of Special Class Members
+## Generate and Suppress the Generation of Special Class Members
 
 You can explicitly force the compiler to generate default code for a method for which this behavior can take place through `=default`.  It can be used to change normal accessibility, for example:
 
@@ -1927,13 +1927,13 @@ public:
 };
 ```
 
-For unsuppressing of implicitly generated special member functions.
+For un-suppressing implicitly generated special member functions.
 ```cpp
 class MyClass
 {
 public:
 MyClass(const MyClass&);
-// copy constructorr prevents implicitly-declared
+// copy constructor prevents implicitly-declared
 // default ctor and move constructor
 
 MyClass() = default;
@@ -1941,7 +1941,7 @@ MyClass(MyClass&&) noexcept = default;
 };
 ```
 
-You can disable using (any) function/method by specifying `=delete`. Example:
+You can disable using (any) function/method by specifying `= delete`. Example:
 ```cpp
 // g callable with any pointer type
 void g(void*);
@@ -1952,24 +1952,117 @@ void g(const char*) = delete;
 
 ## Some Class Special Members (since C++11)
 ```cpp
+#include <iostream>
+
 class X {
 public:
   // "ordinary constructor": create an object
-  X(int a);
+  X(int a)
+  { std::cout << "X::X(int)" << std::endl; }
+  
   // Default constructor
-  X();
+  X()
+  { std::cout << "X::X()" << std::endl; }
+  
   // Copy constructor
-  X(const X&);
+  X(const X&)
+  { std::cout << "X::X(const X&)" << std::endl; }
+
   // Move constructor
-  X(X&&);
+  X(X&&) noexcept
+  { std::cout << "X::X(X&&)" << std::endl; }
+
   // Copy assignment: clean up the target and copy
-  X& operator=(const X&);
+  X& operator=(const X&)
+  { std::cout << "X::operator=(X&)" << std::endl; }
+
   // Move assignment: clean up the target and move
-  X& operator=(X&&);
+  X& operator=(X&&) noexcept
+  { std::cout << "X::operator=(X&&)" << std::endl; }
+  
   // Destructor: clean up
-  ~X();
+  ~X()
+  { std::cout << "~X()" << std::endl; }
 };
 ```
+
+Now let's discuss the rules of the C++ compiler for generating special members.
+
+First, every class should have a constructor to construct objects of the class and as a consequence:
+
+> Rule - 1: If the class has no user-declared constructors, then the compiler will try to generate a default constructor.
+
+The existence of a user-defined destructor means that the class has special logic to destroy the object, and as a consequence, the class may have some invariants in the class. In this case, it's dangerous for the compiler to generate a move constructor:
+
+> Rule - 2: If a class has a user-declared destructor, the compiler will not generate the move operator and move assign operation.
+
+On another side if the user declares copy constructor or `operator=` by himself it also means that some special logic is required for the move:
+
+> Rule - 3: If a class has a user-declared copy constructor or `operator=` compiler will not generate the move operator and move assign operator.
+
+The C++11 will try to generate a move if no user-defined copy or move, and no user-declared destructor(dtor). The same logic is for generating copy operation:
+
+> Rule - 4: no user-declared move constructor and move assign operator, then the compiler will generate copy constructor and copy assign operation.
+
+To experiment with these rules you can play with the following code snippet:
+
+```cpp
+#include <iostream>
+
+class X {
+public:
+    // "ordinary constructor": create an object
+    X(int a) {
+        std::cout << "X::X(int)" << std::endl;
+    }
+
+    // Default constructor
+    X() {
+        std::cout << "X::X()" << std::endl;
+    }
+
+    // Copy constructor
+    X(const X&) {
+        std::cout << "X::X(const X&)" << std::endl;
+    }
+
+    // Move constructor
+    X(X&&) noexcept {
+        std::cout << "X::X(X&&)" << std::endl;
+    }
+
+    // Copy assignment: clean up the target and copy
+    X& operator=(const X&) {
+        std::cout << "X::operator=(X&)" << std::endl;
+    }
+
+    // Move assignment: clean up the target and move
+    X& operator=(X&&) noexcept {
+        std::cout << "X::operator=(X&&)" << std::endl;
+    }
+
+    // Destructor: clean up
+    ~X() {
+        std::cout << "~X()" << std::endl;
+    }
+};
+
+class Y: public X {
+public:
+    ~Y(){}
+};
+
+int main(int argc, char** argv) {
+    Y a;
+    Y b(std::move(a));
+}
+```
+
+
+There is one [blog post](https://blog.feabhas.com/2015/11/becoming-a-rule-of-zero-hero/) resource that shows when the compiler generates special member functions in C++11. For convinience, we present a table from this blog post here:
+
+![Table with special members](imgs/generation_of_special_members_in_cpp.jpg)
+
 
 # Initialization
 
@@ -2519,28 +2612,84 @@ auto multiply = []<class T>(T a, T b) {return a*b;};
 ```
 
 # Move Semantics
-The move brings object to a valid, but unspecified state. What is less well known that objects, in fact, can be reused after movement.
 
-Move semantics is one of the main innovations of C++11. The move is useful for objects that store part of their state in a heap. Moving is never slower than copying and is usually faster. For some objects, there is only moving semantics, e.g., thread.
+The move semantics has been born due to realizing at some moment of time in C++ design that copy operation (especially deep copy) and move ownership of data are in fact two different operations. Examples where move semantics will help:
 
-It doesn't make sense to implement a move if:
+* Your function returns a container or another object with the state in the heap by value from a function call.
+
+* You implement a container and internally your container has a dynamic array that changes its size once it's filled or based on 
+another criteria. The internal memory storage of the container, when resizing happens, almost always consists of several steps: allocate new memory, copy objects to a new memory, destroy old objects, and release old memory. With **move** semantics the authors of containers can leverage the move mechanism and remove not necessary copying.
+
+* Swapping of two objects in practice may happen through using intermediate variable *tmp*. But if you swap two content of two objects where objects have a state in the heap, then you can easily benefit from moving semantics to avoid two copies.
+
+Move semantics is language construction to represent such action, but adding it to the language increased the complexity of references. Move semantics is one of the main innovations of C++11. The move is useful for objects that store part of their state in a heap. Moving is never slower than copying and is usually faster. In addition for some objects, there is only moving semantics, e.g., thread.
+
+The move brings the object to a valid, but unspecified state. What is less well known is that objects, in fact, can be reused after movement,
+however, in practice, it does not happen frequently. One more time reusing an object after moving from is legal and valid because the object's content should be in a valid state after the moving operation if the content has been moved from this object.
+
+It doesn't make sense to implement a **move** functionality for a class/struct if:
 
 * (1) Its speed is worse or the same as copying
 * (2) This operation is not on the critical execution path in the program. 
+* (3) Object does not have any state in the heap.
+* (4) You shouldn't use `std::swap` to implement the move. It doesn't make any sense.
+* (5) It makes no sense to implement a move if it's the same as copy.
 
-Also you shouldn't use `std::swap` to implement the move. It doesn't make any sense.
+The move semantics essentially means that you want to grab the content of the object. The object from which you want to grab the content (or moved from) should have an rvalue reference `A&& a = b;`. As it has been mentioned in [glossary](#glossary) there are two sources for rvalue reference:
+  * A reference to an object that soon will be deleted (xvalue expression), which is typically an unnamed object.
+  * Explicitly unconditionally cast the reference to the object through `std::move`.
 
-**Important rule: move from LValues is never executed. It is copied.**
+**Why is it so ?**
+It is unsafe to move from the LValue reference. LValue reference is a live object and it's very unlikely that you want to grab it's content. In contrast, a reference to an object that soon will be deleted is something from which we can grab the content because, in fact, nobody will know will we still have the content or not. And so e.g. unnamed objects are very nice candidates for moving. This is a reason why language is constructed in this way.
 
-The construction `void f(T&&)` takes precedence over `void f(T&)` if both can be called. C++11 considers `noexcept` calling any destructor, or memory allocation. Move self to self - usually not checked because this is not normal behavior. Move operations need not be `noexcept`, but it's preferable.
+
+**Important rule: Move from LValues is never executed. It is copied.**
+
+An RValue reference is denoted as `T&&`. You can overload any function or method in the class for the situation when it obtains as input LValue reference (`T&`) or RValue reference (`T&&`). As a rule of thumb *RValue references* are more important for overload resolution.
+
+The C++ compiler will try all possible functions. For `LValue` objects call overload function which obtains RValue reference is illegal and this consideration is discarded. If you call function `f()` with passing xvalue (the temporary object that soon will be destroyed) then in principle both variants can be called:
+- `void f(T&&)`
+- `void f(T&)`
+
+But the construction `void f(T&&)` takes precedence over `void f(T&)` if both can be called. If function `void g(T&&)` has only a signature for rvalue reference and you call it with lvalue object then it leads to a compilation error.
+
+Using of const rvalue reference forms a valid C++ code, however, in practice it is useless:
+```cpp
+class A {};
+void f(const A&&) {}
+```
+
+**Some details about move semantics**
+
+1. Commonly it's a good idea to declare a function, constructors, and operators that use move semantics as `noexcept`. But it's not a requirement from C++ language. However, it's very often in practice, because `noexcept` give more compile time optimization opportunities in this case. Move operations need not be `noexcept`, but it's preferable.
+
+2. C++11 considers `noexcept` calling any destructor or memory allocation.
+
+3. Move to self is a situation when underlying pointers points to the same memory location. Move self to self - usually not checked because this is not normal behavior. C++11 defines that behavior is undefined in case it moves to itself. 
 
 **The First Scary Thing of C++11: Handling RValue Refs with std::move**
 
-The move constructor should be written carefully. The fact is `T&& arg` although is an RValue reference, but in the context of the function body `T&& arg` can be observed as variable, and it makes `arg` as an LValue. 
+The move constructors and move equal operators for your classes should be written carefully. 
+```cpp
+class M {
+public:
+    M() { std::cout << "M::M()" << std::endl; }
+    M(const M&) { std::cout << "M::M(const M&)" << std::endl; }
+    M(M&&) { std::cout << "M::M(M&&)" << std::endl; }
+};
 
-This is the most confusing thing about C++11 due to Scott Meyers.
+class MyClass {
+public:
+    MyClass(M&& theM)
+    //: m (theM)         // Copy - not move
+    : m(std::move(theM)) // Move
+    {}
+};
+```
 
-Therefore, for example, in the initialization list in you copy constructor you need to write in intialization list `Base(std::move(rhs))`.
+The fact is `M&& theM` is an RValue reference, but in the context of the function body `T&& arg` can be observed as variable, and it makes `theM` an LValue. So you should be careful when you write your initializer list and call the base class. This is the most confusing thing about C++11 due to Scott Meyers. 
+
+Therefore, for example, in the initialization list in your copy constructor, you need to write in the initialization list `Base(std::move(rhs))`.
 
 The `std::move` is a need utility function that turns any LValue expression into an RValue reference, `std::move` could be called `RValue_cast`.
 
@@ -2563,6 +2712,9 @@ move(T&& obj) noexcept
 }
 ```
 
+To implement a move operation in your classes you should typically call [std::move](https://en.cppreference.com/w/cpp/utility/move) available from [<utility>](https://en.cppreference.com/w/cpp/header/utility).
+
+
 **The Second Scary Thing of C++11: Universal references.**
 
 You can create a special construction that uses `T&& param` and it is valid only for template constructions in the following form:
@@ -2571,17 +2723,17 @@ template <class T>
 void f(T&& arg)
 {}
 ```
-And that construction is processed by special rules. For details please check [reference collapsing section](#reference-collapsing-rules-and-universal-reference) of this note. But currently we need two rules:
+And that construction is processed by special rules. For details please check [reference collapsing section](#reference-collapsing-rules-and-universal-reference) of this note. But currently, we need two rules:
 * arg is Lvalue => `void f<T&> (T&&,& arg)=>void f<T&> (T& arg)`
 * arg is Rvalue => `void f<T&&> (T&&,&& arg)=>void f<T&&>(T&& arg)`.
 
-That construction has an informal name **Universal Reference** (term from Skott Mayers), and it binds everything:
+That construction has an informal name **universal reference** (the term from Skott Mayers), and it binds everything:
 ```cpp
 template <class T>
 void f(T&& arg)
 {}
 ```
-The universal reference is not the official term; Scott Myers coins it only for informal discussions. The `auto` type deduction working in the same way as template type deduction and has the same reference collapsing:
+The universal reference is not the official term; Scott Myers coins it only for informal discussions. The `auto` type deduction works in the same way as the template type deduction and has the same reference collapsing:
 ```cpp
 int f();
 int x;
@@ -2589,9 +2741,11 @@ auto&& z1 = f();  // z1 type is int&&
 auto&& z2 = x;    // z2 type is int&
 ```
 
+During using universal references situation is a bit exotic - one template can create two different functions one for **lvalue** and one for **rvalue**.
+
 In the context of moving two operations are typically needed from C++ Library:
-* [std::move](https://en.cppreference.com/w/cpp/utility/move) - unconditional reference RValue cast.
-* [std::forward](https://en.cppreference.com/w/cpp/utility/forward) - conditional cast of universal references to need reference type. Copies LValue arguments, move RValue arguments. It's applicable only to function templates. Preserves arguments LValueness/RValueness/constness when forwarding them.
+* [std::move](https://en.cppreference.com/w/cpp/utility/move) - unconditional RValue reference cast.  The usage of such functionality is named **move cast**.
+* [std::forward](https://en.cppreference.com/w/cpp/utility/forward) - conditional cast of universal references to need reference type. Copies LValue arguments, move RValue arguments. It's applicable only to function templates. Preserves arguments LValueness/RValueness/constness when forwarding them. The usage of such functionality is named **perfect forwarding**. The [std::forward](https://en.cppreference.com/w/cpp/utility/forward) is designed to be used with universal references.
 
 Example of using `std::forward`:
 ```cpp
@@ -2608,6 +2762,15 @@ private:
   std::string name;
   std::vector<int> coord;
 };
+```
+
+The simplified implementation of [std::forward](https://en.cppreference.com/w/cpp/utility/forward) based on using [reference collapsing](#reference-collapsing-rules-and-universal-reference) rules:
+
+```cpp
+template <typename T>
+T&& forward(T&& a) noexcept {
+    return static_cast<T&&>(a);
+}
 ```
 
 # Virtual Functions and Polymorphism in C++
@@ -2652,8 +2815,7 @@ struct A: Base
     A(){puts(__func__);}
     A(const A&a): Base(a) {puts("A(const A&)");}
     // By default, a function that overrides a virtual function itself becomes virtual
-    virtual void f(){} 
-
+    virtual void f(){}
     // By default, a function that overrides a virtual function itself becomes virtual
     void g(){}         
 };
@@ -2665,7 +2827,6 @@ struct B: Base
    // 1) Better to not repeat virtual in a derived class
    // 2) If you want to be explicit use "override"
    void f() override final {}
-   
    // Final provides prevent further overriding
    void g() override final {}
 
@@ -2677,8 +2838,7 @@ struct B: Base
 The **final specification** prevents a member function from being overridden in a derived class. This could
 be because you want to limit how a derived class can modify the behavior of the class interface. There is no contradiction in combining override and final. This states that you disallow any further overrides of the function you are overriding. [5, p.578].
 
-It is also possible to specify an entire class as **final**.
-That will enforce that no further derivation from the final class is possible. Example:
+It is also possible to specify an entire class as **final**. That will enforce that no further derivation from the final class is possible. Example:
 ```cpp
 class A final
 {};
@@ -2936,7 +3096,9 @@ For the first time concurrency support has been introduced into the language for
 
 ## 18. Explicit Conversion Functions
 
-The `explicit` keyword now applicable to conversion functions. It will prohibit using type conversion implicitly, only explicitly. Example:
+In C++98/03 `explicit` keyword is used only for constructor to not allow implicit conversion during a call of a constructor. Starting from C++11 `explicit` keyword now applicable to conversion functions. It will prohibit using type conversion implicitly, only explicitly. 
+
+Example:
 ```cpp
 class MyClass {
 public:
@@ -2958,6 +3120,8 @@ int main()
     return 0;
 }
 ```
+
+It is worthwhile to refresh that in C++ when using custom conversions via constructors without `explicit` keyword or defined `type conversions` only one level of implicit conversions is allowed.
 
 Documentation: [cpp reference about explicit keyword](https://en.cppreference.com/w/cpp/language/explicit).
 
@@ -3703,7 +3867,9 @@ class AA {
 AA<std::vector<int>>, 2> obj;
 ```
 
-The name of a template class or template variable or a template function augmented with the list of parameter names for the template between angle brackets is called the **template-id** (See [cpp reference documentation](https://en.cppreference.com/w/cpp/language/templates)). During the definition of a member function or a static member of a template class, there are two aspects. 
+The name of a template class or template variable or a template function augmented with the list of parameter names for the template between angle brackets is called the **template-id** (See [cpp reference documentation](https://en.cppreference.com/w/cpp/language/templates)). 
+
+During the definition of a member function or a static member of a template class, there are two aspects:
 
 First, it’s not necessary to use the full **template-id** within a template definition. 
 
@@ -3724,7 +3890,9 @@ public:
     static void print(const ClassB<T>& ctr) {}
 };
 ```
-Second, if you are defining methods of a template class outside the template class definition then the name of the class must be qualified with **template id**. But, syntactically after passing the scope resolution `::` there is no reason to use full qualified **template id**. Example:
+Second, if you are defining methods of a template class outside the template class definition then the name of the class must be qualified with **template id**. But, syntactically after passing the scope resolution `::` there is no reason to use full qualified **template id**. 
+
+Example:
 ```cpp
 template<class Tx, class Ty> class MyPair {
 private:
