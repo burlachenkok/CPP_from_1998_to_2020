@@ -16,7 +16,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision Update: June 28, 2023
+Revision Update: July 2, 2023
 
 © 2022-2023 Konstantin Burlachenko, all rights reserved.
 
@@ -155,7 +155,7 @@ Revision Update: June 28, 2023
   - [3. Compile Time if](#3-compile-time-if)
   - [4. __has_include Macro](#4-__has_include-macro)
   - [5. std::byte](#5-stdbyte)
-  - [6. fallthrough Attribute](#6-fallthrough-attribute)
+  - [6. Fallthrough Attribute](#6-fallthrough-attribute)
   - [7. Initialization Statements in if/switch/for](#7-initialization-statements-in-ifswitchfor)
   - [8. std::optional](#8-stdoptional)
   - [9. std::string_view](#9-stdstring_view)
@@ -2846,9 +2846,7 @@ class A final
 // class B: public A {};
 ```
 
-A function's access specifier determines whether you can call that function. It plays no role whatsoever, though, in determining whether you can override it.
-
-The consequence is that you can override a private virtual function of a given base class. Example:
+A function's access specifier determines whether you can call that function. It plays no role whatsoever, though, in determining whether you can override it. The consequence is that you can override a private virtual function of a given base class. Example:
 
 ```cpp
 struct Base
@@ -2873,7 +2871,9 @@ public:
 
 ## Connection of Virtual Function with Default Values
 
-If you call the function through a base pointer, you will always get the default argument value from the base class version of the function. Any default argument values in derived class versions of the function will have no effect.
+If you call the function through a base pointer, you will always get the default argument value from the base class version of the function. 
+
+Any default argument values in derived class versions of the function will have no effect.
 
 # Miscellaneous Features of C++11
 
@@ -2889,7 +2889,9 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/contain
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/container/vector/shrink_to_fit).
 
 ## 3. noexcept function specification
-The `noexcept` specification - like `throw()` specification for functions from C++98/03, but it allows more optimization. And also, `throw()` is an explicit exception specification. The exception specification has been deprecated in C++11 and removed from C++17.
+The `noexcept` specification - like `throw()` specification for functions from C++98/03, but it allows more optimization. And also, `throw()` is an explicit exception specification. 
+
+> The exception specification has been deprecated in C++11 and removed from C++17.
 
 Example:
 ```cpp
@@ -2900,9 +2902,7 @@ void g2(int) noexcept {} // Valid from C++11
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/noexcept_spec).
 
 ## 4. static_assert expression
-The syntax for `static_assert` is the following: `static_assert(expr)`. A special declaration that results in a compilation error if the constant expression expr evaluates to false.
-
-The `static_assert` valid anywhere:
+The syntax for `static_assert` is the following: `static_assert(expr)`. A special declaration that results in a compilation error if the constant expression expr evaluates to false. The `static_assert` is valid anywhere:
 * Global/namespace scope
 * Class scope
 * Function/block scope.
@@ -2916,7 +2916,7 @@ static_assert(sizeof(void*) == sizeof(int),
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/static_assert).
 
 ## 5. alignas operator
-The `alignas` operator from (C++11) enforces alignment. `alignas` allocates an object with the requirement to allocate it with alignment suitable for another type. Example:
+The `alignas` operator from (C++11) enforces alignment. The `alignas` allocates an object with the requirement to allocate it with alignment suitable for specific type. Example of usage:
 ```cpp
 alignas(int) char buff[1024];
 ```
@@ -2925,7 +2925,8 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/languag
 ## 6. alignof operator
 The `alignof(x)` is the operator built into the language that return the alignment of a type in memory. Example:
 ```cpp
-  std::cout << alignof(char);     // print alignment for char's
+  std::cout << alignof(char);     
+  // print alignment for char's
 ```
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/alignof).
 
@@ -2962,6 +2963,7 @@ Placing `[[noreturn]]` at the start of a function declaration indicates that the
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/attributes/noreturn).
 
 ## 10. Anonymous Unions
+Anonymous unions may help you to to use stack space more effectively.
 ```cpp
   union {
      float f;
@@ -3001,31 +3003,37 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/languag
 
 Interestingly, that `static` local variable in C++11 guarantees thread-safe initialization. It was not the case in C++03. 
 
-## 13. Delegating constructors
-A constructor can call another constructor in the initialization list. In that way, initialization is delegated to another constructor.
+## 13. Delegating Constructors
 
-The delegates can themselves delegate construction to another constructor. Example:
+A constructor can call another constructor in the initialization list. In that way, initialization is delegated to another constructor. The delegates can themselves delegate construction to another constructor. Example:
 ```cpp
 class MyArea
 {
 public:
-  explicit MyArea(double w_and_h): MyArea(w_and_h, w_and_h) {}
-  MyArea(double theW, double theH) : w(theW), h(theH)
+  explicit MyArea(double w_and_h)
+  : MyArea(w_and_h, w_and_h) {}
+  
+  MyArea(double theW, double theH) 
+  : w(theW), h(theH)
   {}
+
 private:
   double w;
   double h;
 };
 ```
 
-There is one extra thing regarding delegating constructors. Once you have decided to delegate construction work to another constructor, you can not initialize any member in initializer list of constructor.
-
-If you will add member initialization into the previous code snippet, it will lead to compile error:
+There is one extra thing regarding delegating constructors. Once you have decided to delegate construction work to another constructor, you **can not** initialize any member in initializer list of constructor. If you will add member initialization into the previous code snippet, it will lead to compile error:
 
 ```cpp
 // Compiler Time Error:
-explicit MyArea(double w_and_h): MyArea(w_and_h, w_and_h), h(1.0) {}
+class MyArea
+{
+public:
+  explicit MyArea(double w_and_h): 
+  MyArea(w_and_h, w_and_h), h(1.0) {}
 //...
+};
 ```
 
 Documentation: [cpp reference](https://en.cppreference.com/w/cpp/language/constructor).
@@ -3058,7 +3066,7 @@ public:
 Derived d1(1);
 Derived d2(2, 3);
 ```
-Documentation: [cpp reference about constructors](https://en.cppreference.com/w/cpp/language/constructor).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/constructor).
 
 
 ## 15. Destructors are Implicitly noexcept
@@ -3068,7 +3076,7 @@ Starting with C++11, destructors are normally implicitly `noexcept`. Even if you
 ## 16. Fixed Width Integer Types
 Since C++11 various fixed integer types like `std::int64_t` is a part of the library and are available from `<cstdint>`.
 
-Documentation: [cpp reference about integer types](https://en.cppreference.com/w/cpp/types/integer)
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/types/integer)
 
 ## 17. Concurrency Support
 
@@ -3096,7 +3104,9 @@ For the first time concurrency support has been introduced into the language for
 
 ## 18. Explicit Conversion Functions
 
-In C++98/03 `explicit` keyword is used only for constructor to not allow implicit conversion during a call of a constructor. Starting from C++11 `explicit` keyword now applicable to conversion functions. It will prohibit using type conversion implicitly, only explicitly. 
+In C++98/03 `explicit` keyword is used only for constructor to not allow implicit conversion during a call of a constructor. 
+
+Starting from C++11 `explicit` keyword now applicable to conversion functions. It will prohibit using type conversion implicitly, only explicitly. 
 
 Example:
 ```cpp
@@ -3123,12 +3133,14 @@ int main()
 
 It is worthwhile to refresh that in C++ when using custom conversions via constructors without `explicit` keyword or defined `type conversions` only one level of implicit conversions is allowed.
 
-Documentation: [cpp reference about explicit keyword](https://en.cppreference.com/w/cpp/language/explicit).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/explicit).
 
 ## 19. Current Exception. Internal Details.
+
 The construction in the standard library is devoted for the concept of the current exception object called *"Exception Pointer"*.  Starting from C++11, it's possible to get it object via [std::current_exception](https://en.cppreference.com/w/cpp/error/current_exception) and [std::exception_ptr](https://en.cppreference.com/w/cpp/error/exception_ptr).
 
-## 20. The Trailing Return Type For Functions.
+## 20. The Trailing Return Type For Functions
+
 Documentation: [cpp reference about trailiing return type](https://en.cppreference.com/w/cpp/language/function).
 
 ```cpp
@@ -3145,14 +3157,16 @@ auto sumB(int a, int b) -> decltype(a+b) {
 Documentation: [cpp reference about placeholder type specifier](https://en.cppreference.com/w/cpp/language/auto).
 
 ```cpp
-// Return type deduction in templates: auto deduces to value type
+// Return type deduction in templates: 
+//  auto deduces to value type
 template <class T>
 auto sum1(T a, T b)
 {
     return a + b;
 }
 
-// Return type deduction in templates: auto deduces to exact type of return expression
+// Return type deduction in templates: 
+//  auto deduces to exact type of return expression
 template <class T>
 decltype(auto) sum2(T a, T b)
 {
@@ -3170,14 +3184,19 @@ decltype(auto) sum4(int a, int b) {
 
 # Miscellaneous Features of C++14
 
-## 1. deprecated Attribute
-This indicates that the use of the name or entity declared with this attribute is allowed but discouraged for some reason. Compilers typically issue warnings. For example:
+## 1. Deprecated Attribute
+
+This indicates that the use of the name or entity declared with this attribute is allowed but discouraged for some reason.
+
+Compilers typically issue warnings during usage of this function. For example:
 ```cpp
 [[deprecated]] void func(int);
 ```
+
 Documentationn: [cpp reference details about deprecated](https://en.cppreference.com/w/cpp/language/attributes/deprecated).
 
 ## 2. Return Type Deduction
+
 For functions, it is now possible to deduce the return type from its return statements.
 
 ```cpp
@@ -3195,7 +3214,7 @@ Starting from C++14, there is support for Binary Literals. You can write a binar
 ```cpp
 unsigned char a = 0b00110011;
 ```
-Documentaion: [cpp reference details about integer literals](https://en.cppreference.com/w/cpp/language/integer_literal).
+Documentaion: [cpp reference details](https://en.cppreference.com/w/cpp/language/integer_literal).
 
 ## 4. Variable Templates
 
@@ -3205,7 +3224,7 @@ template<class T>
 inline constexpr T pi = T(3.14159)
 ```
 
-Documentaion: [cpp reference details about variable template](https://en.cppreference.com/w/cpp/language/variable_template).
+Documentaion: [cpp reference details](https://en.cppreference.com/w/cpp/language/variable_template).
 
 ## 5. Delimiter Inside Numeric Literals
 
@@ -3213,7 +3232,7 @@ You can use the single quote character to separate digits for readability in int
 ```cpp
 long long d {10'000'000LL};
 ```
-Documentaion: [cpp reference details about integer literals](https://en.cppreference.com/w/cpp/language/integer_literal).
+Documentaion: [cpp reference details](https://en.cppreference.com/w/cpp/language/integer_literal).
 
 
 ## 6. std::make_unique<T>
@@ -3227,7 +3246,7 @@ struct Vec {
 };
 std::unique_ptr<Vec> v = std::make_unique<Vec>();
 ```
-Documentation: [cpp reference details about make_unique](https://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique).
 
 # Miscellaneous Features of C++17
 
@@ -3243,7 +3262,7 @@ auto [n,v] = read_entry(is)
 
 The `auto [n,v]` declares two local variables n and v with their types deduced from read_entry() return type. This mechanism for giving local names to members of a class object is named a structured binding. You can use this mechanism for arbitarily number of variables.
 
-Documentation: [cpp reference details structured binding](https://en.cppreference.com/w/cpp/language/structured_binding).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/structured_binding).
 
 ## 2. Deduce Template Parameters from Ctor. Arguments
 
@@ -3259,20 +3278,24 @@ public:
 ```
 Starting from C++17 it's possible to just write:
 ```cpp
-A a(123); // from C++17
+A a(123); 
+// from C++17
 ```
  instead of
  ```cpp
-A<int> a(123); // correct syntax in C++98/03/11/14
+A<int> a(123); 
+// Correct syntax in C++98/03/11/14 (and only one correct)
  ```
 
-Before C++17, such a feature was supported only for template functions but not for template classes. That feature is called *Class Template Argument Deduction*.
+Before C++17, such a feature was supported only for template functions, but not for template classes. That feature is called *Class Template Argument Deduction*.
 
-Documentation: [cpp reference details about class template argument deduction](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction).
 
 ## 3. Compile Time if
 
-Only the selected branch is instantiated via using some compile-time expression. This solution offers optimal performance and locality of the optimization.
+Only the selected branch is instantiated via using some compile-time expression. 
+
+This solution offers optimal performance and locality of the optimization.
 
 ```cpp
 #include <type_traits>
@@ -3289,7 +3312,7 @@ int main() {
 }
 ```
 
-Documentation: [cpp reference details about compile if](https://en.cppreference.com/w/cpp/language/if).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/if).
 
 ## 4. __has_include Macro
 The new macro `__has_include ` to test that the header file is presented. Example of usage:
@@ -3306,10 +3329,14 @@ C++17 introduces byte type to work directly with bytes `std::byte` defined in `<
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/types/byte).
 
 
-## 6. fallthrough Attribute
-In C/C++ language in `switch` construction, if not explicitly use `break` instruction, instruction flow will fall through the first `case` statement without reevaluating the predicate. 
+## 6. Fallthrough Attribute
 
-The C++17 added a language feature to signal to the compiler and the person reading your code that you are intentionally using a fall through. Example:
+In C/C++ language in `switch` construction, if not explicitly use `break` instruction, then instruction flow once it will find suitable `case` will fall through the next `case` statement without checking the predicate. 
+
+The C++17 added a language feature to signal to the compiler and the person reading your code that you are intentionally using a fall through. 
+
+Example:
+
 ```cpp
 switch (number)
 {
@@ -3324,32 +3351,35 @@ case 78:
 }
 ```
 
-Documentation: [cpp reference details about fall through](https://en.cppreference.com/w/cpp/language/attributes/fallthrough).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/attributes/fallthrough).
 
 ## 7. Initialization Statements in if/switch/for
 
-The syntax for defining local variables and consequence `if` statement was so common enough that in C++17 have been added a specialized syntax for it in several constructions via using syntax similar to initialization in `for` statement.
+The syntax for defining local variables and consequence `if` statement was so common enough that in C++17 have been added a specialized syntax for it in several constructions via using syntax similar to initialization in if/switch/[range-based-for loop](#range-based-for-loop) statements:
 
-For `if` statement:
-```cpp
-if (auto my=2; my >= 1 || lower <= 2) {
-  ;
-}
-```
+* Initialization in `if` statement:
+  ```cpp
+  if (auto my=2; my >= 1 || lower <= 2) {
+    ;
+  }
+  ```
 
-The same syntax has been added for `switch` statement:
-```cpp
-switch (initialization; condition) { ... }
-```
+* The same syntax has been added in `switch` statement:
+  ```cpp
+  switch (initialization; condition) { ... }
+  ```
 
-The same syntax has been added for `for` statement:
-```cpp
-for ([initialization;] range_declaration : range_expression)
- // loop statement
-```
+* The same syntax has been added for range based `for` loop  statement:
+  ```cpp
+  for ([initialization;] range_declaration : range_expression)
+  // loop statement
+  ```
 
 ## 8. std::optional
-The `std::optional` is a class template for conceptually storing an object. The optional object optionally contains a value. To check that `std::optional` has value in it, you have three ways:
+
+The `std::optional` is a class template for conceptually storing an object. The optional object optionally contains a value. 
+
+To check that `std::optional` has value in it, you have *three ways*:
 * Convert the `optional` object to a bool.
 * Call the `has_value()` member function.
 * Compare the `optional` object to `std::nullopt`.
@@ -3369,18 +3399,57 @@ int main()
               << (o2.has_value() ? "YES" : "NO") << "\n";
 }
 ```
-Documentation: [cpp reference details about optional](https://en.cppreference.com/w/cpp/utility/optional).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/utility/optional).
 
 ## 9. std::string_view
+
 The type `std::string_view` has been introduced in C++17. It can be used instead of `const std::string&` for input string
 parameters. Initializing or copying a string_view is very cheap.
-Similar to `std::string_view` there is a `std::span<const T>` that can be used instead of `const std::vector<T>&`.
+Similar to `std::string_view` there is a `std::span<const T>` that can be used instead of `const std::vector<T>&`. 
 
-Documentation: [cpp reference details about optional](https://en.cppreference.com/w/cpp/string/basic_string_view).
+The `std::span` and `std::string_view` provide a way to get rid of making an extra copy of data. Example:
+
+```cpp
+#include <iostream>
+#include <span>
+#include <string_view>
+#include <string>
+#include <vector>
+
+int main()
+{
+    const char* s = "my string";
+    std::string_view sv = s;
+    std::string str = s;
+    
+    // MATCHES
+    std::cout << "std::string_view and raw string: "
+              << (s == sv.data() ? "MATHCES" : "NOT MATHCES") 
+              << "\n";
+
+    // DOES NOT MATCH
+    std::cout << "std::string and rew string: "
+              << (str.data() == sv.data() ? "MATHCES" : "NOT MATHCES") 
+              << "\n";
+
+    std::vector<int> arr = {1,2,3};
+    std::span<int> my_span = arr;
+
+    // MATCHES
+    std::cout << "std::span and std::vector: "
+              << (my_span.data() == arr.data() ? "MATHCES" : "NOT MATHCES") 
+              << "\n";
+    
+    return 0;
+}
+```
+
+Documentation: [cpp reference details about string_view](https://en.cppreference.com/w/cpp/string/basic_string_view), and [cpp reference details about span](https://en.cppreference.com/w/cpp/container/span)
 
 ## 10. Inline Variables
 
 Inline variables have been supported only since C++17.
+
 ```cpp
 // C++17 simplified static variables declaration
 class Objects {
@@ -3390,7 +3459,7 @@ class Objects {
 Before inline variables, it was possible to use static variables, but the burden to add static variables into compliable and finally, the linkable binary is under your responsibility.
 
 ```cpp
-// Somewhere in some header file
+// Somewhere header file
 class ObjectsOld {
     static size_t s_object_count;
 };
@@ -3398,8 +3467,9 @@ class ObjectsOld {
 // Somewhere in some cpp unit
 size_t ObjectsOld::s_object_count;
 ```
-Documentation: [cpp reference details about inline specifier](https://en.cppreference.com/w/cpp/language/inline).
+Documentation: [cpp reference details about inline specifier](https://en.cppreference.com/w/cpp/language/inline). 
 
+> If you want precisely understand exactly how toolchain handles inline variables (i.e., in which object file this variable is defined), then please double-check with Toolchain documentation.
 
 ## 11. The Exception Specification has been Removed
 The exception specification has been deprecated in C++11 and removed from C++17.
@@ -3409,7 +3479,9 @@ Details: [Core Working Group about removing Deprecated Exception Specifications 
 # Miscellaneous Features of C++20
 
 ## 1. no_unique_address Attribute
-The `[[no_unique_address]]` attribute allows empty non-static data members to share space with another subobject of a different type. Example based on materials from cpp reference:
+The `[[no_unique_address]]` attribute allows empty non-static data members to share space with another subobject of a different type. 
+
+Example based on materials from cpp reference:
 
 ```cpp
 #include <iostream>
@@ -3427,36 +3499,40 @@ int main() {
 }
 ```
 
-Documentation: [cpp reference details about no_unique_address](https://en.cppreference.com/w/cpp/language/attributes/no_unique_address).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/attributes/no_unique_address).
 
 
-## 2. Spaceship operator
+## 2. Spaceship Operator
 
-The three-way comparison operator denoted `<=>` is a new comparison operator. It has the informal name - **spaceship operator**.
+The three-way comparison operator denoted `<=>` is a new comparison operator. 
+
+It has the informal name - **spaceship operator**.
 The term "spaceship operator" was coined by Randal L.Schwartz because it reminded him of the spaceship in the 1970s text-based strategy video game Star Trek. [4,p.100].
 
 ```cpp
 bool operator <=> (const Y&, const Y&) {}
-
 ```
-After defining what is called spaceship operator compiler generates based on that various s (<, >, <=, >=), comparison operators automatically.
 
-The `<=>` operator can return one of the following return types:
+After defining what is called spaceship operator compiler generates based on that various comparision operators: `<`, `>`, `<=`, `>=` automatically.
 
-* **std::strong_ordering**. It's a enumeration type of available values:
+The `<=>` operator for you class can return one of the following types:
+
+* [std::strong_ordering](https://en.cppreference.com/w/cpp/utility/compare/strong_ordering). It's a enumeration type of available values:
   * std::strong_ordering::less
   * std::strong_ordering::greater
   * std::strong_ordering::equal. 
 
   In mathematical sense it should be used when relation is totally ordered.
 
-* **std::partial_ordering**. It's a enumeration type of available values:
+* [std::partial_ordering](https://en.cppreference.com/w/cpp/utility/compare/partial_ordering). It's a enumeration type of available values:
   * std::strong_ordering::less
   * std::strong_ordering::greater
   * std::strong_ordering::equivalent
   * std::strong_ordering::unordered
 
-* **std::weak_ordering**. It's a enumeration type of available values:
+  In mathematical sense it should be used when relation is partialy ordered.
+
+* [std::weak_ordering](https://en.cppreference.com/w/cpp/utility/compare/weak_ordering). It's a enumeration type of available values:
   * std::strong_ordering::less
   * std::strong_ordering::greater
   * std::strong_ordering::equivalent
@@ -3473,11 +3549,13 @@ struct Y {
 };
 ```
 
-Documentation: [cpp reference details about no_unique_address](https://en.cppreference.com/w/cpp/language/operator_comparison).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/operator_comparison).
 
 ## 3. likely and unlikely Attribute
 
-The `[[likely]]` and `[[unlikely]]` attributes are applicable for `case` branches in the switch statement and `if` and `else` branches in conditional statement to give a compiler a hint to optimize certain branches.
+The `[[likely]]` and `[[unlikely]]` attributes are applicable for `case` branches in the switch statement , `if`, `else` branches in conditional statement.
+
+They give a compiler a hint to optimize certain branches. Example:
 
 ```cpp
 switch(value) {
@@ -3488,13 +3566,14 @@ switch(value) {
 }
 ```
 
-Documentation: [cpp reference details about likely](https://en.cppreference.com/w/cpp/language/attributes/likely).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/attributes/likely).
 
 ## 4. std::format()
 
 The `std::format()` replaces [sprintf](https://en.cppreference.com/w/cpp/io/c/fprintf) and [ostringstream](https://en.cppreference.com/w/cpp/io/basic_ostringstream). 
 
 After importing C++20 `<format>` module or including `<format>` header files, you can use `std::format` in the following way:
+
 ```cpp
 std::cout <<
   std::format("diameter required for {} is {:.2f}.\n", x, y);
@@ -3508,6 +3587,8 @@ For full information about format specification look into
 
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/utility/format/format).
 
+> Unfortunately, due to [compiler support C++20](https://en.cppreference.com/w/cpp/compiler_support#cpp20) information the `std::format` is supported only from GCC-13, Clang 14, MSCVC 19.29. To use this feature if you need it you have to use modern versions of these toolchains.
+
 ## 5. source_location::current()
 
 Compile time information about current source file `source_location::current()` defined in `<source_location>`.
@@ -3519,12 +3600,16 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/utility
 
 ## 6. nodiscard(reason) attribute
 
-Attribute `[[nodiscard(reason)]]` applied for function and described the consequence of discarding the return object from the function call. The compiler is encouraged to issue a warning in case of discarding the return value. Example:
+Attribute `[[nodiscard(reason)]]` applied for function and described the consequence of discarding the return object from the function call. 
+
+The compiler is encouraged to issue a warning in case of discarding the return value. 
+
+Example:
 ```cpp
 [[nodiscard("DO NOT IGNORE")]] int sum(int x, int y)
 { return x + y; }
 ```
-Documentation: [cpp reference details about nodiscard](https://en.cppreference.com/w/cpp/language/attributes/nodiscard).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/attributes/nodiscard).
 
 ## 7. Only one Signed Integer Representation
 Starting from `C++20`, there is only one signed integer representation, and it's **twos-complement-notation**.
@@ -3535,15 +3620,17 @@ Documentation: [cpp reference details about fundamental types](https://en.cppref
 
 From C++20 the right-shift on signed integral types is an **arithmetic right shift**, which performs sign-extension. It's not an undefined behaviour.
 
-Documentation: [cpp reference arithmetic operations details](https://en.cppreference.com/w/cpp/language/operator_arithmetic).
+Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/operator_arithmetic).
 
 
 ## 9. Abbreviated Function Templates
 
-Staring from C++20, the template function can be written a bit shorter. That syntax is called *"Abbreviated Function Template"*. If you want your template to instantiate functions where multiple parameters have the same type or related
-types, you still have to use the old syntax. 
+Staring from C++20, the template function can be written a bit shorter. That syntax is called *"Abbreviated Function Template"*. 
 
-It is so because every occurrence of `auto` in the function parameter list of an abbreviated function template introduces an implicit, unnamed *new* template type parameter. Example:
+If you want your template to instantiate functions where multiple parameters have the same type or related
+types, you still have to use the old syntax.  It is so because every occurrence of `auto` in the function parameter list of an abbreviated function template introduces an implicit, unnamed **but** *new* template type parameter. 
+
+Example:
 
 ```cpp
 // Classical syntax
@@ -3562,7 +3649,9 @@ If you overload `operator ==` C++20 compiler automatically generates `operator !
 
 ## 11. Designated initializers
 
-The mechanism from C99 called *"named initialization"* was not previously available in C++03/11/17. Example (from cpp reference):
+The mechanism from C99 called *"named initialization"* was not previously available in C++03/11/17. 
+
+Example (from cpp reference):
 ```cpp
 struct A { int x; int y; int z; };
 A b{.x = 1, .z = 2};
@@ -3571,27 +3660,37 @@ A b{.x = 1, .z = 2};
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/aggregate_initialization#Designated_initializers)
 
 ## 12. __has_cpp_attribute feature test
+
+For example we want to define function:
+```cpp
+[[deprecated]] void func(int);
+```
+But we do not know about support of `deprecated` attribute in compiler. Such check now can be done in compiler time:
+
 ```cpp
 #if __has_cpp_attribute(deprecated)
+  [[deprecated]] void func(int);
 #endif
 ```
 
-As it has been said in standard: *It is expected that the availability of an attribute can be detected by any non-zero result.*
+As it has been said in standard: 
+
+*It is expected that the availability of an attribute can be detected by any non-zero result.*
 
 Documentation: 
 * [Draft C++2020 Standard, p.446, Section 15.2](https://open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf)
-* See also [feature test in cppreference](https://en.cppreference.com/w/cpp/feature_test#Attributes).
+* [Feature Test in cppreference](https://en.cppreference.com/w/cpp/feature_test#Attributes).
 
 # 13. Feature Test Macro
 
 In C++2020 the macroses `__cpp_` has been added to test language and library features under the name
-[feature_test](https://en.cppreference.com/w/cpp/feature_test). The support of this ability has been added from C++2020. Even though some features may be supported in earlier versions, the ability to check with Markose's has been added only in C++2020. 
+[feature_test](https://en.cppreference.com/w/cpp/feature_test). 
 
-According to [Draft C++2020 Standard, p.455, Section 15.11](https://open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf):
-> Future versions of this International Standard might replace the values of these macros with greater values.
+The support of this ability has been added from C++2020. Even though some features may be supported in earlier versions, the ability to check with macros has been added only in C++2020.
+
+According to [Draft C++2020 Standard, p.455, Section 15.11](https://open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf): Future versions of this International Standard might replace the values of these macros with greater values.
 
 If you want to produce compatible code, use the following constructions (starting from C++2020) can be used for feature tests:
-
 ```cpp
 #if __cpp_char8_t >= 201811L
 ///
@@ -3605,29 +3704,27 @@ In this conditional compilation block, the right-hand side has been taken from T
 Standard `#include` preprocessor directive helps organize the project but at a considerable cost. The desirability of modules due to B.Stroustroup was already well known in 1980.
 
 Modules have come with C++20 to upgrade the understanding of header files. The reason to include it in standards that B.Stroustrup mentioned in his talks is mainly about improving compilation time:
-- Google reports x2-4 improvements in compile-time
-- Microsoft reports x5-x50 times improvements in compile time
+- Google reports *x2-4* improvements in compile-time
+- Microsoft reports *x5-x50* times improvements in compile time
 
 Result of applying modules:
-* Reduce compilation time.
-* The order in which you import modules never matters.
+* Reduce compilation time
+* The order in which you import modules never matters
 
-C++20 has introduced these modules to form self-contained subcomponents of related functionality and called it a *module*.
+C++20 has introduced modules to form a self-contained subcomponents of related functionality and called it a *module*.
 
-Before technical details, let's take a look into several critical conceptual things:
+Several critical conceptual things:
 
 * A module can **export** any number of C++ entities (functions, constants, types, etc.)
-* An exported entity by one module can be used in any source file that **imports** this module.
-* The combination of all entities that a module export is called the **module interface**.
-* A module can **export entire other module**.
+* An exported entity by one module can be used in any source file that **imports** this module
+* The combination of all entities that a module export is called the **module interface**
+* A module can **export entire other module**
 
 Documentation dedicated for modules: [cpp reference details](https://en.cppreference.com/w/cpp/language/modules)
 
-In real life, compilers are not yet fully supported modules (at the moment of August 2022), so please be careful if you're going to use them. At least check that your toolchain endorses it from practice and from checking [cpp reference details about compilers support](https://en.cppreference.com/w/cpp/compiler_support) if you are using one of the popular compilers. Modules are replacement of header files and do not have any connection with C++ [namespaces](https://en.cppreference.com/w/cpp/language/namespace).
+> In real life, compilers are not yet fully supported modules (at the moment of August 2022), so please be careful if you're going to use them. At least check that your toolchain endorses it from practice and from checking [cpp reference details about compilers support](https://en.cppreference.com/w/cpp/compiler_support) if you are using one of the popular compilers. 
 
-
-
-Next, we will go example by example to open all features of *modules*.
+Modules are replacement of header files and do not have any connection with C++ [namespaces](https://en.cppreference.com/w/cpp/language/namespace). Next, we will go example by example to open all features of *modules*.
 
 ## Single Module Interface File/Module Unit
 
