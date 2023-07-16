@@ -4859,8 +4859,7 @@ particular optimization, look at the assembly code.
 
 Here we present materials presented by Prof. Charles Leiserson, Prof. Julian Shun (and invited speakers) during the course [15] [Performance Engineering Of Software Systems, 2018](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/).
 
-1. **Select Good Algorithm.** The good asymptotically rate algorithm is not necessarily the fastest, however, it's a good start heuristic. 
-However, in some cases, reducing the work does not automatically reduce the algorithm running time due to computer hardware's complex nature, including instruction-level parallelism, caching, vectorization, branch prediction, etc.
+1. **Select Good Algorithm.** The good asymptotically rate algorithm is not necessarily the fastest, however, it's a good start heuristic. In some cases, reducing the work does not automatically reduce the algorithm running time due to computer hardware's complex nature, including instruction-level parallelism, caching, vectorization, branch prediction, etc.
 
 2. **Pack structure into bits.** If you have a structure that stores integers with values you can facilitate bitfields in C/C++. This method saves space, but to extract and set bits, the read and write will be coupled with bit operations.
 
