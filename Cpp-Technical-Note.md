@@ -3359,7 +3359,7 @@ The syntax for defining local variables and consequence `if` statement was so co
 
 * Initialization in `if` statement:
   ```cpp
-  if (auto my=2; my >= 1 || lower <= 2) {
+  if (auto my=2; my >= 1 || my <= 2) {
     ;
   }
   ```
