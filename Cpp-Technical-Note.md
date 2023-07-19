@@ -16,7 +16,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision Update: July 2, 2023
+Revision Update: July 20, 2023
 
 © 2022-2023 Konstantin Burlachenko, all rights reserved.
 
@@ -4443,6 +4443,7 @@ Example:
     }
     ```
     
+
 See also [cpp reference details](https://en.cppreference.com/w/cpp/language/requires).
 
 
