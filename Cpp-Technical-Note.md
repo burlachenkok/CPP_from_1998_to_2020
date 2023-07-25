@@ -1094,22 +1094,52 @@ In reality, that underlying type for C++ has some underlying integer type to sto
 
 Starting from C++11 now we have two types of `enum`:
 
-* Strongly typed enums(or scoped enumerations)
-* Usual enums (or unscoped enumerations).
-
-Strongly typed `enum` do not support implicit conversion to `int`. It's possible to specify for them the underlying type. The underlying default type for strongly typed `enum` is `int`. Example:
+**Strongly typed enums(or scoped enumerations).**
+Example:
   ```cpp
   enum class Color : int{red,green,blue};
   ```
 
-For ordinary `enum` in C++ 11, as in C++ 98, nothing is said about the underlying type by default. If the underlying type is specified, you can make a forward declaration for `enum`.
+Strongly typed `enum`:
+- Does not support implicit conversion to `int`.
+- For them, it's possible to specify the underlying type.
+- There names of enumerated elements are defined (only) in a namespace of enumeration type.
+- The default underlying type for strongly typed `enum` is `int`. 
+ 
+**Usual enums (or unscoped enumerations).**
 
-For the usual `enum` starting from C++ 11, it's possible to specify explicitly the underlying type.
+Example:
 ```cpp
 enum Color : int{red,green,blue};
 ```
 
-B.Stroustrup, in his blog, notes that it is now possible to explicitly (optionally) use the name of a regular and scoped `enum` as a namespace to refer to its elements, as it were, through the namespace of a new type. Starting from C++11 for `enum` of known size can be forward-declared.
+For ordinary `enum`:
+- Nothing is said about the underlying type by default in C++ 11, as in C++ 98
+- For the usual `enum` starting from C++ 11, it's possible to specify explicitly the underlying type
+- B.Stroustrup, in his blog, notes that it is now possible to explicitly (optionally) use the name of a regular and scoped `enum` as a namespace to refer to its elements
+- For ordinary `enum` mechanism for accessing `enum` elements through enclosed namespaces is still in the language, even though sometimes it is not what you want.
+- If you specify the underlying type (and so at least size is known for the compiler), you can make a forward declaration for `enum`.
+
+Example with the forward declaration:
+
+```cpp
+//enum A; // Compile Time Error: Forward declaration for unscoped enums are not allowed
+
+enum  A {
+    a = 1,     // [X]
+    b= 2
+};
+
+enum B:std::uint64_t;
+
+enum B:std::uint64_t {
+    c = 1,
+    d= 2,
+    // a = 3 // Compile Time Error Due to [X]
+};
+```
+
+Documentation: [cpp reference enum](https://en.cppreference.com/w/cpp/language/enum)
 
 ## Integer Types Nuances
 
