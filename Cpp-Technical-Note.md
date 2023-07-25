@@ -1095,6 +1095,7 @@ In reality, that underlying type for C++ has some underlying integer type to sto
 Starting from C++11 now we have two types of `enum`:
 
 **Strongly typed enums(or scoped enumerations).**
+
 Example:
   ```cpp
   enum class Color : int{red,green,blue};
