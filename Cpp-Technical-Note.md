@@ -695,7 +695,7 @@ Each source file is translated (or processed) through the following sequence of 
 
 5. Split program text by preprocessor tokens. The tokens for the C preprocessor are mainly like the tokens used by the C compiler, except for some differences. Example: Token `##` is a concatenation operator for words in a source code. It is the valid operator for the C preprocessor, but it is an invalid token for the operator in a proper C++ program.
 
-6. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program. For details about available preprocessor language, please read [2, p.43] or documentation for any de-facto standard toolchain like [GCC](https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros).
+6. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program. For details about available preprocessor language directives, please read [2, p.43] or documentation for any de-facto standard toolchain like [GCC](https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros).
 
 The output of preprocessing of the source file is named as *preprocessed source* and typically has the extension `*.i`. For example, obtaining such a source file from [clang](https://clang.llvm.org/get_started.html) can be achieved via `clang -E.` After the initial textual phase and C preprocessor phase, the next phase for compilation is Lexical Analysis.
 
@@ -723,7 +723,7 @@ The concept of whitespace in C and in C++ includes different keyboard spaces and
 After finishing, the Lexical analysis, the program consists of a sequence of tokens.
 
 ### Syntax Analysis
-The compiler is based on the language rules typically described by Backus–Naur forms for Context-Free-Grammars (CFG). The Grammars by themselves are studied in a mathematic area called *Formal Languages and Grammars Theory*. That area of mathematics is essential for Compiler's Fundamental aspects.
+The compiler is based on the language rules typically described by Backus–Naur forms for Context-Free-Grammars (CFG). The Grammars by themselves are studied in a mathematic area called *Formal Languages and Grammars Theory*. That area of mathematics is essential for some Compiler's Fundamental aspects.
 
 Based on the grammar of the C or C++ programming language, the syntax analyzer constructs the Abstract Syntax Tree (AST) for the program's source text.  The exact Grammar rules can be found in the Appendices of corresponding Language Standards.
 
@@ -732,16 +732,16 @@ Some rules of the language can not be expressed only by using CFG. Examples: mul
 
 ### Code Optimization
 
-At this moment, we constructed AST for a program and augmented it with information from the semantic analysis stage. Also, we can traverse AST and translate this code into a more low-level construction expressed as Assembly Language or Intermediate Representation (IR). Compilers' innovations based on various fields of science and engineering that mainly bring considerable speedup are exploited in this stage.
+At this moment, we constructed AST for a program and augmented it with information from the semantic analysis stage. Also, we can traverse AST and translate this code into a more low-level construction expressed as Assembly Language or Intermediate Representation (IR). 
 
-Typically, compilers perform a sequence of transformation passes. Each transformation pass analyzes and edits the code to optimize performance. A transformation pass might run multiple times. Steps run in a predetermined order that usually seems to work well. Some examples of optimization technics that are happening at this moment:
+Compilers' innovations based on various fields of science and engineering that mainly bring considerable speedup are exploited in this stage. Typically, compilers perform a sequence of transformation passes. Each transformation pass analyzes and edits the code to optimize performance. A transformation pass might run multiple times. Steps run in a predetermined order that usually seems to work well. Some examples of optimization technics that are happening at this moment and considered a general practice:
 
 * Convert one arithmetic operation into cheaper operations by using bit tricks and logic/arithmetic shifts.
 * Replace stack allocation storage with storing variables in the processor's register.
-* Optimization for structure/class memory layout.
+* Optimization structure/class memory layout.
 * Transform data structures to have the ability to store elements of it as much as possible in CPU registers when some function obtains input in the form of a pointer/reference of an object of the structure/class type.
 * Remove dead-end code never executed in the program's control flow across compiled source files.
-* Function inlining. The compiler uses its heuristics to decide what to inline and what to not. Sometimes there is a toolchain extension that forces that or provides means to tune heuristics slightly.
+* Function inlining. The compiler uses its own heuristics to decide what to inline and what to not. Sometimes there is a toolchain extension that forces the compiler to make a specific decision or provides means to tune heuristics slightly.
 * In the case of using a global program optimization compiler and linker jointly may want to try inline even function definition from another compilation unit.
 * Remove Hoisting (also known as loop-invariant code). Try to remove recomputing loop-invariant code inside the loops.
 * Vectorization. Leverage into vector registers (like SSE2, Arm Neon, etc.) when possible.
@@ -773,13 +773,15 @@ Assembler(ASM) Language is the lowest possible level that can still be readable,
 
 One instruction in C++ code can correspond to several( 1,2,3, etc.) ASM code instructions. On the other hand, the same instruction in C and C++ can be emitted (materialized or generated) into different instructions in ASM Language. 
 
-An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code for the target device. The machine instruction emitted by ASM is described by the target Instruction Set Architecture (ISA). In Assembly literature, the process of converting ASM instructions into machine code is named `encoding.` An inverse process of reconstructing ASM code from binary code is called `decoding` or `disassembly.`
+An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code for the target device. The machine instruction emitted by ASM is described by the target Instruction Set Architecture (ISA). In Assembly literature, the process of converting ASM instructions into machine code is named as `encoding.` An inverse process of reconstructing ASM code from binary code is called `decoding` or `disassembly`.
 
 For [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top) toolchain the standard de-facto Assembler is [GAS](https://www.gnu.org/software/binutils/). The output of Assembler is saved into *object files*.
 
-The Assembly code by itself obeys Instruction Set Architecture *ISA*. The *ISA* specifies instructions, register, memory architecture, data types, and control flow mechanisms. The ISA connects physical Hardware designed by Electrical Engineering (EE) with the software constructed by Computer Science (CS). The particular implementation of ISA is called Microarchitecture in Electrical Engineering(EE) terminology. Different vendors can provide the support of the same ISA, but Microarchitecture is typically under NDA.
+The Assembly output code by itself obeys Instruction Set Architecture *ISA*. The *ISA* specifies instructions, register, memory architecture, data types, and control flow mechanisms. The ISA connects physical Hardware designed by Electrical Engineering (EE) with the software constructed by Computer Science (CS). 
 
-The Microarchitecture is the lowest level of computation and it's under the responsibility of Electrical Engineers, not Computer Science people.
+The particular implementation of ISA is called Microarchitecture in Electrical Engineering(EE) terminology. Different vendors can provide the support of the same ISA, but Microarchitecture is typically under NDA.
+
+Microarchitecture is the lowest level of computation and it's under the responsibility of Electrical Engineers, not Computer Science people, and it's in fact mostly under NDA.
 
 There are online tools such as [11] [Compiler Explorer](https://godbolt.org/) that provide a demonstration of the generated Assembly code while using various compilers and target platforms for C++ online. It can be very useful for educational and analytical purposes because using color shows the correspondence between C++ code and Assembly code.
 
@@ -800,9 +802,10 @@ The name of the linkage program typically in toolchains has a name such as [ld](
 * *Define your operators syntactically with their syntax.* B.Stroustroup, in his [Technique FAQ](https://www.stroustrup.com/bs_faq2.html) ([8]), said that the possibility had been considered several times, but each time they decided that the likely problems outweighed the potential benefits.
 
 # For People New to C++
+
 If you have arrived from another programming language and are only a bit familiar with C++, we would like to first enumerate several, not complicated things for you.
 
-1. The logical operators `&&` and `||` are called short-circuit evaluation due to their behavior of evaluating subexpression in the chain of logical operations only when needed for the logic expression evaluation. However, the bitwise operators `&` and `|` do not short-circuit.
+1. The logical operators for logical "and" `&&` and logical "or" `||` are called short-circuit evaluation due to their behavior of evaluating subexpression in the chain of logical operations only when needed for the logic expression evaluation. However, the bitwise operators `&` and `|` do not short-circuit.
 
 2. The difference between the two pointers at the level of the C and C++ languages is measured in terms of elements, not in terms of bytes.
 
@@ -828,8 +831,7 @@ If you have arrived from another programming language and are only a bit familia
 12. Every derived class constructor is called a base class constructor. If a user-defined derived class constructor
 does not explicitly call a base constructor in its initialization list, the default constructor will be called.
 
-13. A table of virtual function pointers is created for each
-class and contains a table of virtual function pointers. The only time you should even debate whether the overhead of a virtual function is worthwhile to optimize it is when you have to manage many objects of the corresponding type.
+13. A table of virtual function pointers is created for each class and contains a table of virtual function pointers. The only time you should even debate whether the overhead of a virtual function is worthwhile to optimize it is when you have to manage many objects of the corresponding type.
 
 14. The general form of a pointer to a function definition is as follows: 
 > `return_type (*function_pointer_name)(parameter_types);` [4, p.733].
@@ -864,18 +866,18 @@ For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.htm
 
 C++ 1998 and C++2003 use the C89 preprocessor, although the C language also has evolved: Tradition C, C89, C95, C99, C11, and C17. For a detailed description of the C preprocessor, please read Chapter 3 in ([2]).
 
-Preprocessor macro extensions in C and in C++ have the following important property. Once an extension replaces a macro call, the macro call search process starts from the beginning of the expanded extension for further replacement.
+Preprocessor macro extensions in C and in C++ have the following important properties. Once an extension replaces a macro call, the macro call search process starts from the beginning of the expanded extension for further replacement.
 
-During this process, macros referenced in their own expansion are not re-expanded, and that preprocessor macro extension does not lead to infinite recursion.
+During this process, macros referenced in their own expansion are not re-expanded, and that preprocessor macro extension does not lead to infinite recursion. Example:
 ```cpp
 #define sqrt(x) (x<0 ? sqrt(x) : sqrt(-x))
 ```
 
-For the C and C++ preprocessor, any undefined identifiers that appear after the conditional directives `#if` and `#elif` are replaced with the number 0.
+For the C and C++ preprocessor, any undefined identifiers that appear after the conditional directives `#if` and `#elif` is replaced with the number 0.
 
 ## Include Search Order
 
-The original C specification says that the actual directory in which the compiled source file is located is used to look for a user-defined *include file*. But nowadays an enumeration order of include paths varies between compiler toolchains, so you may figure it out for a particular toolchain by experiment.
+The original C specification says that the actual directory in which the compiled source file is located is used to look for a user-defined *include file*. But nowadays an enumeration order of include paths varies between compiler toolchains, so you may figure it out for a particular toolchain by experiment or from its documentation.
 
 ## Include Files Naming
 
@@ -883,7 +885,7 @@ The original C specification says that the actual directory in which the compile
 
 2. Standard headers with naming as `<X.h>` define function names in the `std` namespace and also **import those names into the global namespace**.
 
-3. Standard headers with naming as `<cX>` define function names only in the `std` namespace. ([1], 9.2.2, page 247).
+3. Standard headers with naming as `<cX>` define function names **only** in the `std` namespace. ([1], 9.2.2, page 247).
 
 ## Predefined Identifiers and Macros
 
@@ -971,7 +973,7 @@ In C++, in a literal expression, you can encode the type of literal:
 | 7 | `long double`   | `l`          | `L`                      |
 | 8 | `std::string`   | `s`          |                          |
 
-Suffix `s` has been made available since C++17 and other suffixes are available since C89.
+Suffix `s` has been made available only since C++17. Other suffixes (1-7) have been available since C89.
 
 ## Prefixes for Strings from C++11
 
@@ -993,9 +995,8 @@ The UTF-8 and UTF-16 are variable-width encodings for characters. Not all letter
 ## Function Call Nuances
 
 1. There are only two kinds of function and function calls in C++:
-    * *Ordinary function call.*
-    A static member function is an ordinary function ([6], 9.4).
-    * *Member function call*.
+    * *Ordinary function call.* This is a call of a function. A static member function is an ordinary function ([6], 9.4).
+    * *Member function call*. This is a call of member class function, also known as a class method.
 
 2. In functions with `void` return types or when the return type is absent (e.g., in constructors/destructors), you can have the absence of a `return` statement in a function body. It is equivalent to an explicit `return;` at the end of the function body.
 
@@ -1020,9 +1021,10 @@ The UTF-8 and UTF-16 are variable-width encodings for characters. Not all letter
 
 8. Linkage rules cover name mangling and the call convention. Due to ([6], 7.5.3), there is the following requirement for the linkage aspect of functions:
 
-    *Every implementation shall provide for linkage to functions written in the C programming language, "C," and linkage to C++ functions, "C++"*. To link functions in C++ style:
+    *Every implementation shall provide for linkage to functions written in the C programming language, "C," and linkage to C++ functions, "C++"*. Example:
     ```cpp
-    extern "C++" void f()
+    extern "C++" void f(); // To link functions in C++ style:
+    extern "C" void f(); // To link functions in C style:
     ```
 
 ## Requirements for C++ Expressions
@@ -1042,7 +1044,7 @@ k = k++ + 5; // Valid from C++17
 
 ## Exceptions to the One Definition Rule
 
-You can read about that in detail in ([1], 9.2.3 p. 248) There can be more than one definition of the following things in different translation units (cpp source files):
+You can read about that in detail in ([1], 9.2.3 p. 248). But essentially it can be more than one definition of the following things in different translation units (cpp source files):
 
 1. class type
 2. enumeration type
