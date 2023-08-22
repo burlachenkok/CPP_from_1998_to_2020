@@ -29,7 +29,7 @@ Revision Update: July 20, 2023
 - [Glossary](#glossary)
 - [Motivation](#motivation)
   - [Downsides of Interpretable Languages](#downsides-of-interpretable-languages)
-  - [Downsides of C/C++](#downsides-of-cc)
+  - [Downsides of C and C++](#downsides-of-c-and-c)
 - [Deep Principles of the Language](#deep-principles-of-the-language)
 - [Why learn C++ if I know Python (Toy Example)](#why-learn-c-if-i-know-python-toy-example)
 - [Standards for the Language](#standards-for-the-language)
@@ -45,9 +45,9 @@ Revision Update: July 20, 2023
     - [Code Emitting](#code-emitting)
     - [Calling Assembler Program](#calling-assembler-program)
 - [Linkage](#linkage)
-- [What is Impossible Even in C/C++](#what-is-impossible-even-in-cc)
+- [What is Impossible Even in C and C++](#what-is-impossible-even-in-c-and-in-c)
 - [For People New to C++](#for-people-new-to-c)
-- [About C/C++ Preprocessor](#about-cc-preprocessor)
+- [About C and C++ Preprocessor](#about-c-and-c-preprocessor)
   - [Include Search Order](#include-search-order)
   - [Include Files Naming](#include-files-naming)
   - [Predefined Identifiers and Macros](#predefined-identifiers-and-macros)
@@ -74,7 +74,7 @@ Revision Update: July 20, 2023
   - [Standard Layout (From C++11)](#standard-layout-from-c11)
 - [Built-in Type Conversion](#built-in-type-conversion)
   - [Prohibited Conversions](#prohibited-conversions)
-  - [The Sequence of Type Conversions Rules in C/C++](#the-sequence-of-type-conversions-rules-in-cc)
+  - [The Sequence of Type Conversions Rules in C and in C++](#the-sequence-of-type-conversions-rules-in-c-and-in-c)
 - [Namespaces](#namespaces)
   - [Basics about Namespaces](#basics-about-namespaces)
   - [Namespace Lookup Rules](#namespace-lookup-rules)
@@ -210,13 +210,13 @@ Revision Update: July 20, 2023
 
 # Introduction
 
-On that technical note, we would like to share complete information regarding the C programming language and all primary C++ programming language standards: C++03/98, C++11, C++14, C++17, and C++20. If you do not know C/C++, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it a bit. Here "know" has a weak sense. We have also tried to appeal in that note to people with a not-so-big background in C/C++.
+On that technical note, we would like to share complete information regarding the C programming language and all primary C++ programming language standards: C++03/98, C++11, C++14, C++17, and C++20. If you do not know C++, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it a bit. Here "know" has a weak sense. We have also tried to appeal in that note to people with a not-so-big background in C++.
 
-Do not get us wrong. If you have never seen the C/C++ language to obtain knowledge, we recommend first dedicating some time to reading original books by Bjarne Stroustrup. It would be only more effective for you. In recent years, Bjarne Stroustrup has made a lot of effort by providing easy-to-read books such as ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend for whom this language is new to first read any of those books.
+Do not get us wrong. If you have never seen the C++ language to obtain knowledge, we recommend first dedicating some time to reading original books by Bjarne Stroustrup. It would be only more effective for you. In recent years, Bjarne Stroustrup has made a lot of effort by providing easy-to-read books such as ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend for whom this language is new to first read any of those books.
 
-If you're unsure whether you should learn C++ or not, then maybe the example presented in section *[Why learn C++ if I know Python (Toy Example)](#why-learn-c-if-i-know-python-toy-example)* of this document will bring some consideration to your mind. C++ is complex, but currently, it's one of the fastest (in terms of execution speed in CPU) high-level, general-purpose programming languages in the world. It can be observed from comparison tests such as [benchmarksgame-team.pages.debian.net/benchmarksgame](https://benchmarksgame-team.pages.debian.net/benchmarksgame/performance/binarytrees-cpu.html) and checking the language in which compute demanding applications in your domain have been written. In our experience in most cases, it will be C/C++.
+If you're unsure whether you should learn C++ or not, then maybe the example presented in section *[Why learn C++ if I know Python (Toy Example)](#why-learn-c-if-i-know-python-toy-example)* of this document will bring some consideration to your mind. C++ is complex, but currently, it's one of the fastest (in terms of execution speed in CPU) high-level, general-purpose programming languages in the world. It can be observed from comparison tests such as [benchmarksgame-team.pages.debian.net/benchmarksgame](https://benchmarksgame-team.pages.debian.net/benchmarksgame/performance/binarytrees-cpu.html) and checking the language in which compute demanding applications in your domain have been written. In our experience in most cases, it will be C or C++.
 
-Sometimes you must write software for a software platform (Java Virtual Machine, JavaScript Engine, Python interpreter). This is the case for instance when you can not execute real code in a target computing machine for some reason. In such circumstances, the defacto standard can be another programming language: not C/C++ at all or a dialect of C/C++. Analyzing when it is good or bad to limit users from using C++ or in fact any compiled language is out of the scope of that technical note. 
+Sometimes you must write software for a software platform (Java Virtual Machine, JavaScript Engine, Python interpreter). This is the case for instance when you can not execute real code in a target computing machine for some reason. In such circumstances, the defacto standard can be another programming language: not C and not C++ at all or a dialect of C or C++. Analyzing when it is good or bad to limit users from using C++ or in fact any compiled language is out of the scope of that technical note. 
 
 However, it is important to note that there is a notion of a programming language (in a very strong sense) that converts algorithms into the language of a computing machine. If Language always requires a software platform to operate - it is not a programming language (See https://www.stroustrup.com/bs_faq.html#Java for a discussion about this).
 
@@ -339,7 +339,7 @@ A* ptr;
 
 # Motivation
 
-The C/C++ programming language represents a pretty thin abstraction over the underlying hardware. The software level below C/C++ is Assembly Language for your computing device. Why computing is critical is excellently motivated by Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/) from MIT, in his undergraduate course about [Algorithms and Data structures](https://ocw.mit.edu/courses/6-046j-introduction-to-algorithms-sma-5503-fall-2005/). In the first lecture. Prof. Charles E. Leiserson in 2005 ( [MIT Introduction to Algorithms 2005, Lecture 1](https://youtu.be/JPyuH4qXLZ0?list=PLJoUgeodwOzMqSSlI_Iy-RvCOrPNXNsku&t=1147) ) highlighted that there are a lot of things that are more important than performance: Modularity; Correctness; Maintainability; Functionality; Robustness; User Friendliness; Programmer time; Simplicity; Extensibility; Reliability; Security; Scalability; etc.
+Both C and C++ programming language represents a pretty thin abstraction over the underlying hardware. The software level below C and C++ is Assembly Language for your computing device. Why computing is critical is excellently motivated by Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/) from MIT, in his undergraduate course about [Algorithms and Data structures](https://ocw.mit.edu/courses/6-046j-introduction-to-algorithms-sma-5503-fall-2005/). In the first lecture. Prof. Charles E. Leiserson in 2005 ( [MIT Introduction to Algorithms 2005, Lecture 1](https://youtu.be/JPyuH4qXLZ0?list=PLJoUgeodwOzMqSSlI_Iy-RvCOrPNXNsku&t=1147) ) highlighted that there are a lot of things that are more important than performance: Modularity; Correctness; Maintainability; Functionality; Robustness; User Friendliness; Programmer time; Simplicity; Extensibility; Reliability; Security; Scalability; etc.
 
 The **Performance** is the goal in case of having real-time requirements for the software. If the software is not fast enough - it's just not a choice to use or buy in such circumstances. 
 
@@ -368,15 +368,15 @@ But any interpretable languages are not a choice when actual time matters or sub
 
 4. During work with interpretable languages, you don't have a real interface to work with the devices' memory inside the computer and devices in general in all possible ways provided by OS. In fact, you do not even have enough tools to precisely handle just the usual *virtual memory* in your process.
 
-5. The interpreter as a computer program adds an extra level of abstraction. The standard implementation Python interpreter is CPython (https://github.com/python/cpython). It is called CPython because it has been implemented in C/C++. Such software as an interpreter improves the time for completing the project from social point of view, but implementation is suboptimal.
+5. The interpreter as a computer program adds an extra level of abstraction. The standard implementation Python interpreter is CPython (https://github.com/python/cpython). It is called CPython because it has been implemented in C. Such software as an interpreter improves the time for completing the project from social point of view, but implementation is suboptimal.
 
 6. The absence of a compiler has *pros* - you do not spend time on a compilation, but there are *cons* - now, the compiler will not tell you about errors in the code because there is no compiler.
 
-7. Uncontrollable memory allocations in a program that should work for a long time and during runtime require extra memory allocation and may lead to memory fragmentation and other memory problems. In Python, you don't have control over the memory in your application. And these uncontrollable memory allocations can happen in Python runtime or inside external C/C++ libraries under which Python depends.
+7. Uncontrollable memory allocations in a program that should work for a long time and during runtime require extra memory allocation and may lead to memory fragmentation and other memory problems. In Python, you don't have control over the memory in your application. And these uncontrollable memory allocations can happen in Python runtime or inside external C or C++ libraries under which Python depends.
 
 8. Compiler optimization tricks such as code inlining are out of the scope of any interpretable language because for performing such optimization you should have a compiler. The elimination of the compiler stage will make such optimizations impossible.
 
-9. During creating multithread implementation, you should be careful about memory fences, synchronization, data races, atomic operations, absence of storing some objects in registers. In reality, the implementation of interpreters is typically highly leveraged into existing C/C++ libraries because creating such modules of functionality in an interpreter by itself is not effective enough. But it is not true that all C/C++ libraries are thread-safe. And so, creating a true multithreading environment inside an interpreter can be tricky. If you want to learn more about how really Concurrency in Python is implemented (and want to know more about Global Interpreter Lock (GIL)) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html). (Do not get us wrong. Developers of the Python interpreter did their best, but the problem is not so easy).
+9. During creating multithread implementation, you should be careful about memory fences, synchronization, data races, atomic operations, absence of storing some objects in registers. In reality, the implementation of interpreters is typically highly leveraged into existing C or C++ libraries because creating such modules of functionality in an interpreter by itself is not effective enough. But it is not true that all C and C++ libraries are thread-safe. And so, creating a true multithreading environment inside an interpreter can be tricky. If you want to learn more about how really Concurrency in Python is implemented (and want to know more about Global Interpreter Lock (GIL)) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html). (Do not get us wrong. Developers of the Python interpreter did their best, but the problem is not so easy).
 
 10. Garbage Collector (GC) brings various limitations to any programming language. For example, GC disallows any pointer arithmetic. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)).
 
@@ -392,7 +392,7 @@ To utilize these Caches the program should execute instructions in ISA for the C
 The interpretable language is excellent for prototyping. But any interpreter, any user space algorithm in it, can be beaten already by C++/ASM implementation both in used memory and compute time on the same hardware. At least be aware of that.
 
 
-## Downsides of C/C++
+## Downsides of C and C++
 
 1. C++ is pretty complex if considering all language details. That aspect is not suitable for spreading the language in society fast.
 
@@ -445,7 +445,7 @@ The test compares wall clock time of the following:
 1. Python with native Python lists
 2. Python implementation with NumPy arrays
 3. Cython(a programming language that mixes C and Python)
-4. Flat C/C++ arrays used in C/C++.
+4. Flat C (or C++) arrays.
 
 The task is performing setup elements in the array with 10M elements as an arithmetic sequence, performing their summation, and converting the result to `double` (fp64). Our OS is Ubuntu 18.04.6, x86_64.
 
@@ -560,7 +560,7 @@ Sum is 5e+13
 
 ----
 
-**4. C/C++ implementation**
+**4. C++ implementation**
 
 ```cpp
 #include <iostream>
@@ -608,7 +608,7 @@ Sum is: 5e+13
 
 ----
 
-**Comment:** In Python the `float` type is equivalent to `double` in C/C++. (See [sys.float_info](https://docs.python.org/3/library/sys.html#sys.float_info) in Python3 Library documentation).
+**Comment:** In Python the `float` type is equivalent to `double` in C and C++. (See [sys.float_info](https://docs.python.org/3/library/sys.html#sys.float_info) in Python3 Library documentation).
 
 ----
 
@@ -620,7 +620,7 @@ Sum is: 5e+13
 
 If you need to have a highly effective algorithm implementation in Python without using translation from Python to C++ (via such language as Cython), then it's not easy to be better even than usual C++ code, even in simple things.
 
-> [Cython](https://cython.readthedocs.io/en/latest/index.html) is a Python language with C data types. While using Cython, the source code is translated from Python into C/C++, and finally, the code is compiled as Python extension module. As you see, compilable languages bring an extremely significant speedup. Almost any piece of Python code is also valid Cython code (See [Cython limitations](https://cython.readthedocs.io/en/latest/src/userguide/limitations.html)).
+> [Cython](https://cython.readthedocs.io/en/latest/index.html) is a Python language with C data types. While using Cython, the source code is translated from Python into C or C++, and finally, the code is compiled as Python extension module. As you see, compilable languages bring an extremely significant speedup. Almost any piece of Python code is also valid Cython code (See [Cython limitations](https://cython.readthedocs.io/en/latest/src/userguide/limitations.html)).
 >
 > Cythons has two primary use cases:
 > 1. Extending the CPython interpreter with fast binary modules
@@ -630,7 +630,7 @@ If you need to have a highly effective algorithm implementation in Python withou
 
 # Standards for the Language
 
-Both compiler writers and people who use the C++ language as writers should obey the international standard ISO/IEC for the language. C/C++ Standardization has a long history:
+Both compiler writers and people who use the C++ language as writers should obey the international standard ISO/IEC for the language. C++ Standardization has a long history:
 
 * [C ISO/IEC 9899:1999](https://www.iso.org/standard/29237.html). Standard C99: [link](https://www.dii.uchile.cl/~daespino/files/Iso_C_1999_definition.pdf)
 * [C\+\+1998 standard - ISO/IEC 14882-1998](https://www.iso.org/ru/standard/25845.html). Draft of C++1998: [link](https://open-std.org/JTC1/SC22/WG21/docs/wp/pdf/nov97-2/).
@@ -669,7 +669,7 @@ There are situations when the target device in which the program will be execute
 
 A high-level overview is presented above, but if you are curious about how a compiler compiles source then welcome to this section. It's possible to be productive even without the knowledge below, especially during creating only user space applications. If you want to know how things are working and you have that curiosity - you're welcome to read the text below. In another case - just skip it. 
 
-A source code for C/C++ consists of source files. 
+A source code for C and for C++ consists of source files. 
 
 Each source file is translated (or processed) through the following sequence of steps.
 
@@ -693,7 +693,7 @@ Each source file is translated (or processed) through the following sequence of 
 
 4. Replace comments with white space.
 
-5. Split program text by preprocessor tokens. The tokens for the C preprocessor are mainly like the tokens used by the C compiler, except for some differences. Example: Token `##` is a concatenation operator for words in a source code. It is the valid operator for the C preprocessor, but it is an invalid token for the operator in a proper C/C++ program.
+5. Split program text by preprocessor tokens. The tokens for the C preprocessor are mainly like the tokens used by the C compiler, except for some differences. Example: Token `##` is a concatenation operator for words in a source code. It is the valid operator for the C preprocessor, but it is an invalid token for the operator in a proper C++ program.
 
 6. Processing the program code by the preprocessor. The preprocessor can be built-in into the compiler, or it can be an independent program. For details about available preprocessor language, please read [2, p.43] or documentation for any de-facto standard toolchain like [GCC](https://gcc.gnu.org/onlinedocs/cpp/Macros.html#Macros).
 
@@ -703,7 +703,7 @@ The output of preprocessing of the source file is named as *preprocessed source*
 
 The essence of Lexical analysis of the program is in splitting the program source code text into tokens. Separate words or atoms of a program source code text are some words of the source text that cannot be divided further.
 
-An important aspect of C/C++ is that the C/C++ compiler always tries to assemble the longest valid token (in terms of the number of single characters) by processing the text from left to right character by character, even if the result is an unbuildable program. Example from [2, p.20]:
+An important aspect of C and C++ is that the C and C++ compiler always tries to assemble the longest valid token (in terms of the number of single characters) by processing the text from left to right character by character, even if the result is an unbuildable program. Example from [2, p.20]:
 ```cpp
 int a = 1, b = 1, c = 3;
 c = b--a;    // Compile error
@@ -711,9 +711,9 @@ c = b--a;    // Compile error
 // Invalid tokenization: tokens (b, --, a)
 // Valid tokenization: tokens(b, -, -, a)
 // ...
-// But C/C++ compiler does not do that c = b - -a;
+// But C and C++ compiler does not do that c = b - -a;
 ```
-The concept of whitespace in C/C++ includes different keyboard spaces and comments. In C/C++ and most programming languages, the tokens fundamentally can be one of the following types:
+The concept of whitespace in C and in C++ includes different keyboard spaces and comments. In C and in C++ and most programming languages, the tokens fundamentally can be one of the following types:
 * a. Operators
 * b. Separators
 * c. Identifiers
@@ -771,7 +771,7 @@ For further study as an introduction to LLVM-IR, we recommend [Lecture 5](https:
 ### Calling Assembler Program
 Assembler(ASM) Language is the lowest possible level that can still be readable, but understanding it (without extra tools and extra documentation) is not easy in a big program. ASM language has a close relation to target computing devices. 
 
-One instruction in C++ code can correspond to several( 1,2,3, etc.) ASM code instructions. On the other hand, the same instruction in C/C++ can be emitted (materialized or generated) into different instructions in ASM Language. 
+One instruction in C++ code can correspond to several( 1,2,3, etc.) ASM code instructions. On the other hand, the same instruction in C and C++ can be emitted (materialized or generated) into different instructions in ASM Language. 
 
 An Assembler is a program that finally converts ASM instructions obtained from a compiler into binary native code for the target device. The machine instruction emitted by ASM is described by the target Instruction Set Architecture (ISA). In Assembly literature, the process of converting ASM instructions into machine code is named `encoding.` An inverse process of reconstructing ASM code from binary code is called `decoding` or `disassembly.`
 
@@ -785,7 +785,7 @@ There are online tools such as [11] [Compiler Explorer](https://godbolt.org/) th
 
 # Linkage
 
-The linker constructs the final program or dynamic (shared) library from compiled source files in the form of *object files*, obtains additional input archives of object files (called static libraries), obtains information about used dynamic library dependencies, performs other semantic checks (for example via finding undefined references for C/C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links.
+The linker constructs the final program or dynamic (shared) library from compiled source files in the form of *object files*, obtains additional input archives of object files (called static libraries), obtains information about used dynamic library dependencies, performs other semantic checks (for example via finding undefined references for C and C++ entities), using specially provided flags, perform a whole-program/global program optimization or optimization specified via command links.
 
 The nuances of compiler/linker organization are out of the scope of C++ language and can vary from vendor to vendor. For example, for [GCC](https://gcc.gnu.org/onlinedocs/gcc/index.html#Top), the Assembler is a separate program from the C compiler physically. In another toolchain, e.g., from Microsoft Visual C compiler, the translation to the final binary code is inside their C compiler.
 
@@ -793,9 +793,9 @@ The name of the linkage program typically in toolchains has a name such as [ld](
 
 ----
 
-# What is Impossible Even in C/C++
+# What is Impossible Even in C and in C++
 
-* *Address individual bits*. Few machines can directly address an individual bit. Even if the device allows it, it is out of the scope of C/C++, to be honest. Of course, you can operate on bits, but not directly.
+* *Address individual bits*. Few machines can directly address an individual bit. Even if the device allows it, it is out of the scope of C and C++, to be honest. Of course, you can operate on bits, but not directly.
 
 * *Define your operators syntactically with their syntax.* B.Stroustroup, in his [Technique FAQ](https://www.stroustrup.com/bs_faq2.html) ([8]), said that the possibility had been considered several times, but each time they decided that the likely problems outweighed the potential benefits.
 
@@ -804,7 +804,7 @@ If you have arrived from another programming language and are only a bit familia
 
 1. The logical operators `&&` and `||` are called short-circuit evaluation due to their behavior of evaluating subexpression in the chain of logical operations only when needed for the logic expression evaluation. However, the bitwise operators `&` and `|` do not short-circuit.
 
-2. The difference between the two pointers at the level of the C/C++ languages is measured in terms of elements, not in terms of bytes.
+2. The difference between the two pointers at the level of the C and C++ languages is measured in terms of elements, not in terms of bytes.
 
 3. In nested statements, an `else` always belongs to the nearest preceding `if`. The potential confusion here is known as the *dangling else problem*.
 
@@ -842,17 +842,17 @@ class and contains a table of virtual function pointers. The only time you shoul
 That name should not be used by non-compiler and non-STL writers both for C and C++ languages. With that rule for a long time, people escape conflicts between the naming of compiler-specific entities and entities of the construct program.
 
 > Sometimes compiler writers violate this principle.
-For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.html) mentions standard predefined macro uses `unix` and `linux` during compilation for the Linux platform. These special names are not the names that follow C/C++ conventions to distinguish names used in the program and for compiler writers.
+For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.html) mentions standard predefined macro uses `unix` and `linux` during compilation for the Linux platform. These special names are not the names that follow C and C++ conventions to distinguish names used in the program and for compiler writers.
 
 > Sometimes, it's possible to observe defined guards at the beginning of the buildable program's header files via `#ifndef/#define` that uses names starting with `__.` These special names are not the names that followed the mentioned rule and are incorrect usage of identifiers.
 
-16. In C/C++, postfix operators have higher priority than unary operators.
+16. In C and in C++, postfix operators have higher priority than unary operators.
 
     ```cpp
     *p++; // *(p++)
     ```
 
-17. In C/C++ unary operators have higher priority than binary operators.
+17. In C and in C++ unary operators have higher priority than binary operators.
 
 18. Operators `==`, `!=` have higher priority than logical connectives.
 
@@ -860,18 +860,18 @@ For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.htm
 
 20. References to **RValue** objects whose address cannot be obtained do not extend the lifetime of temporary objects. However, the compiler can only detect simple constructions with **RValue** objects. For example, if you create a temporary object and call a method from this temporary object, that will return a reference to itself. The compiler will no longer be able to determine that this reference is not valid after removing the temporary object.
 
-# About C/C++ Preprocessor
+# About C and C++ Preprocessor
 
 C++ 1998 and C++2003 use the C89 preprocessor, although the C language also has evolved: Tradition C, C89, C95, C99, C11, and C17. For a detailed description of the C preprocessor, please read Chapter 3 in ([2]).
 
-Preprocessor macro extensions in C/C++ have the following important property. Once an extension replaces a macro call, the macro call search process starts from the beginning of the expanded extension for further replacement.
+Preprocessor macro extensions in C and in C++ have the following important property. Once an extension replaces a macro call, the macro call search process starts from the beginning of the expanded extension for further replacement.
 
 During this process, macros referenced in their own expansion are not re-expanded, and that preprocessor macro extension does not lead to infinite recursion.
 ```cpp
 #define sqrt(x) (x<0 ? sqrt(x) : sqrt(-x))
 ```
 
-For the C/C++ preprocessor, any undefined identifiers that appear after the conditional directives `#if` and `#elif` are replaced with the number 0.
+For the C and C++ preprocessor, any undefined identifiers that appear after the conditional directives `#if` and `#elif` are replaced with the number 0.
 
 ## Include Search Order
 
@@ -904,7 +904,7 @@ Example with using `__VA_ARGS__`:
 do{ fprintf(stdout, __VA_ARGS__); }while(0)
 ```
 
-Example of checking the version of C/C++ compiler  mostly based on [2, p.53]:
+Example of checking the version of C or C++ compiler  mostly based on [2, p.53]:
 
 ```cpp
 #include <stdio.h>
@@ -936,7 +936,7 @@ int main() {
 
 ## Names Overloading
 
-In C/C++ and other programming languages, the same identifier can be associated with more than one object at a given moment. This situation is called *name overloading* or *name hiding* ([6], chapter 13).
+In C and C++ and potentially in other programming languages, the same identifier can be associated with more than one object at a given moment. This situation is called *name overloading* or *name hiding* ([6], chapter 13).
 
 Next, creating two declarations of the same name in the same overload class in the same visibility block or at the top level is an error.
 
@@ -958,7 +958,7 @@ Interestingly, according to ([6], Section 3.3.7), functions/variables take prece
 
 ## Literal Constants
 
-In C/C++, in a literal expression, you can encode the type of literal:
+In C++, in a literal expression, you can encode the type of literal:
 
 | # | **Type**      | **Suffix**   | **Alternative suffix**   |
 |---|---------------|--------------|--------------------------|
@@ -1234,7 +1234,7 @@ Range-Based Loops are valid for any type supporting the notion of a range. To su
 * Container should be a built-in array
 
 # Technical Differences between C and C++
-Many times in the past, people aware of C/C++ talked that C++ and C are different. Let's take a look at what it means concretely. All differences are pretty subtle, but there are plenty of them. The text below covers the difference between C99 and classical C++03.
+Many times in the past, people aware about both C and C++ talked that C++ and C are different. Let's take a look at what it means concretely. All differences are pretty subtle, but there are plenty of them. The text below covers the difference between C99 and classical C++03.
 
 ----
 
@@ -1289,8 +1289,8 @@ Such a concept allows a portable way to perform varying allocations of automatic
 
 11. Different initialization of the char array. In C++, the array must be of sufficient size to hold the "\0" character
     ```cpp
-    char a[3]="12"; char aEquiv[]="12"; // Ok in C/C++
-    char a[3]="123";                    // Ok in C, but not in C++
+    char a[3]="12"; char aEquiv[]="12"; // OK in C, OK in C++
+    char a[3]="123";                    // OK in C, Not OK in C++
     ```
 
 12. C99 has named initializers for structures and positional initializers for arrays. C++03 does not have them. In C++20 the **named initializers** from C99 came with the name [designated initializers](https://en.cppreference.com/w/cpp/language/aggregate_initialization).
@@ -1370,17 +1370,17 @@ const int* pointer_to_const;
     * `sizeof(bool)` is implementation-defined.
     * `sizeof(wchar_t)` is implementation-defined.
 
-4. Also, `sizeof` of structures in C/C++ is equal to the amount of memory to store all components, space for padding between components, and space for padding after structures.
+4. Also, `sizeof` of structures in C and in C++ is equal to the amount of memory to store all components, space for padding between components, and space for padding after structures.
 
 5. The `sizeof` operator applied for an array of structures and to other types, the following rule must be fulfilled: *The size of an array of N elements in bytes is equal to N times the size of the array element.*
 
-6. In C/C++, a function pointer expression can be used to call a function without explicitly dereferencing the pointer, i.e., you can call the function by using the function pointer `f` via `(*f)()` or via `f()`.
+6. In C and in C++, a function pointer expression can be used to call a function without explicitly dereferencing the pointer, i.e., you can call the function by using the function pointer `f` via `(*f)()` or via `f()`.
 
 ## Used Memory for Types and Their Layout
 
 1. The representation of an object in memory is a sequence of bits. The representation does not have to include all the *bits*, but the size of an object is the number of *memory units* of memory it occupies.
 
-2. The amount occupied by one char character is taken as a memory unit. The number of bits in character is specified in the `CHAR_BIT` macro in C Language. All objects of the same type by C/C++ rules occupy the same amount of memory. In practice, however, one char is "always" one byte, i.e., the *8 bit* number.
+2. The amount occupied by one char character is taken as a memory unit. The number of bits in character is specified in the `CHAR_BIT` macro in C Language. All objects of the same type by C and C++ rules occupy the same amount of memory. In practice, however, one char is "always" one byte, i.e., the *8 bit* number.
 
 3. Computers are classified into two categories in the order of bytes in a word:
 
@@ -1393,9 +1393,9 @@ Some systems support two modes at the same time.
 
 5. A typical data type to store the address to some object/data is a pointer. To store (or serialize the value of pointer) in some integer variable, you can use `uintptr_t`. The `uintptr_t` integer type was introduced in C99. The `uintptr_t` is sufficient to store a pointer to any data, but formally not to a function.
 
-6. A special value in C/C++ called a null pointer equal to a null pointer constant. A null pointer can be converted to any other type of pointer.
+6. A special value in C and in C++ called a null pointer equal to a null pointer constant. A null pointer can be converted to any other type of pointer.
 
-7. A null pointer in C/C++ is:
+7. A null pointer in C and in C++ is:
 
     * An integer expression that yields zero.
     * Or an integer expression cast into a pointer.
@@ -1411,18 +1411,18 @@ Some systems support two modes at the same time.
     const int *x = nullptr;
 ```
 
-8. When using `union` for a mixture of structures that start the same way, there is a guarantee in C/C++ of an identical physical mapping of components "from this beginning".
+8. When using `union` for a mixture of structures that start the same way, there is a guarantee in C (and C++) of an identical physical mapping of components "from this beginning".
 
 9. In C and C++ there are the following guarantees for components of the variable with structure type (`struct`):
     * The components (members, fields) of the variable with structure type obtain addresses in ascending order as they are defined in the structure type.
     * The address of the first component is the same as the address of the beginning of the structure. It is regardless of what endian the computer has where the program will run.
 
-10. Structs are not allowed to perform comparisons with `==` or with `>`. The fundamental nature of this restriction in C/C++ is that, for objects, there may be holes in their memory layout that are filled randomly.
+10. Structs are not allowed to perform comparisons with `==` or with `>`. The fundamental nature of this restriction in C (and in C++) is that, for objects, there may be holes in their memory layout that are filled randomly.
 
 11. In C++, for the definition (not just declaration) of a variable in global scope, you can use `extern int a = 0;`. But in fact, `extern` is ignored, because according to (7.11.6, C++2003):
     > "A name declared in a namespace scope without a storage-class-specifier has external linkage unless it has internal linkage because of a previous declaration and provided it is not declared const. Objects declared const and not explicitly declared extern have internal linkage."
 
-12. A compile-time string literal in C/C++ is statically allocated so that it is safe to return one from a function.
+12. A compile-time string literal in C (and in C++) is statically allocated so that it is safe to return one from a function.
 
 ## New Operator
 
@@ -1527,7 +1527,7 @@ Now let's go into technical details.
 
 ## Prohibited Conversions
 
-1. Converting a pointer to a function, a pointer to a data, and the other side direction is not allowed in C/C++.
+1. Converting a pointer to a function, a pointer to a data, and the other side direction is not allowed in C (and in C++).
 2. Built-in conversion to a `struct`, or to the `union` is not allowed.
 3. C++ treats `enum` as distinct from each other and from integer types as well.
 4. In C, implicit conversion from integer to enumerated types is allowed because in C, `enum` is a synonym of `int`. In C++ it is prohibited.
@@ -1535,7 +1535,7 @@ Now let's go into technical details.
 6. Converting a pointer to a function to a pointer to data and the other side is not allowed in C++.
 
 
-## The Sequence of Type Conversions Rules in C/C++
+## The Sequence of Type Conversions Rules in C and in C++
 
 1. Trivial transformation. Conversion to identical types. A conversion from "function ..." to "function pointer ...."
 
@@ -1878,7 +1878,7 @@ The order of initialization of classes and execution of constructors:
 
 5. The constructor also introduces an implicit conversion. To suppress implicit conversion, the constructor must be declared with the `explicit` parameter. ([1], p.333)
 
-6. In C/C++, when using custom conversions via constructors without an `explicit` keyword or defined `type conversions` - only one level of implicit conversions is allowed.
+6. In C++, when using custom conversions via constructors without an `explicit` keyword or defined `type conversions` - only one level of implicit conversions is allowed.
 
 Example:
 
@@ -2355,7 +2355,7 @@ Example:
 void f(int* a, int* b)
 {}
  ```
-In C/C++, when you deal with pointers, for example, in a function mentioned above, it can be two possibilities:
+In C and in C++, when you deal with pointers, for example, in a function mentioned above, it can be two possibilities:
 * Pointers `a` and `b` refer to the exact location in memory, at the start of function execution or at some moment during the runtime of function execution. It's legal for such a function signature.
 * But maybe pointers `a` and `b` never point or refer to the same location.
 
@@ -3240,7 +3240,7 @@ auto f() {
 Documentation: [cpp reference details about auto](https://en.cppreference.com/w/cpp/language/auto).
 
 ## 3. Binary Literals
-In C/C++, you can use decimal literals (`123`), hexadecimal literals (`0xFF, 0Xff`), and octal literals (`071`).
+In C and in C++, you can use decimal literals (`123`), hexadecimal literals (`0xFF, 0Xff`), and octal literals (`071`).
 
 Starting from C++14, there is support for binary literals. You can write a binary integer literal as a sequence of binary digits (0 or 1) prefixed by either `0b` or `0B`.
 
@@ -3364,7 +3364,7 @@ Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/types/b
 
 ## 6. Fallthrough Attribute
 
-In C/C++ language in `switch` construction, if not explicitly use `break` instruction, then the instruction flow once it finds a suitable `case` will fall through the next `case` statement without checking the predicate. 
+In C and in C++ language in `switch` construction, if not explicitly use `break` instruction, then the instruction flow once it finds a suitable `case` will fall through the next `case` statement without checking the predicate. 
 
 The C++17 added a language feature to signal to the compiler and the person reading your code that you are intentionally using a fall-through. 
 
@@ -4552,7 +4552,7 @@ Konstantin Burlachenko, would like to acknowledge:
 
 * Thanks to [NVIDIA](http://nvida.com/) and [HUAWEI](https://www.huawei.com/en/), the places where I have used those languages a lot while creating complex software systems.
 
-* Thanks to all my colleagues and friends from the past with whom I went through various steps of figuring out subtle details of C/C++. Between 2010 and 2020, I have created personal engineering drafts, some of which are available here [(old home page K.Burlachenko)](https://sites.google.com/site/burlachenkok/articles). All C/C++ information from it has been evolved into that document.
+* Thanks to all my colleagues and friends from the past with whom I went through various steps of figuring out subtle details of C and C++. Between 2010 and 2020, I have created personal engineering drafts, some of which are available here [(old home page K.Burlachenko)](https://sites.google.com/site/burlachenkok/articles). All C and C++ information from it has been evolved into that document.
 
 Thanks to [Dr. B.Stroustroup](https://www.stroustrup.com/). He created a language that is used to create the most important software in that world. Interestingly, this language has an artificial force that makes people better in all aspects of science and engineering. The quote that I have learned from [Tim Roughgarden](http://timroughgarden.org/) is the following:
 
@@ -4912,7 +4912,7 @@ Here we present materials presented by Prof. Charles Leiserson, Prof. Julian Shu
 
 1. **Select Good Algorithm.** The good asymptotically rate algorithm is not necessarily the fastest, however, it's a good start heuristic. In some cases, reducing the work does not automatically reduce the algorithm running time due to computer hardware's complex nature, including instruction-level parallelism, caching, vectorization, branch prediction, etc.
 
-2. **Pack structure into bits.** If you have a structure that stores integers with values you can facilitate bitfields in C/C++. This method saves space, but to extract and set bits, the read and write will be coupled with bit operations.
+2. **Pack structure into bits.** If you have a structure that stores integers with values you can facilitate bitfields in C and in C++. This method saves space, but to extract and set bits, the read and write will be coupled with bit operations.
 
     > Sometimes unpacking and decoding are the
     optimization, depending on whether more work is
@@ -4938,7 +4938,7 @@ result in further expressions during compilation.
 10. **Algebraic Identities.** Replace expensive algebraic expressions with algebraic equivalents that require less work.
 
 11. **Short-Circuiting.** When performing a series of tests stop evaluating as soon as you know the answer. The `&&`, `||`
-are short-circuiting logical operators from C/C++.
+are short-circuiting logical operators from C and C++.
 
 12. **Ordering Tests.** Perform those tests that are more often successful or alternative is selected by the test before tests that are rarely successful. Inexpensive tests
 should precede expensive ones (*Compilers can not do it right now*).
