@@ -16,7 +16,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision Update: October 01, 2023
+Revision Update: October 30, 2023
 
 © 2022-2023 Konstantin Burlachenko, all rights reserved.
 
@@ -1131,7 +1131,7 @@ Strongly typed `enum`:
 - For them, it's possible to specify the underlying type.
 - There names of enumerated elements are defined (only) in a namespace of enumeration type.
 - The default underlying type for strongly typed `enum` is `int`. 
- 
+
 **Usual enums (or unscoped enumerations).**
 
 Example:
@@ -1318,7 +1318,7 @@ Many times, in the past, people stated that C++ and C are different. Let's take 
     ```cpp
     // OK in C, OK in C++
     char a[3]="12"; char aEquiv[]="12";
-
+    
     // OK in C, Not OK in C++
     char a[3]="123";    
     ```
@@ -4276,7 +4276,7 @@ Example of implicit template class instantiation:
 * **Explicit instantiation.** Explicitly instantiating a class template generates the complete class type definition and in fact, instantiates all member functions. This happens regardless of whether you call the member functions or not. Syntax:
   ```cpp
   #include <iostream>
-
+  
   template <class Tx, class Ty>
   struct MyPair
   {
@@ -4285,24 +4285,24 @@ Example of implicit template class instantiation:
       
       void f(){}
   };
-
+  
   template <class T>
   void f(T&)
   {}
   template <class T>
   void g(T&)
   {}
-
+  
   // explicit instantiation of a class 
   template class MyPair<int, int>;
-
+  
   // explicit instantiation of a class function member
   template void MyPair<int,int>::f(); 
-
+  
   // explicit instantiation of a function
   template void f<int>(int&);
   template void g(double&);
-
+  
   int main() {
       return 0;
   }
