@@ -413,7 +413,7 @@ The interpretable language is excellent for prototyping. But any interpreter, an
    * On one side, when you want to try an idea, interpretable language provides a fast way to do that.
    * On the other hand, widespread usage of interpretable languages will lead to situations in which many people will not know how the computer works. You will lose the ability to distinguish a big lie from a small lie and truth in the context of computing machines.
 
-6. The next problem that people with Python backgrounds face is the need to install Toolchains and Build systems. Sometimes I even learn the syntax of build systems. With scripting language, such a thing is absent in the first place. Once you have the interpreter installed you just launch the script.
+6. The next problem that people with Python backgrounds face is the need to install Toolchains and Build systems. Sometimes you even must learn the syntax of build systems. With scripting language, such a thing is absent in the first place. Once you have the interpreter installed you just launch the script.
 
 People continue to predict that C++ will die. It's an ongoing (and fun) *three-decade* process, but it is not happening. It seems that the fundamental things of the language make it immortal, even though the language tends to be more complex.
 
