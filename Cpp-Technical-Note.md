@@ -5217,11 +5217,11 @@ This property means that if the launch algorithm is in a single core it should h
 
     On the other hand, if the store has not yet computed values globally, because all uninitialized or initialized global variables by zero are stored in the `bss` segment - they do not require to be stored in the binary image. In this case, binary image file loading time is decreasing, but you need to fill values by yourself in runtime.
 
-31. **If you are using spinlock be aware of yielding time for OS.** The cost of creating a thread in Linux/Posix is more than $10\,000$ cycles. In Windows, the actual time for thread execution is about 30 milliseconds (roughly speaking $120\,000\,000$ cycles) and call of system API costs about $1000$ cycles. 
+31. **If you are using spinlock be aware of yielding time for OS.** The cost of creating a thread in Linux/Posix is more than $10\,000$ cycles. In Windows, the actual time for thread execution is about 30 milliseconds (roughly speaking $120\,000\,000$ cycles) and a system API call costs about $1000$ cycles. 
 
-So in Windows and Linux if performance is the goal and you know that you will not block for a long time maybe at least some amount of time you should wait in spinlock (at least $3000$-$4000$ clocks) and after this yield time for OS during spinning. 
+So in Windows and Linux if performance is the goal and you know that you will not block for a long time maybe at least some amount of time you should wait in spinlock (at least $3000$ - $4000$ clocks) and after this yield time for OS during spinning. 
 
-Sometimes this kind of synchronization denoted as *Competitive Mutex*. If the mutex is released during spinning - compute spinning is optimal, if the mutex is released after yielding this algorithm algorithm 2 is optimal. There exists a randomized algorithm that can achieve a $1.58$ competitive ratio.
+Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the mutex is released during spinning - compute spinning is optimal, if the mutex is released after yielding this algorithm algorithm 2 is optimal. There exists a randomized algorithm that can achieve a $1.58$ competitive ratio.
 
 33. **Force uses sequential consistency with memory fences.** For restoring sequential consistency in the multithread program you have to use a memory fence. Memory fences can be issued explicitly or implicitly by locking, exchanging, and some other syncretization commands. **The typical cost of a memory fence is comparable to L2-cache access.**
 
