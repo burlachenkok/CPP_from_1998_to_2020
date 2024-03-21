@@ -203,7 +203,9 @@ Revision Update: October 04, 2023
   - [Object Orientated Design](#object-orientated-design)
   - [Object Orientated Design Patterns](#object-orientated-design-patterns)
   - [Performance optimization for general purpose CPU](#performance-optimization-for-general-purpose-cpu)
-  - [Miscellaneous Features of C++23](#miscellaneous-features-of-c23)
+  - [Miscellaneous Language Features of C++23](#miscellaneous-language-features-of-c23)
+  - [Miscellaneous Library Features of C++23](#miscellaneous-library-features-of-c23)
+
 
 *[Table of contents generated with markdown-toc](http://ecotrust-canada.github.io/markdown-toc/)*
 
