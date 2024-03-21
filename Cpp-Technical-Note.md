@@ -203,6 +203,7 @@ Revision Update: October 04, 2023
   - [Object Orientated Design](#object-orientated-design)
   - [Object Orientated Design Patterns](#object-orientated-design-patterns)
   - [Performance optimization for general purpose CPU](#performance-optimization-for-general-purpose-cpu)
+  - [Miscellaneous Features of C++23](#miscellaneous-features-of-c23)
 
 *[Table of contents generated with markdown-toc](http://ecotrust-canada.github.io/markdown-toc/)*
 
@@ -3653,6 +3654,25 @@ The exception specification has been deprecated in C++11 and removed from C++17.
 
 Details: [Core Working Group about removing Deprecated Exception Specifications from C++17](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0003r5.html)
 
+## 12. Built-in function for determining the size of the array
+
+Documentation: https://en.cppreference.com/w/cpp/iterator/size
+
+```cpp
+#include <iostream>
+#include <array>
+
+int main()
+{
+    int a[3];
+    std::cout 
+    << "Array size in items: " 
+    << std::size(a);
+    
+    return 0;
+}
+```
+
 # Miscellaneous Features of C++20
 
 ## 1. no_unique_address Attribute
@@ -5274,6 +5294,64 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
     * *Lack of memory bandwidth.* Faster memory reuse means better cache locality. Locality takes place at different levels L1, L2, and L3. To check if is this a reason for slow execution run P identical copies of the serial code in parallel.
 
     * *Contention.* locking primitives for synchronization, true sharing, false sharing.
+
+# Miscellaneous Language Features of C++23
+
+## 1. New rule for identifiers.
+Identifiers for alphabets can now use not only Basic Latin 1 symbols but now "anything" that looks like a letter.
+
+## 2. Compilers have to support UTF-8
+
+For C++2023, any compiler is required to accept source files encoded in UTF-8.
+
+## 3. Side effects possible in right hand side of assigment operator.
+
+The C++17 standard added the rule that all side effects of the right side of an assignment are fully committed before evaluating the left side and the actual assignment. This feature is still in C++23.
+
+## 4. New float point types.
+
+While single and double precision floating point numbers are by far the most common used, they are not the only one format in 2024. In fact compute hardware which capable of processing 16-bit loating-point data is becoming more widely available. The C++23 added the possibility to support some alternative floating point formats.
+
+Documentation: https://en.cppreference.com/w/cpp/types/floating-point
+
+*Warning:* MSVC 2022 17.9.0 does not support it
+
+## 5. New suffixes for size_t
+
+As of C++23, you can define integer literals of type std::size_t using a suffix consisting of both `u` or `U` and `z` or `Z`. 
+
+Examples: uz, uZ, Uz, UZ, zu, zU, Zu, or ZU.
+
+Documentation: https://en.cppreference.com/w/cpp/types/size_t
+
+*Warning:* MSVC 2022 17.9.0 does not support it
+
+
+# Miscellaneous Library Features of C++23
+
+## 1. print and println.
+Motivation: New way to work with steam file I/O. Which is shorter and by promise of C++2023 standard library developers faster.
+
+Documentation:
+* https://en.cppreference.com/w/cpp/io/print
+* https://en.cppreference.com/w/cpp/io/println
+
+Example:
+
+```cpp
+#include <print>
+
+int main()
+{
+#if __cpp_lib_print >= 202207L
+    std::println("Hello {0}", 123);
+    std::print("{0} ", "Hello");
+    std::print("{0} \n", "without new line");
+#endif
+    return 0;
+}
+```
+
 
 # How to cite this C++ Technical Note
 
