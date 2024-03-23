@@ -5299,6 +5299,58 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
 
 # Miscellaneous Language Features of C++23
 
+## 0. How to invoke C++2023 Compiler
+
+* **GCC:** Gnu Compiler Collection. C++23 features are starting to be available since GCC 11.
+
+  ```bash
+  g++-13 -x c++ --std=c++2b <filename>.cpp
+  ```
+
+* **CLANG:** The a language front-end and tooling infrastructure for languages in the C language family leveraging the LLVM back-end.
+
+
+  ```bash
+  clang++-17 -x c++ --std=c++2b <filename>.cpp
+  ```
+
+  ```bash
+  clang++-17 -x c++ --std=c++23 <filename>.cpp
+  ```
+
+* **MSVC:** Microsoft Visual C++ (MSVC) is a compiler for C++ applications developed by Microsoft Corporation.
+
+  ```bash
+  :: Even to build simple code snippets you should have a collection of programs (toolchain) that will be used together to build various applications for OS
+  ::  https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170
+
+  :: For compiler flags references:
+  ::   https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-alphabetically?view=msvc-170
+  ::   https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-by-category?view=msvc-170
+
+  :: Execute vcvarsall.bat from Windows SDK or Visual Studio. 
+  :: Default Path for Visual Studio 2022
+
+  ::call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+  call "%VS2022INSTALLDIR%\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+
+  echo ***************IMPORTING MSVC TOOLCHAIN IS FINISHED************************************************
+  :: Compile and link test.cpp to executable
+  cl.exe /std:c++latest /MT /Ot /GL /O2 main.cpp
+
+  :: /std -- Control standard functions of the ISO C or C++ programming language.
+  :: /std:c++latest -- this /std:c++latest option includes all currently implemented compiler and standard library features proposed for the next draft standard.
+
+  :: /MT -- Use multithreaded C runtime library
+  :: /Ot -- Favor Fast Code
+  :: /GL -- Global program optimization
+  :: /O2 -- This option specifies options that produce the fastest code in most cases.
+
+
+  echo ***************COMPILING/LINK IS FINISHED**********************************************************
+  ```
+
+
 ## 1. New rule for identifiers.
 Identifiers for alphabets can now use not only Basic Latin 1 symbols but now "anything" that looks like a letter.
 
@@ -5328,6 +5380,84 @@ Documentation: https://en.cppreference.com/w/cpp/types/size_t
 
 *Warning:* MSVC 2022 17.9.0 does not support it
 
+## 6. Explicit Object Parameter in class methods.
+
+C++23 introduces a new syntax that allows you to name the implicit this pointer as an explicit parameter. Maybe useful during porting Python scripts. 
+
+Requirements by C++2023 standard:
+* An explicit object parameter such as self in  example below are prefixed with the keyword `this`
+* it must be the first parameter
+
+Documentation:
+https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_parameter
+
+Example:
+
+```cpp
+#include <iostream>
+
+class Test
+{
+public:
+    void f()
+    {
+        std::cout << __func__ << " [1] this address: " << this << std::endl;
+    }
+
+    void g(this Test& self)
+    {
+        std::cout << __func__ << " [2] this address: " << &self << std::endl;
+    }
+};
+
+int main()
+{
+    Test t;
+    t.f();
+    t.g();
+    
+    return 0;
+}
+```
+
+## 7. Multidimensional subscript operator
+Another new in C++23 is that overloaded subscript operators can take any number of input parameters. A multidimensional subscript operator is particularly useful if your class models some higher-dimension data collection, such as a matrix. 
+
+Example:
+
+```cpp
+#include <iostream>
+
+#if __cpp_multidimensional_subscript >= 202110L
+
+class Matrix
+{
+public:
+    int operator[] (size_t i, size_t j)
+    {
+        return 1;
+    }
+};
+
+int main()
+{
+    Matrix m;
+    std::cout << m[0, 9] << "\n";
+    std::cout << "Hello" << "\n";
+
+    return 0;
+}
+#else
+
+int main()
+{
+    std::cout << "Multidimension scubscript operator is not supproted";
+}
+#endif
+```
+
+*Warning:* MSVC 2022 17.9.0 does not support it, but GCC 13.1 supports it.
+
 
 # Miscellaneous Library Features of C++23
 
@@ -5354,6 +5484,76 @@ int main()
 }
 ```
 
+## 2. Stacktraces
+
+The std::exception is an exception that by design tells you what went wrong (through the aptly named what() function). However, what a
+std::exception cannot tell you, is where things went wrong. There is no standard way for you to find out where in the code the exception was thrown. This limitation is not presented in Java or C#, but for C++ it is the case. In this language, the exceptions carry in addition a stack trace. It is something their runtimes are collected during function invocations. From C++23, you have access to this feature by leveraging std::stacktrace object in your exception object.
+
+Documentation:
+
+https://en.cppreference.com/w/cpp/header/stacktrace
+
+https://en.cppreference.com/w/cpp/utility/basic_stacktrace
+
+Example:
+
+```cpp
+#include <exception>
+#include <string_view>
+#include <stacktrace>
+#include <print>
+
+class TracingException : public std::exception
+{
+public:
+    TracingException(std::string_view message,
+        std::stacktrace trace = std::stacktrace::current())
+        : m_message{ message }
+        , m_trace{ trace }
+    {}
+    
+    const char* what() const noexcept override 
+    {
+        return m_message.c_str(); 
+    }
+    
+    const std::stacktrace& where() const noexcept
+    {
+        return m_trace; 
+    }
+    
+private:
+    std::string m_message;
+    std::stacktrace m_trace;
+};
+
+//__forceinline
+void f2()
+{
+    throw TracingException("Ouch");
+}
+
+//__forceinline
+void f1()
+{
+    f2();
+
+}
+
+int main()
+{
+    try
+    {
+        f1();
+    }
+    catch (const TracingException& ex)
+    {
+        std::println("Exception Type {0} caught: {1}; trace: \n{2}", typeid(ex).name(), 
+                                                                          ex.what(), 
+                                                                          ex.where());
+    }
+}
+```
 
 # How to cite this C++ Technical Note
 
