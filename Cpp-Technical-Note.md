@@ -5458,6 +5458,38 @@ int main()
 
 *Warning:* MSVC 2022 17.9.0 does not support it, but GCC 13.1 supports it.
 
+# Miscellaneous Preprocessors Features of C++23
+
+## 1. elifdef
+
+The `elifdef` is the equivalent to `#elif defined(...)`.
+
+Documentation:
+https://en.cppreference.com/w/cpp/preprocessor/conditional
+
+Compiler Support:
+https://en.cppreference.com/w/cpp/compiler_support
+
+## 2. elifndef
+
+The `elifndef` is the equivalent to `#elif !defined(...)`.
+
+Documentation:
+https://en.cppreference.com/w/cpp/preprocessor/conditional
+
+Compiler Support:
+https://en.cppreference.com/w/cpp/compiler_support
+
+## 3. warning
+
+Shows the given compile-time warning message message without affecting the validity of the program.
+
+```cpp
+#warning "Hello"
+```
+
+Documentation:
+https://en.cppreference.com/w/cpp/preprocessor/error
 
 # Miscellaneous Library Features of C++23
 
@@ -5554,6 +5586,21 @@ int main()
     }
 }
 ```
+
+## 3. std::flat_set
+The C++23 added `std::flat_set` to the Standard Library. Typically an `std::set` is implemented by a balanced red-black trees. The `flat_set` is simply backed by an ordered sequential container. As a consequence:
+
+- Flat sets consume less memory.
+- They provide faster element lookup.
+- They provide faster iteration than tree-based sets.
+- They interplay nicely with memory locality principles.
+
+Tree-based sets, on the other hand, are better at inserting and erasing elements.
+
+*Warning: At a moment March-2023 there is no compiler that support is:*
+https://en.cppreference.com/w/cpp/compiler_support
+
+https://en.cppreference.com/w/cpp/header/flat_set
 
 # How to cite this C++ Technical Note
 
