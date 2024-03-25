@@ -244,6 +244,12 @@ Use *MSVC 19.30 _MSC_VER)* or higher. Visual Studio 2022 Community Edition is di
 
 * **CLANG**. Specify `--std=c++20` if you're using [CLang](https://clang.llvm.org/). Please use *Clang 10.0.0* or newer. The Clang/LLVM version list is available [here](https://releases.llvm.org/).
 
+About Support of various Features by compiers. Compiler vendors are hard at work to catch up with all new features. You can keep track of which compiler supports which features of C++11/14/17/20/23 based on this table:
+[https://en.cppreference.com/w/cpp/compiler_support](https://en.cppreference.com/w/cpp/compiler_support)
+
+Alternative (standartized way) to check presenting of some feature (from C++2020) is using [feature test macro](#13-feature-test-macro). The list of avaialable macros are available here:
+https://en.cppreference.com/w/cpp/feature_test
+
 
 # Glossary
 
@@ -5302,10 +5308,11 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
 ## 0. How to invoke C++2023 Compiler
 
 * **GCC:** Gnu Compiler Collection. C++23 features are starting to be available since GCC 11.
-
   ```bash
   g++-13 -x c++ --std=c++2b <filename>.cpp
   ```
+
+Support for modules in GCC is enabled with the [-fmodules-ts](https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Modules.html) option.
 
 * **CLANG:** The a language front-end and tooling infrastructure for languages in the C language family leveraging the LLVM back-end.
 
@@ -5356,7 +5363,12 @@ Identifiers for alphabets can now use not only Basic Latin 1 symbols but now "an
 
 ## 2. Compilers have to support UTF-8
 
-For C++2023, any compiler is required to accept source files encoded in UTF-8.
+For C++2023, any compiler is required to accept source files encoded in UTF-8. 
+
+For the MSVC compiler you may need to specify compile option: [/utf8](https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170) manually.
+
+For GCC compiler you may need to use the command-line option: [-finput-charset=UTF-8](
+https://gcc.gnu.org/onlinedocs/gcc-4.8.5/cpp/Character-sets.html) manually.
 
 ## 3. Side effects possible in right hand side of assigment operator.
 
@@ -5451,12 +5463,36 @@ int main()
 
 int main()
 {
-    std::cout << "Multidimension scubscript operator is not supproted";
+    std::cout << "Multidimension subscript operator is not supproted";
 }
 #endif
 ```
 
 *Warning:* MSVC 2022 17.9.0 does not support it, but GCC 13.1 supports it.
+
+
+# 8. Assume Attribute
+
+With C++23 there is a new syntax for telling the compiler about different assumptions about the code in the format `[[assume(expression)]]`.
+
+Documentation:
+
+https://en.cppreference.com/w/cpp/language/attributes/assume
+
+Example:
+```cpp
+int div_by_32(int x) 
+{ 
+  [[assume(x>=0)]]; 
+  return x/32; 
+}
+```
+
+## 9. Funny Story and Garbage Collection
+
+Back in C++11, the Garbage Collection (GC) has been added into the language. But nobody knows about it, and nobody uses it. In C++23 the GC has been completely removed from the language.
+
+
 
 # Miscellaneous Preprocessors Features of C++23
 
@@ -5491,10 +5527,13 @@ Shows the given compile-time warning message message without affecting the valid
 Documentation:
 https://en.cppreference.com/w/cpp/preprocessor/error
 
+
 # Miscellaneous Library Features of C++23
 
 ## 1. print and println.
 Motivation: New way to work with steam file I/O. Which is shorter and by promise of C++2023 standard library developers faster.
+
+There are promises from standardization community that `std::print()` and `std::println()` slightly faster compare to `std::cout << std::format("Hello {}", name);` and faster compare to `printf()`.
 
 Documentation:
 * https://en.cppreference.com/w/cpp/io/print
@@ -5587,8 +5626,9 @@ int main()
 }
 ```
 
-## 3. std::flat_set
-The C++23 added `std::flat_set` to the Standard Library. Typically an `std::set` is implemented by a balanced red-black trees. The `flat_set` is simply backed by an ordered sequential container. As a consequence:
+## 3. std::flat_set and std::flat_map
+
+Typically an `std::set` and `std::map` is implemented by a balanced red-black trees. The `flat_set` is simply backed by an ordered sequential container. As a consequence:
 
 - Flat sets consume less memory.
 - They provide faster element lookup.
@@ -5597,10 +5637,96 @@ The C++23 added `std::flat_set` to the Standard Library. Typically an `std::set`
 
 Tree-based sets, on the other hand, are better at inserting and erasing elements.
 
+Similar to `std::flat_set`, there is `std::flat_map`.
+
+This new containers has the same API as `std::set` and `std::map`.
+
 *Warning: At a moment March-2023 there is no compiler that support is:*
 https://en.cppreference.com/w/cpp/compiler_support
 
+Documentation:
+
 https://en.cppreference.com/w/cpp/header/flat_set
+https://en.cppreference.com/w/cpp/container/flat_map
+
+
+# 4. std::unreachable()
+
+Marks that current scope or place is in fact unreachable. If code come to this point then behaviour is undefined. The point is to tell the compiler that part of the code does not need to be generated. Canonical example switch statement 
+withch be designed dipatched by all `cases`.
+
+Feature-test macro:
+
+`__cpp_lib_unreachable`
+
+Documentation:
+
+https://en.cppreference.com/w/cpp/utility/unreachable
+
+https://en.cppreference.com/w/cpp/feature_test#cpp_lib_unreachable
+
+Example:
+```cpp
+#include <iostream>
+
+bool decodeBit(int x)
+{
+    switch(x)
+    {
+    case 0:
+        return false;
+    case 1:
+        return true;
+    default:
+        std::unreachable();
+    }
+}
+int main()
+{
+    std::cout << decodeBit(1);
+}
+```
+
+# 5. std::mdspan
+std::mdspan is a multidimensional view into a contiguous sequence of objects interpretable as a multidimensional array.
+
+Feature Test Macro:
+
+[__cpp_lib_mdspan](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_mdspan)
+
+Documentation:
+https://en.cppreference.com/w/cpp/container/mdspan
+
+In some circumstances you may want to use stream for I/O, but you really want to eliminate not need copying around different places.
+
+Unforutnately standart streams such as[std::stringstream](https://cplusplus.com/reference/sstream/stringstream/) from `sstream` has internal buffers. And dealing with them via configuring [rdbuf](https://cplusplus.com/reference/ios/ios/rdbuf/) is firstly pretty low level. And secondary there is no garantee that stream classes does not use their own internal  buffer.
+
+The C++23 introduces `std::ispanstream` which provides a way to use streaming interface but on top of raw buffer.
+
+Feature-test macro:
+
+[__cpp_lib_spanstream](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_spanstream)
+
+Documentation:
+
+https://en.cppreference.com/w/cpp/io/basic_ispanstream
+
+
+
+----
+
+TODO: ref-qualification 
+https://www.reddit.com/r/cpp/comments/xy1alq/the_power_of_refqualifiers/
+
+https://en.cppreference.com/w/cpp/types/is_constant_evaluated
+
+and if consteval
+https://en.cppreference.com/w/cpp/language/if
+
+double attributes
+auto a = [] [[nodiscard]] () [[deprecated]]] {return 42;};
+
+
 
 # How to cite this C++ Technical Note
 
