@@ -1222,7 +1222,9 @@ The *volatile* is a type qualifier that denotes that that type can alter its val
 
 The close-by conception for [auto](https://en.cppreference.com/w/cpp/language/auto) is [decltype](https://en.cppreference.com/w/cpp/language/decltype). It provides the ability to derive the type of expression without evaluating it.  
 
-There are some subtleties with `decltype`. The `decltype(x)` and `decltype((x))` are often different types. If the argument for `decltype` is an unparenthesized expression `decltype(x)` unparenthesized class member access expression, then [decltype](https://en.cppreference.com/w/cpp/language/decltype) yields the type of the entity named by this expression. The inner parentheses `decltype((x))` cause the statement to be evaluated as an expression itself. Example:
+> There are some subtleties with `decltype`. The `decltype(x)` and `decltype((x))` are often different types. If the argument for `decltype` is an unparenthesized expression `decltype(x)` unparenthesized class member access expression, then [decltype](https://en.cppreference.com/w/cpp/language/decltype) yields the type of the entity named by this expression. The inner parentheses `decltype((x))` cause the statement to be evaluated as an expression itself. 
+
+Example:
 
 ```cpp
 int main()
@@ -3681,6 +3683,43 @@ int main()
 }
 ```
 
+## 12. Short Syntax for Nested Namespaces
+
+A nested namespace is essentially the namespace inside another namespace. Example:
+
+```cpp
+namespace MyLib {
+  namespace Module {
+    namespace SubModule {
+      class Mylass{};
+    }
+  }
+}
+
+int main()
+{
+    MyLib::Module::SubModule::Mylass obj;
+    return 0;
+}
+```
+
+Startin from C++17 to express the same concept there a short syntax:
+
+```cpp
+namespace MyLib::Module::SubModule {
+    class Mylass {};
+}
+
+int main()
+{
+    MyLib::Module::SubModule::Mylass obj;
+    return 0;
+}
+```
+
+Documentation:
+https://en.cppreference.com/w/cpp/language/namespace
+
 # Miscellaneous Features of C++20
 
 ## 1. no_unique_address Attribute
@@ -5481,10 +5520,10 @@ https://en.cppreference.com/w/cpp/language/attributes/assume
 
 Example:
 ```cpp
-int div_by_32(int x) 
+int div_by_2(int x) 
 { 
   [[assume(x>=0)]]; 
-  return x/32; 
+  return x/2; 
 }
 ```
 
@@ -5492,7 +5531,66 @@ int div_by_32(int x)
 
 Back in C++11, the Garbage Collection (GC) has been added into the language. But nobody knows about it, and nobody uses it. In C++23 the GC has been completely removed from the language.
 
+## 10. Fixed or Extended Width FP types
 
+The C++23 introduces the following extended floating-point types from IEEE 754: fp16, fp32, fp64, fp128. In addition it introduces bf16 the format developed by Google Brain. Support for these is optional, and in fact not all compilers provide these types.
+
+```cpp
+#include <stdfloat>
+#include <iostream>
+
+int main()
+{
+    std::bfloat16_t var1 = 1.0bf16;
+    std::float16_t var2 = 1.0f16;
+    std::float32_t var3 = 1.0f32;
+    std::float64_t var4 = 1.0f64;
+    std::float128_t var5 = 1.0f128;
+
+    std::cout << "Fixed width FP types in C++23\n";
+    std::cout << " Number of bytes for BF16 /item " << sizeof(var1) << " Bytes\n";
+    std::cout << " Number of bytes for FP16 /item " << sizeof(var2) << " Bytes\n";
+    std::cout << " Number of bytes for FP32 /item " << sizeof(var3) << " Bytes\n";
+    std::cout << " Number of bytes for FP64 /item " << sizeof(var4) << " Bytes\n";
+    std::cout << " Number of bytes for FP128/item " << sizeof(var5) << " Bytes\n";
+
+    return 0;
+}
+```
+Warning: Right now there is a limited support of this new Fixed width Float-Point types. One compiler where it is available is: GCC 13.1.
+
+Documentation:
+
+https://en.cppreference.com/w/cpp/types/floating-point
+
+# 11. Literal Suffix size_t type
+
+C++23 introduces a literal sufix for type std::size_t in a form of `42uz` and `42UZ`. Example:
+
+```cpp
+#include <iostream>
+#include <stddef.h>
+
+int main()
+{
+#if __cpp_size_t_suffix >= 202011L
+    std::size_t a = 1uz;
+    std::cout << " size_t uz suffix is supported\n";
+#else
+    std::size_t a = 2;
+    std::cout << " size_t uz suffix is NOT supported\n";
+#endif
+
+    return 0;
+}
+```
+
+
+Documentation:
+https://en.cppreference.com/w/cpp/language/integer_literal
+
+Feature Test Macro: 
+[__cpp_size_t_suffix](https://en.cppreference.com/w/cpp/feature_test#cpp_size_t_suffix)
 
 # Miscellaneous Preprocessors Features of C++23
 
@@ -5554,6 +5652,28 @@ int main()
     return 0;
 }
 ```
+
+In addition it's worthwhile to mention that by default, `print()` and `println()` prints to the standard output. It's possible to print to another iostrean such as std::cerr, as follows:
+
+```cpp
+#include <print>
+#include <iostream>
+
+int main()
+{
+#if __cpp_lib_print >= 202207L
+    std::println(std::cerr, "Hello {0}", 123);
+    std::print(std::cerr, "{0} ", "Hello");
+    std::print(std::cerr, "{0} \n", "without new line");
+#endif
+    return 0;
+}
+```
+
+Documentation:
+
+https://en.cppreference.com/w/cpp/io/println
+https://en.cppreference.com/w/cpp/io/print
 
 ## 2. Stacktraces
 
