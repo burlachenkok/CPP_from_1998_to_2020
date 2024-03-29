@@ -1,4 +1,9 @@
-# Technical Note. From C++1998 to C++2020
+# Technical Note. From C++1998 to C++2020*
+
+
+> \* In the recent update we have added a dedicated appendix to cover C++ 2023.
+
+----
 
 [Konstantin Burlachenko](https://burlachenkok.github.io/)
 
@@ -16,9 +21,9 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-Revision Update: October 04, 2023
+Revision Update: March 29, 2024
 
-© 2022-2023 Konstantin Burlachenko, all rights reserved.
+© 2022-2024 Konstantin Burlachenko, all rights reserved.
 
 ----
 
@@ -5389,18 +5394,22 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
 
     * *Contention.* locking primitives for synchronization, true sharing, false sharing.
 
-# Miscellaneous Language Features of C++23
 
-## 0. How to invoke C++2023 Compiler
+## C++23 - How to Invoke C++2023 Compiler
 
-* **GCC:** Gnu Compiler Collection. C++23 features are starting to be available since GCC 11.
+* **GCC:** Gnu Compiler Collection. C++23 features have started to be available since GCC 11.
+
   ```bash
   g++-13 -x c++ --std=c++2b <filename>.cpp
   ```
+  Some versions of GCC (such as 13.1) also support C++23 standard flag:
+  ```bash
+  g++-13 -x c++ --std=c++23 <filename>.cpp
+  ```
 
-Support for modules in GCC is enabled with the [-fmodules-ts](https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Modules.html) option.
+  Support for modules in GCC is enabled with the [-fmodules-ts](https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Modules.html) option.
 
-* **CLANG:** The a language front-end and tooling infrastructure for languages in the C language family leveraging the LLVM back-end.
+* **CLANG:** The language front-end and tooling infrastructure for languages in the C language family leveraging the LLVM back-end.
 
 
   ```bash
@@ -5443,32 +5452,30 @@ Support for modules in GCC is enabled with the [-fmodules-ts](https://gcc.gnu.or
   echo ***************COMPILING/LINK IS FINISHED**********************************************************
   ```
 
+## C++23 - Language Features
 
-## 1. New rule for identifiers.
-Identifiers for alphabets can now use not only Basic Latin 1 symbols but now "anything" that looks like a letter.
+### 1. New Rule for Identifiers
 
-## 2. Compilers have to support UTF-8
+Identifiers for alphabets can now use not only Basic Latin 1 symbols but (informally) also *"anything"* that looks like a letter.
 
-For C++2023, any compiler is required to accept source files encoded in UTF-8. 
+### 2. Compilers have to Support UTF-8
 
-For the MSVC compiler you may need to specify compile option: [/utf8](https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170) manually.
-
-For GCC compiler you may need to use the command-line option: [-finput-charset=UTF-8](
+For C++2023, any compiler is required to accept source files encoded in UTF-8. For the MSVC compiler, you may need to specify compile option: [/utf8](https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170) manually. For the GCC compiler you may need to use the command-line option: [-finput-charset=UTF-8](
 https://gcc.gnu.org/onlinedocs/gcc-4.8.5/cpp/Character-sets.html) manually.
 
-## 3. Side effects possible in right hand side of assigment operator.
+### 3. Side effects are possible on the right-hand side of the assignment operator.
 
 The C++17 standard added the rule that all side effects of the right side of an assignment are fully committed before evaluating the left side and the actual assignment. This feature is still in C++23.
 
-## 4. New float point types.
+### 4. New float point types.
 
-While single and double precision floating point numbers are by far the most common used, they are not the only one format in 2024. In fact compute hardware which capable of processing 16-bit loating-point data is becoming more widely available. The C++23 added the possibility to support some alternative floating point formats.
+While single and double-precision floating point numbers are by far the most commonly used, they are not the only format in 2024. Compute hardware capable of processing 16-bit floating-point data is becoming more widely available. The C++23 added the possibility to support some alternative floating point formats.
 
-Documentation: https://en.cppreference.com/w/cpp/types/floating-point
+*Documentation:* https://en.cppreference.com/w/cpp/types/floating-point
 
-*Warning:* MSVC 2022 17.9.0 does not support it
+> Warning: MSVC 2022 17.9.0 does not support it
 
-## 5. New suffixes for size_t
+### 5. New suffixes for size_t
 
 As of C++23, you can define integer literals of type std::size_t using a suffix consisting of both `u` or `U` and `z` or `Z`. 
 
@@ -5476,23 +5483,17 @@ Examples: uz, uZ, Uz, UZ, zu, zU, Zu, or ZU.
 
 Documentation: https://en.cppreference.com/w/cpp/types/size_t
 
-*Warning:* MSVC 2022 17.9.0 does not support it
+> Warning: MSVC 2022 17.9.0 does not support it
 
-## 6. Explicit Object Parameter in class methods.
+### 6. Explicit Object Parameters in class methods.
 
-C++23 introduces a new syntax that allows you to name the implicit this pointer as an explicit parameter. Maybe useful during porting Python scripts. 
+C++23 introduces a new syntax that allows you to name the implicit `this` pointer as an explicit parameter. For isntance, it can be useful during porting Python scripts. 
 
 Requirements by C++2023 standard:
-* An explicit object parameter such as self in  example below are prefixed with the keyword `this`
+
+* An explicit object parameter such as self in the example below is prefixed with the keyword `this`
 * it must be the first parameter
 
-
-Feature-test macro:
-
-https://en.cppreference.com/w/cpp/feature_test#cpp_explicit_this_parameter
-
-Documentation:
-https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_parameter
 
 Example:
 
@@ -5523,8 +5524,13 @@ int main()
 }
 ```
 
-## 7. Multidimensional subscript operator
-Another new in C++23 is that overloaded subscript operators can take any number of input parameters. A multidimensional subscript operator is particularly useful if your class models some higher-dimension data collection, such as a matrix. 
+*Feature-test macro:* https://en.cppreference.com/w/cpp/feature_test#cpp_explicit_this_parameter
+
+*Documentation:* https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_parameter
+
+### 7. Multidimensional subscript operator
+
+Another new feature in C++23 is that overloaded subscript operators can take any number of input parameters. A multidimensional subscript operator is particularly useful if your class models some higher-dimension data collection, such as a matrix. 
 
 Example:
 
@@ -5554,23 +5560,19 @@ int main()
 
 int main()
 {
-    std::cout << "Multidimension subscript operator is not supproted";
+    std::cout << "Multidimensional subscript operator is not supported";
 }
 #endif
 ```
 
 *Warning:* MSVC 2022 17.9.0 does not support it, but GCC 13.1 supports it.
 
-
-# 8. Assume Attribute
+### 8. Assume Attribute
 
 With C++23 there is a new syntax for telling the compiler about different assumptions about the code in the format `[[assume(expression)]]`.
 
-Documentation:
-
-https://en.cppreference.com/w/cpp/language/attributes/assume
-
 Example:
+
 ```cpp
 int div_by_2(int x) 
 { 
@@ -5579,13 +5581,20 @@ int div_by_2(int x)
 }
 ```
 
-## 9. Funny Story and Garbage Collection
+*Documentation:* https://en.cppreference.com/w/cpp/language/attributes/assume
 
-Back in C++11, the Garbage Collection (GC) has been added into the language. But nobody knows about it, and nobody uses it. In C++23 the GC has been completely removed from the language.
+### 9. Funny Story about Garbage Collection
 
-## 10. Fixed or Extended Width FP types
+Back in C++11, the Garbage Collection (GC) has been added into the Language. But:
+* Nobody knows about it
+* Nobody uses it. 
 
-The C++23 introduces the following extended floating-point types from IEEE 754: fp16, fp32, fp64, fp128. In addition it introduces bf16 the format developed by Google Brain. Support for these is optional, and in fact not all compilers provide these types.
+In C++23 the GC has been completely removed from the language.
+
+
+### 10. Fixed or Extended Width FP types
+
+The C++23 introduces the following extended floating-point types from IEEE 754: fp16, fp32, fp64, fp128. In addition, it introduces bf16 the format developed by Google Brain. Support for these is optional, and in fact, not all compilers provide these types.
 
 ```cpp
 #include <stdfloat>
@@ -5609,15 +5618,14 @@ int main()
     return 0;
 }
 ```
-Warning: Right now there is a limited support of this new Fixed width Float-Point types. One compiler where it is available is: GCC 13.1.
 
-Documentation:
+*Warning:* Right now there is limited support for this new Fixed-width Float-Point type. One compiler where it is available is GCC 13.1.
 
-https://en.cppreference.com/w/cpp/types/floating-point
+*Documentation:* https://en.cppreference.com/w/cpp/types/floating-point
 
-# 11. Literal Suffix size_t type
+### 11. Literal Suffix size_t type
 
-C++23 introduces a literal sufix for type std::size_t in a form of `42uz` and `42UZ`. Example:
+C++23 introduces a literal suffix for type std::size_t in the form of `42uz` and `42UZ`. Example:
 
 ```cpp
 #include <iostream>
@@ -5637,20 +5645,18 @@ int main()
 }
 ```
 
+*Feature Test Macro:* [__cpp_size_t_suffix](https://en.cppreference.com/w/cpp/feature_test#cpp_size_t_suffix)
 
-Documentation:
-https://en.cppreference.com/w/cpp/language/integer_literal
 
-Feature Test Macro: 
-[__cpp_size_t_suffix](https://en.cppreference.com/w/cpp/feature_test#cpp_size_t_suffix)
+*Documentation:* https://en.cppreference.com/w/cpp/language/integer_literal
 
-# 12. Ref Qualifiers (from C++11) and deduce this (from C++23)
+### 12. Ref Qualifiers (from C++11) and deduce this (from C++23)
 
-Ordinary class member functions can be called on both nontemporary (a.k.a. as lvalue and const lvalue) and temporary instances of a class (a.k.a. as rvalue).
+Ordinary class member functions can be called on both contemporary (a.k.a. as lvalue and const lvalue) and temporary instances of a class (a.k.a. as rvalue).
 
-It is possible to explicitly specify on what kind of instances a certain member function can be called. This is done by adding a ref-qualifier to the member function.
+It is possible to explicitly specify what kind of instances a certain member function can be called. This is done by adding a ref-qualifier to the member function.
 
-If a member function can only be called on non- temporary instances, a `&` qualifier is added to member signature. if a member function can only be called on temporary instances, a `&&` is added to member signature.
+If a member function can only be called on non-temporary instances, a `&` qualifier is added to the member signature. if a member function can only be called on temporary instances, a `&&` is added to the member signature.
 
 Example: 
 
@@ -5700,17 +5706,13 @@ int main()
 }
 ```
 
-Feature-test macro:
+*Feature-test macro:* [__cpp_ref_qualifiers](https://en.cppreference.com/w/cpp/feature_test#cpp_ref_qualifiers)
 
-[__cpp_ref_qualifiers](https://en.cppreference.com/w/cpp/feature_test#cpp_ref_qualifiers)
+*Documentation:* https://en.cppreference.com/w/cpp/language/function#Function_declaration
 
-Documentation:
+## C++23 - Preprocessors Features
 
-https://en.cppreference.com/w/cpp/language/function#Function_declaration
-
-# Miscellaneous Preprocessors Features of C++23
-
-## 1. elifdef
+### 1. elifdef
 
 The `elifdef` is the equivalent to `#elif defined(...)`.
 
@@ -5720,7 +5722,7 @@ https://en.cppreference.com/w/cpp/preprocessor/conditional
 Compiler Support:
 https://en.cppreference.com/w/cpp/compiler_support
 
-## 2. elifndef
+### 2. elifndef
 
 The `elifndef` is the equivalent to `#elif !defined(...)`.
 
@@ -5730,7 +5732,7 @@ https://en.cppreference.com/w/cpp/preprocessor/conditional
 Compiler Support:
 https://en.cppreference.com/w/cpp/compiler_support
 
-## 3. warning
+### 3. warning
 
 Shows the given compile-time warning message message without affecting the validity of the program.
 
@@ -5738,14 +5740,14 @@ Shows the given compile-time warning message message without affecting the valid
 #warning "Hello"
 ```
 
-Documentation:
+*Documentation:*
 https://en.cppreference.com/w/cpp/preprocessor/error
 
 
-# Miscellaneous Library Features of C++23
+## C++23 - Library Features
 
-## 1. print and println.
-Motivation: New way to work with steam file I/O. Which is shorter and by promise of C++2023 standard library developers faster.
+### 1. Print and Println.
+Motivation: New way to work with steam file I/O. Which is shorter and by the promise of C++2023 standard library developers faster.
 
 There are promises from standardization community that `std::print()` and `std::println()` slightly faster compare to `std::cout << std::format("Hello {}", name);` and faster compare to `printf()`.
 
@@ -5763,13 +5765,13 @@ int main()
 #if __cpp_lib_print >= 202207L
     std::println("Hello {0}", 123);
     std::print("{0} ", "Hello");
-    std::print("{0} \n", "without new line");
+    std::print("{0} \n", "without a new line");
 #endif
     return 0;
 }
 ```
 
-In addition it's worthwhile to mention that by default, `print()` and `println()` prints to the standard output. It's possible to print to another iostrean such as std::cerr, as follows:
+In addition, it's worthwhile to mention that by default, `print()` and `println()` print to the standard output. It's possible to print to another stream such as std::cerr, as follows:
 
 ```cpp
 #include <print>
@@ -5786,6 +5788,7 @@ int main()
 }
 ```
 
+Finally, the example below demonstrates that format strings should be a compile-time string:
 
 ```cpp
 #include <print>
@@ -5809,15 +5812,14 @@ int main()
 
 From C++23, the format string for [format()](https://en.cppreference.com/w/cpp/utility/format/format), [print()](https://en.cppreference.com/w/cpp/io/print), and [println()](https://en.cppreference.com/w/cpp/io/println) must be a compile-time constant so that the compiler can check syntax errors in the format string.
 
-Documentation:
+*Documentation:*
 
 https://en.cppreference.com/w/cpp/io/println
 https://en.cppreference.com/w/cpp/io/print
 
-## 2. Stacktraces
+### 2. Stack Traces
 
-The std::exception is an exception that by design tells you what went wrong (through the aptly named what() function). However, what a
-std::exception cannot tell you, is where things went wrong. There is no standard way for you to find out where in the code the exception was thrown. This limitation is not presented in Java or C#, but for C++ it is the case. In this language, the exceptions carry in addition a stack trace. It is something their runtimes are collected during function invocations. From C++23, you have access to this feature by leveraging std::stacktrace object in your exception object.
+The [std::exception](https://en.cppreference.com/w/cpp/error/exception) is an exception that by design tells you what went wrong (through the aptly named [what()](https://en.cppreference.com/w/cpp/error/exception/what) function). However, what a [std::exception](https://en.cppreference.com/w/cpp/error/exception) cannot tell you, is where things went wrong. There is no standard way for you to find out where in the code the exception was thrown. This limitation is not presented in Java or C#, but for C++ it is the case. In this language, the exceptions carry in addition a stack trace. It is something their runtimes are collected during function invocations. From C++23, you have access to this feature by leveraging std::stacktrace object in your exception object.
 
 Documentation:
 
@@ -5885,9 +5887,9 @@ int main()
 }
 ```
 
-## 3. std::flat_set and std::flat_map
+### 3. Flat Associative Containers std::flat_set and std::flat_map
 
-Typically an `std::set` and `std::map` is implemented by a balanced red-black trees. The `flat_set` is simply backed by an ordered sequential container. As a consequence:
+Typically, a `std::set` and `std::map` are implemented by balanced red-black trees. The `flat_set` is simply backed by an ordered sequential container. As a consequence:
 
 - Flat sets consume less memory.
 - They provide faster element lookup.
@@ -5898,33 +5900,21 @@ Tree-based sets, on the other hand, are better at inserting and erasing elements
 
 Similar to `std::flat_set`, there is `std::flat_map`.
 
-This new containers has the same API as `std::set` and `std::map`.
+This new container has the same API as `std::set` and `std::map`.
 
-*Warning: At a moment March-2023 there is no compiler that support is:*
+*Warning: At the moment March-2024 there is no compiler that supports:*
 https://en.cppreference.com/w/cpp/compiler_support
 
-Documentation:
-
-https://en.cppreference.com/w/cpp/header/flat_set
+*Documentation:* https://en.cppreference.com/w/cpp/header/flat_set,
 https://en.cppreference.com/w/cpp/container/flat_map
 
+### 4. Compiler Hint std::unreachable()
 
-# 4. std::unreachable()
-
-Marks that current scope or place is in fact unreachable. If code come to this point then behaviour is undefined. The point is to tell the compiler that part of the code does not need to be generated. Canonical example switch statement 
-withch be designed dipatched by all `cases`.
-
-Feature-test macro:
-
-`__cpp_lib_unreachable`
-
-Documentation:
-
-https://en.cppreference.com/w/cpp/utility/unreachable
-
-https://en.cppreference.com/w/cpp/feature_test#cpp_lib_unreachable
+Marks that the current scope or place is unreachable. If code comes to this point then behavior is undefined. The point is to tell the compiler that part of the code does not need to be generated. Canonical example switch statement 
+witch be designed dispatched by all `cases`.
 
 Example:
+
 ```cpp
 #include <iostream>
 
@@ -5946,45 +5936,33 @@ int main()
 }
 ```
 
-# 5. std::mdspan
-std::mdspan is a multidimensional view into a contiguous sequence of objects interpretable as a multidimensional array.
+*Feature-test macro:* [__cpp_lib_unreachable](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_unreachable)
 
-Feature Test Macro:
+*Documentation:* https://en.cppreference.com/w/cpp/utility/unreachable
 
-[__cpp_lib_mdspan](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_mdspan)
+### 5. Multidimensional View std::mdspan
 
-Documentation:
-https://en.cppreference.com/w/cpp/container/mdspan
+The `std::mdspan` is a multidimensional view of a contiguous sequence of objects interpretable as a multidimensional array.
 
-In some circumstances you may want to use stream for I/O, but you really want to eliminate not need copying around different places.
+*Feature Test Macro:* [__cpp_lib_mdspan](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_mdspan)
 
-Unforutnately standart streams such as[std::stringstream](https://cplusplus.com/reference/sstream/stringstream/) from `sstream` has internal buffers. And dealing with them via configuring [rdbuf](https://cplusplus.com/reference/ios/ios/rdbuf/) is firstly pretty low level. And secondary there is no garantee that stream classes does not use their own internal  buffer.
+*Documentation:* https://en.cppreference.com/w/cpp/container/mdspan
 
-The C++23 introduces `std::ispanstream` which provides a way to use streaming interface but on top of raw buffer.
+### 6. Stream API with Raw Buffers via std::ispanstream
 
-Feature-test macro:
+In some circumstances, you may want to use the stream for I/O, but you want to eliminate the need to copy around different places.
 
-[__cpp_lib_spanstream](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_spanstream)
+Unforutnately standard streams such as[std::stringstream](https://cplusplus.com/reference/sstream/stringstream/) from `sstream` have internal buffers. And dealing with them via configuring [rdbuf](https://cplusplus.com/reference/ios/ios/rdbuf/) is firstly pretty low level. And secondary there is no guarantee that stream classes do not use their internal buffer.
 
-Documentation:
+The C++23 introduces `std::ispanstream` which provides a way to use a streaming interface on top of the raw buffer.
 
-https://en.cppreference.com/w/cpp/io/basic_ispanstream
+*Feature-test macro:* [__cpp_lib_spanstream](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_spanstream)
+
+*Documentation:* https://en.cppreference.com/w/cpp/io/basic_ispanstream
 
 
 
 ----
-
-TODO: ref-qualification 
-https://www.reddit.com/r/cpp/comments/xy1alq/the_power_of_refqualifiers/
-
-https://en.cppreference.com/w/cpp/types/is_constant_evaluated
-
-and if consteval
-https://en.cppreference.com/w/cpp/language/if
-
-double attributes
-auto a = [] [[nodiscard]] () [[deprecated]]] {return 42;};
-
 
 
 # How to cite this C++ Technical Note
