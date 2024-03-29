@@ -148,7 +148,7 @@ Revision Update: October 04, 2023
   - [3. Binary Literals](#3-binary-literals)
   - [4. Variable Templates](#4-variable-templates)
   - [5. Delimiter Inside Numeric Literals](#5-delimiter-inside-numeric-literals)
-  - [6. std::make_unique<T>](#6-stdmake_uniquet)
+  - [6. std::make_unique<T>](#6-stdmake_unique)
 - [Miscellaneous Features of C++17](#miscellaneous-features-of-c17)
   - [1. Structured Binding](#1-structured-binding)
   - [2. Deduce Template Parameters from Ctor. Arguments](#2-deduce-template-parameters-from-ctor-arguments)
@@ -3683,7 +3683,7 @@ int main()
 }
 ```
 
-## 12. Short Syntax for Nested Namespaces
+## 13. Short Syntax for Nested Namespaces
 
 A nested namespace is essentially the namespace inside another namespace. Example:
 
@@ -3719,6 +3719,14 @@ int main()
 
 Documentation:
 https://en.cppreference.com/w/cpp/language/namespace
+
+## 14. Filesystem
+
+The means for filesystem support are defined in [<filesystem>](https://en.cppreference.com/w/cpp/filesystem). It allows you to write portable code to work with a filesystem. Functioality includes: querying whether path is a directory or a file, iterating over the directory, manipulating paths, and retrieving information about files, etc.
+
+*Feature-test macro:* [cpp_lib_filesystem](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_filesystem)
+
+*Documentation:* https://en.cppreference.com/w/cpp/filesystem
 
 # Miscellaneous Features of C++20
 
@@ -3854,8 +3862,15 @@ Compile time information about the current source file `source_location::current
 
 Behaves in an implementation-defined way, but essentially it is analogous of predefined macros `__LINE__` and `__FILE__`.
 
+The `source_location::current()` contains information about `line`, `column`, `file_name`, `function_name`.
 
-Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/utility/source_location/current).
+Feature-test macro:
+
+[__cpp_lib_source_location](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_source_location)
+
+Documentation:
+
+[cpp reference details](https://en.cppreference.com/w/cpp/utility/source_location/current).
 
 ## 6. nodiscard(reason) attribute
 
@@ -3963,6 +3978,14 @@ The [std::span<T>](https://en.cppreference.com/w/cpp/container/span) class templ
 you to refer to any contiguous sequence of T values and is analgous for [std::string_view](https://en.cppreference.com/w/cpp/header/string_view), but for arrays. 
 
 However, in addition to similarities [std::span<T>](https://en.cppreference.com/w/cpp/container/span) allows you to modify underlying data even with `[]` operator.
+
+## 15. Bit Manipulation
+
+The Standard Library supports functions to work with bits of unsigned integral type. These bit manipulation routines are defined in [<bit>](https://en.cppreference.com/w/cpp/header/bit).
+
+In fact it also includes bitwise rotation operators typically available in the Assembly level, but which are not part of the C++ language as [ROTL](
+https://en.cppreference.com/w/cpp/numeric/rotl), [ROTR](https://en.cppreference.com/w/cpp/numeric/rotr).
+
 
 # Modules (from C++20)
 
@@ -4646,7 +4669,7 @@ In this example, the concept Small is defined with a single *constraint expressi
 
 The [atomic constraints](https://en.cppreference.com/w/cpp/language/constraints) in the body of a concept definition can be combined with logical expressions connected with `&&` or `||` or which uses `!`. Such constraint is formally called a *Disjunction Constraint* and *Conjunction Constraint*.
 
-Next, you can define concepts in terms of other constraints in a cascading style. Example:
+Next, you can define *new concepts* in terms of other concepts in a cascading style. Example:
 ```cpp
 template <typename I>
 concept Integer = SignedInteger<I> || UnsignedInteger<I>;
@@ -4658,20 +4681,20 @@ template <parameter list>
 concept name = constraints;
 ```
 
-Atomic, Conjunction, and Disjunction Constraint expression are not the only way to define [concept](https://en.cppreference.com/w/cpp/language/constraints) but it's one of the simplest form of it. Such constraints provide you with a means to constrain the template type. 
+Atomic, Conjunction, and Disjunction Constraint expression are not the only way to define [concept](https://en.cppreference.com/w/cpp/language/constraints) but it's one of the simplest form of it.
+
+**Motivation of doing this.** Such constraints provide you with a means to constrain the template type. 
 
 To express the actual syntactical requirements, you should use [requires](https://en.cppreference.com/w/cpp/keyword/requires) expression.
 
-In that context *requires* specifies an expression on template parameters that evaluate a requirement (since C++20). Its syntax is the following:
+In that context **requires** specifies an expression on template parameters that evaluate a requirement (since C++20). Its syntax is the following:
 ```cpp
 requires { requirements }
 requires (parameter list) { requirements }
 ```
-All the compiler does with requirements is check whether they form valid C++ code or not.
+All the compiler does with requirements is check whether they form valid C++ code or not. The concept defined via [requires](https://en.cppreference.com/w/cpp/keyword/requires) can have one of the following types:
 
-The concept defined via [requires](https://en.cppreference.com/w/cpp/keyword/requires) can have one of the following types:
-
-* **A Simple Requirement.**
+* **I. A Simple Requirement.**
 Example of create concept with using *constraint* and *requires*:
   ```cpp
   template <typename Iter>
@@ -4687,11 +4710,17 @@ Example of create concept with using *constraint* and *requires*:
   A simple requirement consists of an arbitrary C++ expression statement and is satisfied if the corresponding
   expression compiles without errors. All variables you use in these expressions must either be global variables or variables introduced in the parameter list of `requires`. You cannot declare local variables in the usual way.
 
-* **A Compound Requirement.**
+* **II. A Compound Requirement.**
+
 Example:
   ```cpp
   template <typename T>
-  concept NoExceptDestructible = requires (T& value) { { value.~T() } noexcept; value +=1; };
+  concept NoExceptDestructible = 
+  requires (T& value) 
+  { 
+    { value.~T() } noexcept; 
+    value +=1; 
+  };
   ```
 
   A compound requirement is similar to a simple requirement. But besides asserting that a given expression must be valid, a compound requirement can also prohibit this expression from ever throwing an exception and/or constraint type that it evaluates to.  
@@ -4702,16 +4731,22 @@ Example:
 
   ```cpp
   // expr is a valid expression
+
   { expr };
   // expr is valid and never throws an exception
+  
   { expr } noexcept;
   // expr is valid and its type satisfies type-constraint
+  
   { expr } -> type-constraint;
   // expr is valid and never throws an exception. expr type satisfies type-constraint
+  
   { expr } noexcept -> type-constraint;
   ```
 
-  In this type of requirement, the body of a `requires` expression consists of a *sequence of requirements*, and each requirement is introduced with curly braces `{}`. Each requirement ends with a semicolon, but all `expr` inside curly braces should not have semicolons.
+  In this type of requirement, the body of a `requires` expression consists of a *sequence of requirements*, and each requirement is introduced with curly braces `{}`. 
+  
+  Each requirement ends with a semicolon, but one more time all `expr` inside curly braces should not have semicolons.
 
 * **A Type Requirement.** 
 Example:
@@ -4774,6 +4809,18 @@ const T& function(const T & a, const T & b)
     return a + b;
 }
 ```
+
+## Predefined Concepts
+
+The Standard Library defines a whole collection of predefined concepts defined in [<concepts>](https://en.cppreference.com/w/cpp/concepts) in the std namespace.
+
+* *Core language concepts:* [same_as](https://en.cppreference.com/w/cpp/concepts/same_as), [derived_from](https://en.cppreference.com/w/cpp/concepts/derived_from), [convertible_to](https://en.cppreference.com/w/cpp/concepts/convertible_to), [integral](https://en.cppreference.com/w/cpp/concepts/integral), [floating_point](https://en.cppreference.com/w/cpp/concepts/floating_point), [copy_constructible](https://en.cppreference.com/w/cpp/concepts/copy_constructible), etc.
+
+* *Comparison concepts:* [equality_comparable](https://en.cppreference.com/w/cpp/concepts/equality_comparable), [totally_ordered](https://en.cppreference.com/w/cpp/concepts/totally_ordered), etc.
+
+* *Object concepts:* [movable](https://en.cppreference.com/w/cpp/concepts/movable), [copyable](https://en.cppreference.com/w/cpp/concepts/copyable), etc.
+
+* *Callable concepts:* [invocable](https://en.cppreference.com/w/cpp/concepts/invocable), etc.
 
 # Coroutines (C++20)
 The execution of the usual function includes the ability to perform the following action in the underlying platform:
@@ -5439,6 +5486,11 @@ Requirements by C++2023 standard:
 * An explicit object parameter such as self in  example below are prefixed with the keyword `this`
 * it must be the first parameter
 
+
+Feature-test macro:
+
+https://en.cppreference.com/w/cpp/feature_test#cpp_explicit_this_parameter
+
 Documentation:
 https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_parameter
 
@@ -5592,6 +5644,70 @@ https://en.cppreference.com/w/cpp/language/integer_literal
 Feature Test Macro: 
 [__cpp_size_t_suffix](https://en.cppreference.com/w/cpp/feature_test#cpp_size_t_suffix)
 
+# 12. Ref Qualifiers (from C++11) and deduce this (from C++23)
+
+Ordinary class member functions can be called on both nontemporary (a.k.a. as lvalue and const lvalue) and temporary instances of a class (a.k.a. as rvalue).
+
+It is possible to explicitly specify on what kind of instances a certain member function can be called. This is done by adding a ref-qualifier to the member function.
+
+If a member function can only be called on non- temporary instances, a `&` qualifier is added to member signature. if a member function can only be called on temporary instances, a `&&` is added to member signature.
+
+Example: 
+
+```cpp
+#include <print>
+#include <string>
+#include <utility>
+
+class Value
+{
+public:
+
+    void g(this Value& self) {
+        std::print("g() for LValue\n");
+    }
+
+    void g(this Value&& self) {
+        std::print("g() for RValue\n");
+    }
+
+    const int& value() const& { 
+        std::print("const int& value() const&\n");
+        return m_value; 
+    }
+    
+    int&& value() &&
+    { 
+        std::print("int&& value()&& \n");
+        return std::move(m_value); 
+    }
+    
+private:
+    int m_value;
+};
+
+int main()
+{
+    Value v;
+    
+    v.value();
+    std::move(v).value();
+
+    v.g();
+    std::move(v).g();
+    
+    return 0;
+}
+```
+
+Feature-test macro:
+
+[__cpp_ref_qualifiers](https://en.cppreference.com/w/cpp/feature_test#cpp_ref_qualifiers)
+
+Documentation:
+
+https://en.cppreference.com/w/cpp/language/function#Function_declaration
+
 # Miscellaneous Preprocessors Features of C++23
 
 ## 1. elifdef
@@ -5669,6 +5785,29 @@ int main()
     return 0;
 }
 ```
+
+
+```cpp
+#include <print>
+#include <string>
+
+int main()
+{
+#if __cpp_lib_print >= 202207L
+
+    std::println("Hello {0} {1}", 123, 456);
+    // COMPILE-TIME ERROR -- format string has two args
+    //std::println("Hello {0} {1}", 123);
+    
+    
+    // COMPILE-TIME ERROR -- format string is not a constant
+    // std::println(std::string("Hello {0} {1}"), 123); 
+#endif
+    return 0;
+}
+```
+
+From C++23, the format string for [format()](https://en.cppreference.com/w/cpp/utility/format/format), [print()](https://en.cppreference.com/w/cpp/io/print), and [println()](https://en.cppreference.com/w/cpp/io/println) must be a compile-time constant so that the compiler can check syntax errors in the format string.
 
 Documentation:
 
