@@ -1,7 +1,7 @@
 # Technical Note. From C++1998 to C++2020*
 
 
-> \* In the recent update we have added a dedicated appendix to cover C++ 2023.
+> \* In the recent update, we have added a special appendix to cover C++ 2023.
 
 ----
 
@@ -663,6 +663,7 @@ Both compiler writers and people who use the C++ language as writers should obey
 * [C\+\+ 2014 standard - ISO C\+\+ standard (ISO/IEC 14882:2014)](https://www.iso.org/standard/64029.html). Draft of C++2014: [link](https://timsong-cpp.github.io/cppwp/n4140/draft.pdf).
 * [C\+\+ 2017 standard - ISO C\+\+ standard (ISO/IEC 14882:2017)](https://www.iso.org/standard/68564.html). Draft of C++2017: [link](https://open-std.org/jtc1/sc22/wg21/docs/papers/2017/n4659.pdf).
 * [С\+\+ 2020 standard - ISO C\+\+ standard (ISO/IEC 14882:2020)](https://www.iso.org/standard/79358.html). Draft of C++2020: [link](https://open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf).
+* С++ 2023 standard - ISO C++ standard (ISO/IEC 14882) - *Not Available.* Draft of C++2023: [link](https://open-std.org/JTC1/SC22/WG21/docs/papers/2023/n4950.pdf).
 
 [Scott Meyers](https://en.wikipedia.org/wiki/Scott_Meyers) gave a presentation about C in YANDEX back in 2014. His point of view was that C++03 can be considered a bug fix release of C++98, and C++14 completes C++11.
 
