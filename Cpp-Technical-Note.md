@@ -31,6 +31,7 @@ Revision Update: March 29, 2024
 
 - [Introduction](#introduction)
 - [Prepare Environment](#prepare-environment)
+- [Support of Various Features by Compilers Vendors](#support-of-various-features-by-compilers-vendors)
 - [Glossary](#glossary)
 - [Motivation](#motivation)
   - [Downsides of Interpretable Languages](#downsides-of-interpretable-languages)
@@ -166,6 +167,9 @@ Revision Update: March 29, 2024
   - [9. std::string_view](#9-stdstring_view)
   - [10. Inline Variables](#10-inline-variables)
   - [11. The Exception Specification has been Removed](#11-the-exception-specification-has-been-removed)
+  - [12. Built-in Function for Determining the Size of the Array](#12-built-in-function-for-determining-the-size-of-the-array)
+  - [13. Short Syntax for Nested Namespaces](#13-short-syntax-for-nested-namespaces)
+  - [14. Filesystem](#14-filesystem)
 - [Miscellaneous Features of C++20](#miscellaneous-features-of-c20)
   - [1. no_unique_address Attribute](#1-no_unique_address-attribute)
   - [2. Spaceship operator](#2-spaceship-operator)
@@ -180,6 +184,8 @@ Revision Update: March 29, 2024
   - [11. Designated initializers](#11-designated-initializers)
   - [12. __has_cpp_attribute feature test](#12-__has_cpp_attribute-feature-test)
   - [13. Feature Test Macro](#13-feature-test-macro)
+  - [14. std::span](#14-stdspan)
+  - [15. Bit Manipulation](#15-bit-manipulation)
 - [Modules (from C++20)](#modules-from-c20)
   - [Single Module Interface File/Module Unit](#single-module-interface-filemodule-unit)
   - [Module Interface File With Implementation inside it](#module-interface-file-with-implementation-inside-it)
@@ -199,6 +205,7 @@ Revision Update: March 29, 2024
 - [Concepts (from C++20)](#concepts-from-c20)
   - [Define Concepts](#define-concepts)
   - [Use Concepts](#use-concepts)
+  - [Predefined Concepts](#predefined-concepts)
 - [Coroutines (C++20)](#coroutines-c20)
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
@@ -208,9 +215,31 @@ Revision Update: March 29, 2024
   - [Object Orientated Design](#object-orientated-design)
   - [Object Orientated Design Patterns](#object-orientated-design-patterns)
   - [Performance optimization for general purpose CPU](#performance-optimization-for-general-purpose-cpu)
-  - [Miscellaneous Language Features of C++23](#miscellaneous-language-features-of-c23)
-  - [Miscellaneous Library Features of C++23](#miscellaneous-library-features-of-c23)
-
+  - [C++23 - How to Invoke C++2023 Compiler](#c23---how-to-invoke-c2023-compiler)
+  - [C++23 - Language Features](#c23---language-features)
+    - [1. New Rule for Identifiers](#1-new-rule-for-identifiers)
+    - [2. Compilers have to Support UTF-8](#2-compilers-have-to-support-utf-8)
+    - [3. Side effects are possible on the right-hand side of the assignment operator](#3-side-effects-are-possible-on-the-right-hand-side-of-the-assignment-operator)
+    - [4. New float point types](#4-new-float-point-types)
+    - [5. New suffixes for size_t](#5-new-suffixes-for-size_t)
+    - [6. Explicit Object Parameters in class methods](#6-explicit-object-parameters-in-class-methods)
+    - [7. Multidimensional subscript operator](#7-multidimensional-subscript-operator)
+    - [8. Assume Attribute](#8-assume-attribute)
+    - [9. Funny Story about Garbage Collection](#9-funny-story-about-garbage-collection)
+    - [10. Fixed or Extended Width FP types](#10-fixed-or-extended-width-fp-types)
+    - [11. Literal Suffix size_t type](#11-literal-suffix-size_t-type)
+    - [12. Ref Qualifiers (from C++11) and deduce this (from C++23)](#12-ref-qualifiers-from-c11-and-deduce-this-from-c23)
+  - [C++23 - Preprocessors Features](#c23---preprocessors-features)
+    - [1. elifdef](#1-elifdef)
+    - [2. elifndef](#2-elifndef)
+    - [3. warning](#3-warning)
+  - [C++23 - Library Features](#c23---library-features)
+    - [1. Print and Println](#1-print-and-println)
+    - [2. Stack Traces](#2-stack-traces)
+    - [3. Flat Associative Containers std::flat_set and std::flat_map](#3-flat-associative-containers-stdflat_set-and-stdflat_map)
+    - [4. Compiler Hint std::unreachable()](#4-compiler-hint-stdunreachable)
+    - [5. Multidimensional View std::mdspan](#5-multidimensional-view-stdmdspan)
+    - [6. Stream API with Raw Buffers via std::ispanstream](#6-stream-api-with-raw-buffers-via-stdispanstream)
 
 *[Table of contents generated with markdown-toc](http://ecotrust-canada.github.io/markdown-toc/)*
 
@@ -249,7 +278,9 @@ Use *MSVC 19.30 _MSC_VER)* or higher. Visual Studio 2022 Community Edition is di
 
 * **CLANG**. Specify `--std=c++20` if you're using [CLang](https://clang.llvm.org/). Please use *Clang 10.0.0* or newer. The Clang/LLVM version list is available [here](https://releases.llvm.org/).
 
-About Support of various Features by compiers. Compiler vendors are hard at work to catch up with all new features. You can keep track of which compiler supports which features of C++11/14/17/20/23 based on this table:
+# Support of Various Features by Compilers Vendors
+
+Compiler vendors hard at work to catch up with all new features. You can keep track of which compiler supports which features of C++11/14/17/20/23 based on this table:
 [https://en.cppreference.com/w/cpp/compiler_support](https://en.cppreference.com/w/cpp/compiler_support)
 
 Alternative (standartized way) to check presenting of some feature (from C++2020) is using [feature test macro](#13-feature-test-macro). The list of avaialable macros are available here:
@@ -3670,7 +3701,7 @@ The exception specification has been deprecated in C++11 and removed from C++17.
 
 Details: [Core Working Group about removing Deprecated Exception Specifications from C++17](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0003r5.html)
 
-## 12. Built-in function for determining the size of the array
+## 12. Built-in Function for Determining the Size of the Array
 
 Documentation: https://en.cppreference.com/w/cpp/iterator/size
 
@@ -5464,11 +5495,11 @@ Identifiers for alphabets can now use not only Basic Latin 1 symbols but (inform
 For C++2023, any compiler is required to accept source files encoded in UTF-8. For the MSVC compiler, you may need to specify compile option: [/utf8](https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170) manually. For the GCC compiler you may need to use the command-line option: [-finput-charset=UTF-8](
 https://gcc.gnu.org/onlinedocs/gcc-4.8.5/cpp/Character-sets.html) manually.
 
-### 3. Side effects are possible on the right-hand side of the assignment operator.
+### 3. Side effects are possible on the right-hand side of the assignment operator
 
 The C++17 standard added the rule that all side effects of the right side of an assignment are fully committed before evaluating the left side and the actual assignment. This feature is still in C++23.
 
-### 4. New float point types.
+### 4. New float point types
 
 While single and double-precision floating point numbers are by far the most commonly used, they are not the only format in 2024. Compute hardware capable of processing 16-bit floating-point data is becoming more widely available. The C++23 added the possibility to support some alternative floating point formats.
 
@@ -5486,7 +5517,7 @@ Documentation: https://en.cppreference.com/w/cpp/types/size_t
 
 > Warning: MSVC 2022 17.9.0 does not support it
 
-### 6. Explicit Object Parameters in class methods.
+### 6. Explicit Object Parameters in class methods
 
 C++23 introduces a new syntax that allows you to name the implicit `this` pointer as an explicit parameter. For isntance, it can be useful during porting Python scripts. 
 
@@ -5747,7 +5778,7 @@ https://en.cppreference.com/w/cpp/preprocessor/error
 
 ## C++23 - Library Features
 
-### 1. Print and Println.
+### 1. Print and Println
 Motivation: New way to work with steam file I/O. Which is shorter and by the promise of C++2023 standard library developers faster.
 
 There are promises from standardization community that `std::print()` and `std::println()` slightly faster compare to `std::cout << std::format("Hello {}", name);` and faster compare to `printf()`.
