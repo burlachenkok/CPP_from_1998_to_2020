@@ -1,7 +1,7 @@
 # Technical Note. From C++1998 to C++2020*
 
 
-> \* In the recent update, we have added a special appendix to cover C++ 2023.
+> \* In the recent update from Mar 2024, we have added a special appendix to cover C++ 2023.
 
 ----
 
@@ -218,17 +218,15 @@ Revision Update: March 29, 2024
   - [C++23 - How to Invoke C++2023 Compiler](#c23---how-to-invoke-c2023-compiler)
   - [C++23 - Language Features](#c23---language-features)
     - [1. New Rule for Identifiers](#1-new-rule-for-identifiers)
-    - [2. Compilers have to Support UTF-8](#2-compilers-have-to-support-utf-8)
-    - [3. Side effects are possible on the right-hand side of the assignment operator](#3-side-effects-are-possible-on-the-right-hand-side-of-the-assignment-operator)
-    - [4. New float point types](#4-new-float-point-types)
-    - [5. New suffixes for size_t](#5-new-suffixes-for-size_t)
-    - [6. Explicit Object Parameters in class methods](#6-explicit-object-parameters-in-class-methods)
-    - [7. Multidimensional subscript operator](#7-multidimensional-subscript-operator)
-    - [8. Assume Attribute](#8-assume-attribute)
-    - [9. Funny Story about Garbage Collection](#9-funny-story-about-garbage-collection)
-    - [10. Fixed or Extended Width FP types](#10-fixed-or-extended-width-fp-types)
-    - [11. Literal Suffix size_t type](#11-literal-suffix-size_t-type)
-    - [12. Ref Qualifiers (from C++11) and deduce this (from C++23)](#12-ref-qualifiers-from-c11-and-deduce-this-from-c23)
+    - [2. Compilers have to Support UTF-8 Source Files Encoding](#2-compilers-have-to-support-utf-8-source-files-encoding)
+    - [3. Side Effects are Still Possible on the Right-Hand side of the Assignment](#3-side-effects-are-still-possible-on-the-right-hand-side-of-the-assignment)
+    - [4. Suffix for size_t](#4-suffix-for-size_t)
+    - [5. Multidimensional Subscript Operator](#5-multidimensional-subscript-operator)
+    - [6. Assume Attribute](#6-assume-attribute)
+    - [7. Withdraw from Optional Garbage Collection](#7-withdraw-from-optional-garbage-collection)
+    - [8. Fixed or Extended Width Float Point Types](#8-fixed-or-extended-width-float-point-types)
+    - [9. Explicit Object Parameters in Class Methods](#9-explicit-object-parameters-in-class-methods)
+    - [10. Ref-Qualified methods (from C++11) and more about explicit Object Parameter (from C++23)](#10-ref-qualified-methods-from-c11-and-more-about-explicit-object-parameter-from-c23)
   - [C++23 - Preprocessors Features](#c23---preprocessors-features)
     - [1. elifdef](#1-elifdef)
     - [2. elifndef](#2-elifndef)
@@ -3761,9 +3759,9 @@ https://en.cppreference.com/w/cpp/language/namespace
 
 The means for filesystem support are defined in [<filesystem>](https://en.cppreference.com/w/cpp/filesystem). It allows you to write portable code to work with a filesystem. Functioality includes: querying whether path is a directory or a file, iterating over the directory, manipulating paths, and retrieving information about files, etc.
 
-*Feature-test macro:* [cpp_lib_filesystem](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_filesystem)
+Feature-test macro: [__cpp_lib_filesystem](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_filesystem)
 
-*Documentation:* https://en.cppreference.com/w/cpp/filesystem
+Documentation: [cpp reference filesystem](https://en.cppreference.com/w/cpp/filesystem).
 
 # Miscellaneous Features of C++20
 
@@ -4927,7 +4925,7 @@ The mindset that C++ is shaping, helps to look into details and abstract when ne
 
 
 # References
-
+  
 [1] [The C++ Programming Language: Special Edition, B.Stroustrup](https://www.amazon.com/Programming-Language-Special-3rd/dp/0201700735)
 
 [2] [C: A Reference Manual, 5th Edition. Samuel Harbison, Guy Steele Jr.](https://www.amazon.com/Reference-Manual-Samuel-P-Harbison/dp/013089592X)
@@ -4961,6 +4959,8 @@ The mindset that C++ is shaping, helps to look into details and abstract when ne
 [16] [Instruction tables By Agner Fog. Technical University of Denmark, 1996 – 2022.](https://www.agner.org/optimize/instruction_tables.pdf)
 
 [17] [Windows via C/C++ (softcover) Fifth Edition by J.Richter, C.Nasarre, 2011](https://www.amazon.com/Windows-via-softcover-Developer-Reference/dp/0735663777)
+
+[18] [Beginning C++23: From Beginner to Pro](https://www.amazon.com/Beginning-C-23-Beginner-Pro/dp/1484293428)
 
 ----
 
@@ -5429,12 +5429,12 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
 
 ## C++23 - How to Invoke C++2023 Compiler
 
-* **GCC:** Gnu Compiler Collection. C++23 features have started to be available since GCC 11.
+* **GCC:** Gnu Compiler Collection. C++23 features have started to be available since GCC 11. However better support of C++23 features has been available since GCC 13.
 
   ```bash
   g++-13 -x c++ --std=c++2b <filename>.cpp
   ```
-  Some versions of GCC (such as 13.1) also support C++23 standard flag:
+  Some versions of GCC (such as 13.1) also support the C++23 standard flag:
   ```bash
   g++-13 -x c++ --std=c++23 <filename>.cpp
   ```
@@ -5469,7 +5469,7 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
   call "%VS2022INSTALLDIR%\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
 
   echo ***************IMPORTING MSVC TOOLCHAIN IS FINISHED************************************************
-  :: Compile and link test.cpp to executable
+  :: Compile and link test. cpp to executable
   cl.exe /std:c++latest /MT /Ot /GL /O2 main.cpp
 
   :: /std -- Control standard functions of the ISO C or C++ programming language.
@@ -5490,77 +5490,51 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
 
 Identifiers for alphabets can now use not only Basic Latin 1 symbols but (informally) also *"anything"* that looks like a letter.
 
-### 2. Compilers have to Support UTF-8
+### 2. Compilers have to Support UTF-8 Source Files Encoding
 
-For C++2023, any compiler is required to accept source files encoded in UTF-8. For the MSVC compiler, you may need to specify compile option: [/utf8](https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170) manually. For the GCC compiler you may need to use the command-line option: [-finput-charset=UTF-8](
+For C++2023, any compiler is required to accept source files encoded in UTF-8. For the MSVC compiler, you may need to specify compile option: [/utf8](https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170) manually. For the GCC compiler, you may need to use the command-line option: [-finput-charset=UTF-8](
 https://gcc.gnu.org/onlinedocs/gcc-4.8.5/cpp/Character-sets.html) manually.
 
-### 3. Side effects are possible on the right-hand side of the assignment operator
+### 3. Side Effects are Still Possible on the Right-Hand side of the Assignment
 
 The C++17 standard added the rule that all side effects of the right side of an assignment are fully committed before evaluating the left side and the actual assignment. This feature is still in C++23.
 
-### 4. New float point types
+### 4. Suffix for size_t
 
-While single and double-precision floating point numbers are by far the most commonly used, they are not the only format in 2024. Compute hardware capable of processing 16-bit floating-point data is becoming more widely available. The C++23 added the possibility to support some alternative floating point formats.
+As of C++23, you can define integer literals of type std::size_t using a suffix consisting of both `u` or `U` and `z` or `Z`. Possible suffixies: `uz`, `uZ`, `Uz`, `UZ`, `zu`, `zU`, `Zu`, `ZU`.
 
-*Documentation:* https://en.cppreference.com/w/cpp/types/floating-point
+C++23 introduces a literal suffix for type [std::size_t](https://en.cppreference.com/w/cpp/types/size_t) in the form of using a suffix consisting of both `u` or `U` and `z` or `Z`.
+Possible suffixies: `uz`, `uZ`, `Uz`, `UZ`, `zu`, `zU`, `Zu`, `ZU`. Short examples: `42uz` and `42UZ`. 
 
-> Warning: MSVC 2022 17.9.0 does not support it
-
-### 5. New suffixes for size_t
-
-As of C++23, you can define integer literals of type std::size_t using a suffix consisting of both `u` or `U` and `z` or `Z`. 
-
-Examples: uz, uZ, Uz, UZ, zu, zU, Zu, or ZU.
-
-Documentation: https://en.cppreference.com/w/cpp/types/size_t
-
-> Warning: MSVC 2022 17.9.0 does not support it
-
-### 6. Explicit Object Parameters in class methods
-
-C++23 introduces a new syntax that allows you to name the implicit `this` pointer as an explicit parameter. For isntance, it can be useful during porting Python scripts. 
-
-Requirements by C++2023 standard:
-
-* An explicit object parameter such as self in the example below is prefixed with the keyword `this`
-* it must be the first parameter
-
-
-Example:
+More long example:
 
 ```cpp
 #include <iostream>
-
-class Test
-{
-public:
-    void f()
-    {
-        std::cout << __func__ << " [1] this address: " << this << std::endl;
-    }
-
-    void g(this Test& self)
-    {
-        std::cout << __func__ << " [2] this address: " << &self << std::endl;
-    }
-};
+#include <stddef.h>
 
 int main()
 {
-    Test t;
-    t.f();
-    t.g();
-    
+#if __cpp_size_t_suffix >= 202011L
+    std::size_t a = 1uz;
+    std::cout << " size_t uz suffix is supported\n";
+#else
+    std::size_t a = 2;
+    std::cout << " size_t uz suffix is NOT supported\n";
+#endif
+
     return 0;
 }
 ```
 
-*Feature-test macro:* https://en.cppreference.com/w/cpp/feature_test#cpp_explicit_this_parameter
+Feature Test Macro: [__cpp_size_t_suffix](https://en.cppreference.com/w/cpp/feature_test#cpp_size_t_suffix)
 
-*Documentation:* https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_parameter
+> Warning: MSVC 2022 17.9.0 does not support it.
 
-### 7. Multidimensional subscript operator
+Documentation: 
+* https://en.cppreference.com/w/cpp/language/integer_literal
+* https://en.cppreference.com/w/cpp/types/size_t
+
+### 5. Multidimensional Subscript Operator
 
 Another new feature in C++23 is that overloaded subscript operators can take any number of input parameters. A multidimensional subscript operator is particularly useful if your class models some higher-dimension data collection, such as a matrix. 
 
@@ -5597,9 +5571,13 @@ int main()
 #endif
 ```
 
-*Warning:* MSVC 2022 17.9.0 does not support it, but GCC 13.1 supports it.
+> Warning: MSVC 2022 17.9.0 does not support it, but GCC 13.1 supports it.
 
-### 8. Assume Attribute
+Feature-test macro: [__cpp_multidimensional_subscript](https://en.cppreference.com/w/cpp/feature_test#cpp_multidimensional_subscript)
+
+Documentation: https://en.cppreference.com/w/cpp/language/operators#Array_subscript_operator
+
+### 6. Assume Attribute
 
 With C++23 there is a new syntax for telling the compiler about different assumptions about the code in the format `[[assume(expression)]]`.
 
@@ -5613,9 +5591,11 @@ int div_by_2(int x)
 }
 ```
 
-*Documentation:* https://en.cppreference.com/w/cpp/language/attributes/assume
+Attibute test-macro: [__has_cpp_attribute(assume)](https://en.cppreference.com/w/cpp/feature_test#Attributes)
 
-### 9. Funny Story about Garbage Collection
+Documentation: [cpp reference assume](https://en.cppreference.com/w/cpp/language/attributes/assume)
+
+### 7. Withdraw from Optional Garbage Collection
 
 Back in C++11, the Garbage Collection (GC) has been added into the Language. But:
 * Nobody knows about it
@@ -5624,9 +5604,15 @@ Back in C++11, the Garbage Collection (GC) has been added into the Language. But
 In C++23 the GC has been completely removed from the language.
 
 
-### 10. Fixed or Extended Width FP types
+### 8. Fixed or Extended Width Float Point Types
 
-The C++23 introduces the following extended floating-point types from IEEE 754: fp16, fp32, fp64, fp128. In addition, it introduces bf16 the format developed by Google Brain. Support for these is optional, and in fact, not all compilers provide these types.
+While single and double-precision floating point numbers are by far the most commonly used, they are not the only format in 2024. 
+
+Computer hardware capable of processing 16-bit floating-point data is becoming more widely available. The C++23 added the possibility to support some alternative floating point formats.
+
+Specifically, the C++23 introduces the following extended floating-point types from IEEE 754: `fp16`, `fp32`, `fp64`, `fp128`. In addition, it introduces `bf16` the format developed by Google Brain. 
+
+Support for all these formats is optional, and in fact, not all compilers provide these types.
 
 ```cpp
 #include <stdfloat>
@@ -5651,44 +5637,62 @@ int main()
 }
 ```
 
-*Warning:* Right now there is limited support for this new Fixed-width Float-Point type. One compiler where it is available is GCC 13.1.
+> Warning: MSVC 2022 17.9.0 does not support it
 
-*Documentation:* https://en.cppreference.com/w/cpp/types/floating-point
+> Warning: Right now there is limited support for this new Fixed-width Float-Point type. One compiler where it is available is GCC 13.1.
 
-### 11. Literal Suffix size_t type
+Documentation: 
+* https://en.cppreference.com/w/cpp/types/floating-point
 
-C++23 introduces a literal suffix for type std::size_t in the form of `42uz` and `42UZ`. Example:
+
+### 9. Explicit Object Parameters in Class Methods
+
+C++23 introduces a new syntax that allows you to name the implicit `this` pointer as an explicit parameter. For instance, it can be useful during porting Python scripts. 
+
+Requirements by C++2023 standard:
+
+* An explicit object parameter such as self in the example below is prefixed with the keyword `this`
+* it must be the first parameter
+
+
+Example:
 
 ```cpp
 #include <iostream>
-#include <stddef.h>
+
+class Test
+{
+public:
+    void f()
+    {
+        std::cout << __func__ << " [1] this address: " << this << std::endl;
+    }
+
+    void g(this Test& self)
+    {
+        std::cout << __func__ << " [2] this address: " << &self << std::endl;
+    }
+};
 
 int main()
 {
-#if __cpp_size_t_suffix >= 202011L
-    std::size_t a = 1uz;
-    std::cout << " size_t uz suffix is supported\n";
-#else
-    std::size_t a = 2;
-    std::cout << " size_t uz suffix is NOT supported\n";
-#endif
-
+    Test t;
+    t.f();
+    t.g();
+    
     return 0;
 }
 ```
 
-*Feature Test Macro:* [__cpp_size_t_suffix](https://en.cppreference.com/w/cpp/feature_test#cpp_size_t_suffix)
+Feature-test macro: [__cpp_explicit_this_parameter](https://en.cppreference.com/w/cpp/feature_test#cpp_explicit_this_parameter)
 
+Documentation: https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_parameter
 
-*Documentation:* https://en.cppreference.com/w/cpp/language/integer_literal
-
-### 12. Ref Qualifiers (from C++11) and deduce this (from C++23)
+### 10. Ref-Qualified methods (from C++11) and more about explicit Object Parameter (from C++23)
 
 Ordinary class member functions can be called on both contemporary (a.k.a. as lvalue and const lvalue) and temporary instances of a class (a.k.a. as rvalue).
 
-It is possible to explicitly specify what kind of instances a certain member function can be called. This is done by adding a ref-qualifier to the member function.
-
-If a member function can only be called on non-temporary instances, a `&` qualifier is added to the member signature. if a member function can only be called on temporary instances, a `&&` is added to the member signature.
+It is possible to explicitly specify what kind of instances a certain member function can be called. This is done by adding a ref-qualifier to the member function. If a member function can only be called on non-temporary instances, a `&` qualifier is added to the member signature in the end. Of a member function can only be called on temporary instances, a `&&` is added to the member signature in the end.
 
 Example: 
 
@@ -5738,9 +5742,11 @@ int main()
 }
 ```
 
-*Feature-test macro:* [__cpp_ref_qualifiers](https://en.cppreference.com/w/cpp/feature_test#cpp_ref_qualifiers)
+As this example demonstrates if somebody finds ref-qualifiers too messy for implementing `value()` methods, the C++23 feature with explicit object parameters provides an alternative syntax to write methods `g()`. This allows you to rewrite the ref-qualified member functions using a slightly different syntax.
 
-*Documentation:* https://en.cppreference.com/w/cpp/language/function#Function_declaration
+Feature-test macro: [__cpp_ref_qualifiers](https://en.cppreference.com/w/cpp/feature_test#cpp_ref_qualifiers)
+
+Documentation: https://en.cppreference.com/w/cpp/language/function#Function_declaration
 
 ## C++23 - Preprocessors Features
 
@@ -5772,20 +5778,16 @@ Shows the given compile-time warning message message without affecting the valid
 #warning "Hello"
 ```
 
-*Documentation:*
-https://en.cppreference.com/w/cpp/preprocessor/error
+Documentation: https://en.cppreference.com/w/cpp/preprocessor/error
 
 
 ## C++23 - Library Features
 
 ### 1. Print and Println
+
 Motivation: New way to work with steam file I/O. Which is shorter and by the promise of C++2023 standard library developers faster.
 
 There are promises from standardization community that `std::print()` and `std::println()` slightly faster compare to `std::cout << std::format("Hello {}", name);` and faster compare to `printf()`.
-
-Documentation:
-* https://en.cppreference.com/w/cpp/io/print
-* https://en.cppreference.com/w/cpp/io/println
 
 Example:
 
@@ -5844,20 +5846,13 @@ int main()
 
 From C++23, the format string for [format()](https://en.cppreference.com/w/cpp/utility/format/format), [print()](https://en.cppreference.com/w/cpp/io/print), and [println()](https://en.cppreference.com/w/cpp/io/println) must be a compile-time constant so that the compiler can check syntax errors in the format string.
 
-*Documentation:*
-
-https://en.cppreference.com/w/cpp/io/println
-https://en.cppreference.com/w/cpp/io/print
+Documentation:
+* https://en.cppreference.com/w/cpp/io/print
+* https://en.cppreference.com/w/cpp/io/println
 
 ### 2. Stack Traces
 
-The [std::exception](https://en.cppreference.com/w/cpp/error/exception) is an exception that by design tells you what went wrong (through the aptly named [what()](https://en.cppreference.com/w/cpp/error/exception/what) function). However, what a [std::exception](https://en.cppreference.com/w/cpp/error/exception) cannot tell you, is where things went wrong. There is no standard way for you to find out where in the code the exception was thrown. This limitation is not presented in Java or C#, but for C++ it is the case. In this language, the exceptions carry in addition a stack trace. It is something their runtimes are collected during function invocations. From C++23, you have access to this feature by leveraging std::stacktrace object in your exception object.
-
-Documentation:
-
-https://en.cppreference.com/w/cpp/header/stacktrace
-
-https://en.cppreference.com/w/cpp/utility/basic_stacktrace
+The [std::exception](https://en.cppreference.com/w/cpp/error/exception) is an exception that by design tells you what went wrong (through the aptly named [what()](https://en.cppreference.com/w/cpp/error/exception/what) function). However, what a [std::exception](https://en.cppreference.com/w/cpp/error/exception) cannot tell you, is where things went wrong. There is no standard way for you to find out where in the code the exception was thrown. This limitation is not presented in Java or C#, but for C++ it is the case. In this language, the exceptions carry in addition a stack trace. It is something their runtimes are collected during function invocations. From C++23, you have access to this feature by leveraging the [std::stacktrace](https://en.cppreference.com/w/cpp/header/stacktrace) object in your exception object.
 
 Example:
 
@@ -5919,6 +5914,15 @@ int main()
 }
 ```
 
+Feature-test macro:
+[__cpp_lib_stacktrace](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_stacktrace)
+
+Documentation:
+
+https://en.cppreference.com/w/cpp/header/stacktrace
+
+https://en.cppreference.com/w/cpp/utility/basic_stacktrace
+
 ### 3. Flat Associative Containers std::flat_set and std::flat_map
 
 Typically, a `std::set` and `std::map` are implemented by balanced red-black trees. The `flat_set` is simply backed by an ordered sequential container. As a consequence:
@@ -5934,16 +5938,22 @@ Similar to `std::flat_set`, there is `std::flat_map`.
 
 This new container has the same API as `std::set` and `std::map`.
 
-*Warning: At the moment March-2024 there is no compiler that supports:*
+> Warning: At the moment March-2024 no compiler supports it:
 https://en.cppreference.com/w/cpp/compiler_support
 
-*Documentation:* https://en.cppreference.com/w/cpp/header/flat_set,
-https://en.cppreference.com/w/cpp/container/flat_map
+Feature-test macro:
+[__cpp_lib_flat_set](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_flat_set), [__cpp_lib_flat_map](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_flat_map)
+
+Documentation:
+
+* https://en.cppreference.com/w/cpp/header/flat_set
+* https://en.cppreference.com/w/cpp/container/flat_map
 
 ### 4. Compiler Hint std::unreachable()
 
-Marks that the current scope or place is unreachable. If code comes to this point then behavior is undefined. The point is to tell the compiler that part of the code does not need to be generated. Canonical example switch statement 
-witch be designed dispatched by all `cases`.
+Marks that the current scope or place is unreachable. If code comes to this point then behavior is undefined. 
+
+The point of this call is to tell the compiler that part of the code does not need to be generated. Canonical example for use case is a switch statement witch be designed dispatched by all `cases`.
 
 Example:
 
@@ -5968,17 +5978,17 @@ int main()
 }
 ```
 
-*Feature-test macro:* [__cpp_lib_unreachable](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_unreachable)
+Feature-test macro: [__cpp_lib_unreachable](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_unreachable)
 
-*Documentation:* https://en.cppreference.com/w/cpp/utility/unreachable
+Documentation: https://en.cppreference.com/w/cpp/utility/unreachable
 
 ### 5. Multidimensional View std::mdspan
 
 The `std::mdspan` is a multidimensional view of a contiguous sequence of objects interpretable as a multidimensional array.
 
-*Feature Test Macro:* [__cpp_lib_mdspan](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_mdspan)
+Feature Test Macro: [__cpp_lib_mdspan](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_mdspan)
 
-*Documentation:* https://en.cppreference.com/w/cpp/container/mdspan
+Documentation: https://en.cppreference.com/w/cpp/container/mdspan
 
 ### 6. Stream API with Raw Buffers via std::ispanstream
 
@@ -5988,10 +5998,9 @@ Unforutnately standard streams such as[std::stringstream](https://cplusplus.com/
 
 The C++23 introduces `std::ispanstream` which provides a way to use a streaming interface on top of the raw buffer.
 
-*Feature-test macro:* [__cpp_lib_spanstream](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_spanstream)
+Feature-test macro: [__cpp_lib_spanstream](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_spanstream)
 
-*Documentation:* https://en.cppreference.com/w/cpp/io/basic_ispanstream
-
+Documentation: https://en.cppreference.com/w/cpp/io/basic_ispanstream
 
 
 ----
