@@ -1,4 +1,4 @@
-# Technical Note. From C++1998 to C++[2020|2023]
+# Technical Note. From C++1998 to C++202x
 
 > Historical Note: The original title "Technical Note. From C++1998 to C++2020" in the recent update from Mar 2024 has been changed, because we have added a special appendix to cover some language and library features of C++ 2023.
 
