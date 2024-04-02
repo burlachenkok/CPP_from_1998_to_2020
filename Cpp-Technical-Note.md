@@ -19,7 +19,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 ----
 
 
-Revision Update: March 29, 2024
+Revision Update: April 1, 2024
 
 Historical Note: The original title *"Technical Note. From C++1998 to C++2020"* in the update from Mar 2024 has been changed, due to the addition of a special appendix to cover some language and library features of C++ 2023.
 
@@ -1253,7 +1253,9 @@ const auto* p_ii = &ii;
 const auto& p_ref = ii;
 const volatile auto* p_iii = &ii;
 ```
-The *volatile* is a type qualifier that denotes that that type can alter its value not due to C++ language, but for other system reasons. Thus C++ implementation should be careful with optimization access for that variable through registers. In C++ the usage of `volatile` does not imply a memory fence, so be careful with creating multithreaded code and use memory fences appropriately when you need to reconstruct sequence memory consistency garantees in multithreaded applications.
+The *volatile* is a type qualifier that denotes that that type can alter its value not due to C++ language, but for other system reasons. Thus C++ implementation should be careful with optimization access for that variable through registers. 
+
+> In C++ the usage of `volatile` does not imply a `memory fence`, so be very careful with creating multithreaded code and you should use memory fences appropriately when you need to reconstruct sequence memory consistency guarantees in multithreaded applications. The memory fence (or memory barrier) means that memory operations started to be issued before the barrier are guaranteed to be performed before operations after the barrier.
 
 The close-by conception for [auto](https://en.cppreference.com/w/cpp/language/auto) is [decltype](https://en.cppreference.com/w/cpp/language/decltype). It provides the ability to derive the type of expression without evaluating it.  
 
