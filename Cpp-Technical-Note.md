@@ -3759,7 +3759,7 @@ https://en.cppreference.com/w/cpp/language/namespace
 
 ## 14. Filesystem
 
-The means for filesystem support are defined in [<filesystem>](https://en.cppreference.com/w/cpp/filesystem). It allows you to write portable code to work with a filesystem. Functioality includes: querying whether path is a directory or a file, iterating over the directory, manipulating paths, and retrieving information about files, etc.
+The filesystem support is defined in [filesystem](https://en.cppreference.com/w/cpp/filesystem). It allows you to write portable code to work with a filesystem. Functionality includes: querying whether the path is a directory or a file, iterating over the directory, manipulating paths, and retrieving information about files, etc.
 
 Feature-test macro: [__cpp_lib_filesystem](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_filesystem)
 
