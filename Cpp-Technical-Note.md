@@ -1,6 +1,11 @@
 # Technical Note. From C++98 to C++2x
 
+<center>
+<img src="imgs/generated_cpp_image.jpeg" alt="book logo" width="50%"/>
+</center>
+
 ----
+
 
 [Konstantin Burlachenko](https://burlachenkok.github.io/)
 
@@ -19,7 +24,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 ----
 
 
-Revision Update: April 1, 2024
+Revision Update: May 1, 2024
 
 Historical Note: The original title *"Technical Note. From C++1998 to C++2020"* in the update from Mar 2024 has been changed, due to the addition of a special appendix to cover some language and library features of C++ 2023.
 
@@ -224,7 +229,7 @@ Historical Note: The original title *"Technical Note. From C++1998 to C++2020"* 
     - [5. Multidimensional Subscript Operator](#5-multidimensional-subscript-operator)
     - [6. Assume Attribute](#6-assume-attribute)
     - [7. Withdraw from Optional Garbage Collection](#7-withdraw-from-optional-garbage-collection)
-    - [8. Fixed or Extended Width Float Point Types](#8-fixed-or-extended-width-float-point-types)
+    - [8. Extended Width Float Point Types](#8-extended-width-float-point-types)
     - [9. Explicit Object Parameters in Class Methods](#9-explicit-object-parameters-in-class-methods)
     - [10. Ref-Qualified methods (from C++11) and more about explicit Object Parameter (from C++23)](#10-ref-qualified-methods-from-c11-and-more-about-explicit-object-parameter-from-c23)
   - [C++23 - Preprocessors Features](#c23---preprocessors-features)
@@ -5431,8 +5436,10 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
 
 ## C++23 - How to Invoke C++2023 Compiler
 
-* **GCC:** Gnu Compiler Collection. C++23 features have started to be available since GCC 11. However better support of C++23 features has been available since GCC 13.
+Once the C++ standard committee adopted the first changes to C++23, the working name for this new version was named `C++2b`, which means "probably to be C++23". Therefore at least before official (full) support of C++23 compiler-writers use this flag to specify language standards.
 
+* **GCC:** Gnu Compiler Collection. C++23 features have started to be available since GCC 11 (https://en.cppreference.com/w/cpp/compiler_support/23). However, better support of C++23 features has been available since GCC 13.
+The C++ status in GCC: https://gcc.gnu.org/projects/cxx-status.html
   ```bash
   g++-13 -x c++ --std=c++2b <filename>.cpp
   ```
@@ -5443,7 +5450,8 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
 
   Support for modules in GCC is enabled with the [-fmodules-ts](https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Modules.html) option.
 
-* **CLANG:** The language front-end and tooling infrastructure for languages in the C language family leveraging the LLVM back-end.
+* **CLANG:** The CLang is a language front-end and tooling infrastructure for languages in the C language family leveraging the LLVM back-end. The C++ status in CLang:
+https://clang.llvm.org/cxx_status.html
 
 
   ```bash
@@ -5454,7 +5462,8 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
   clang++-17 -x c++ --std=c++23 <filename>.cpp
   ```
 
-* **MSVC:** Microsoft Visual C++ (MSVC) is a compiler for C++ applications developed by Microsoft Corporation.
+* **MSVC:** Microsoft Visual C++ (MSVC) is a compiler for C++ applications developed by Microsoft Corporation. At a moment of writing this tehcnical note there is no option `/std:23` from [/std](https://learn.microsoft.com/en-us/cpp/build/reference/std-specify-language-standard-version). The C++ status in MSVC:
+https://learn.microsoft.com/en-us/cpp/overview/visual-cpp-language-conformance
 
   ```bash
   :: Even to build simple code snippets you should have a collection of programs (toolchain) that will be used together to build various applications for OS
@@ -5490,7 +5499,7 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
 
 ### 1. New Rule for Identifiers
 
-Identifiers for alphabets can now use not only Basic Latin 1 symbols but (informally) also *"anything"* that looks like a letter.
+Identifiers for alphabets can now use not only Basic Latin 1 symbols but (informally) also *"anything"* that looks like a letter from UCS.
 
 ### 2. Compilers have to Support UTF-8 Source Files Encoding
 
@@ -5503,12 +5512,10 @@ The C++17 standard added the rule that all side effects of the right side of an 
 
 ### 4. Suffix for size_t
 
-As of C++23, you can define integer literals of type std::size_t using a suffix consisting of both `u` or `U` and `z` or `Z`. Possible suffixies: `uz`, `uZ`, `Uz`, `UZ`, `zu`, `zU`, `Zu`, `ZU`.
-
 C++23 introduces a literal suffix for type [std::size_t](https://en.cppreference.com/w/cpp/types/size_t) in the form of using a suffix consisting of both `u` or `U` and `z` or `Z`.
 Possible suffixies: `uz`, `uZ`, `Uz`, `UZ`, `zu`, `zU`, `Zu`, `ZU`. Short examples: `42uz` and `42UZ`. 
 
-More long example:
+Example:
 
 ```cpp
 #include <iostream>
@@ -5606,13 +5613,13 @@ Back in C++11, the Garbage Collection (GC) has been added into the Language. But
 In C++23 the GC has been completely removed from the language.
 
 
-### 8. Fixed or Extended Width Float Point Types
+### 8. Extended Width Float Point Types
 
-While single and double-precision floating point numbers are by far the most commonly used, they are not the only format in 2024. 
+While single and double-precision floating point numbers are by far the most commonly used, they are not the only format in 2010 - 2024. 
 
-Computer hardware capable of processing 16-bit floating-point data is becoming more widely available. The C++23 added the possibility to support some alternative floating point formats.
+Today computer hardware capable of processing 16-bit floating-point data is becoming more widely available. The C++23 added the possibility to support some alternative floating point formats.
 
-Specifically, the C++23 introduces the following extended floating-point types from IEEE 754: `fp16`, `fp32`, `fp64`, `fp128`. In addition, it introduces `bf16` the format developed by Google Brain. 
+Specifically, C++23 introduces the following extended floating-point types from IEEE 754: `fp16` (std::float16_t), `fp32`(std::float32_t), `fp64`(std::float64_t), `fp128`(std::float128_t). In addition, it introduces `bf16` (std::bfloat16_t	) the format developed by Google Brain. In addition to this types C++23 provides also corresponding suffix for literals of those types ([f|F] [16|32|64|128]) and bf16, BF16.
 
 Support for all these formats is optional, and in fact, not all compilers provide these types.
 
@@ -5641,7 +5648,7 @@ int main()
 
 > Warning: MSVC 2022 17.9.0 does not support it
 
-> Warning: Right now there is limited support for this new Fixed-width Float-Point type. One compiler where it is available is GCC 13.1.
+> Warning: Right now there is limited support for this new Fixed-width Float-Point type. One compiler where it is available is GCC 13.1 (GCC 13.1 was released in [April 26, 2023](https://gcc.gnu.org/gcc-13/)).
 
 Documentation: 
 * https://en.cppreference.com/w/cpp/types/floating-point
@@ -5649,7 +5656,9 @@ Documentation:
 
 ### 9. Explicit Object Parameters in Class Methods
 
-C++23 introduces a new syntax that allows you to name the implicit `this` pointer as an explicit parameter. For instance, it can be useful during porting Python scripts. 
+C++23 introduces a new syntax that allows you to name the implicit `this` pointer as an explicit parameter.
+
+> For instance, it can be useful during porting Python scripts.
 
 Requirements by C++2023 standard:
 
@@ -5692,9 +5701,9 @@ Documentation: https://en.cppreference.com/w/cpp/language/member_functions#Expli
 
 ### 10. Ref-Qualified methods (from C++11) and more about explicit Object Parameter (from C++23)
 
-Ordinary class member functions can be called on both contemporary (a.k.a. as lvalue and const lvalue) and temporary instances of a class (a.k.a. as rvalue).
+Ordinary class member functions can be called on both real variables (a.k.a. as lvalue and const lvalue) and temporary instances of a class (a.k.a. as rvalue).
 
-It is possible to explicitly specify what kind of instances a certain member function can be called. This is done by adding a ref-qualifier to the member function. If a member function can only be called on non-temporary instances, a `&` qualifier is added to the member signature in the end. Of a member function can only be called on temporary instances, a `&&` is added to the member signature in the end.
+It is possible to explicitly specify what kind of instances a certain member function will be called in these two cases. This is done by adding a ref-qualifier to the member function. If a member function can only be called on non-temporary instances, a `&` qualifier is added to the member signature at the end. If a member function can only be called on temporary instances, a `&&` is added to the member signature at the end.
 
 Example: 
 
@@ -5744,7 +5753,7 @@ int main()
 }
 ```
 
-As this example demonstrates if somebody finds ref-qualifiers too messy for implementing `value()` methods, the C++23 feature with explicit object parameters provides an alternative syntax to write methods `g()`. This allows you to rewrite the ref-qualified member functions using a slightly different syntax.
+This example demonstrates if somebody finds ref-qualifiers too messy for implementing `value()` methods, the C++23 feature with explicit object parameters provides an alternative syntax to write methods `g()`. Essentially, this allows you to rewrite the ref-qualified member functions using a slightly different syntax.
 
 Feature-test macro: [__cpp_ref_qualifiers](https://en.cppreference.com/w/cpp/feature_test#cpp_ref_qualifiers)
 
@@ -5787,9 +5796,9 @@ Documentation: https://en.cppreference.com/w/cpp/preprocessor/error
 
 ### 1. Print and Println
 
-Motivation: New way to work with steam file I/O. Which is shorter and by the promise of C++2023 standard library developers faster.
-
-There are promises from standardization community that `std::print()` and `std::println()` slightly faster compare to `std::cout << std::format("Hello {}", name);` and faster compare to `printf()`.
+Motivation wit new way to `print` is to work in another with API for file stream I/O.
+* It is shorter 
+* There are promises from standardization community that `std::print()` and `std::println()` slightly faster compare to `std::cout << std::format("Hello {}", name);` and faster compare to `printf()`.
 
 Example:
 
@@ -5824,7 +5833,10 @@ int main()
 }
 ```
 
-Finally, the example below demonstrates that format strings should be a compile-time string:
+
+From C++23, the format string for [format()](https://en.cppreference.com/w/cpp/utility/format/format), [print()](https://en.cppreference.com/w/cpp/io/print), and [println()](https://en.cppreference.com/w/cpp/io/println) must be a compile-time constant so that the compiler can check syntax errors in the format string.
+
+Example:
 
 ```cpp
 #include <print>
@@ -5835,18 +5847,17 @@ int main()
 #if __cpp_lib_print >= 202207L
 
     std::println("Hello {0} {1}", 123, 456);
+
+    // COMPILE-TIME ERROR -- format string is not a constant
+    // std::println(std::string("Hello {0} {1}"), 123); 
+
     // COMPILE-TIME ERROR -- format string has two args
     //std::println("Hello {0} {1}", 123);
     
-    
-    // COMPILE-TIME ERROR -- format string is not a constant
-    // std::println(std::string("Hello {0} {1}"), 123); 
 #endif
     return 0;
 }
 ```
-
-From C++23, the format string for [format()](https://en.cppreference.com/w/cpp/utility/format/format), [print()](https://en.cppreference.com/w/cpp/io/print), and [println()](https://en.cppreference.com/w/cpp/io/println) must be a compile-time constant so that the compiler can check syntax errors in the format string.
 
 Documentation:
 * https://en.cppreference.com/w/cpp/io/print
@@ -5854,9 +5865,15 @@ Documentation:
 
 ### 2. Stack Traces
 
-The [std::exception](https://en.cppreference.com/w/cpp/error/exception) is an exception that by design tells you what went wrong (through the aptly named [what()](https://en.cppreference.com/w/cpp/error/exception/what) function). However, what a [std::exception](https://en.cppreference.com/w/cpp/error/exception) cannot tell you, is where things went wrong. There is no standard way for you to find out where in the code the exception was thrown. This limitation is not presented in Java or C#, but for C++ it is the case. In this language, the exceptions carry in addition a stack trace. It is something their runtimes are collected during function invocations. From C++23, you have access to this feature by leveraging the [std::stacktrace](https://en.cppreference.com/w/cpp/header/stacktrace) object in your exception object.
+The [std::exception](https://en.cppreference.com/w/cpp/error/exception) is an exception that by design tells you what went wrong (through the aptly named [what()](https://en.cppreference.com/w/cpp/error/exception/what) function). 
 
-Example:
+However, what a [std::exception](https://en.cppreference.com/w/cpp/error/exception) cannot tell you, is where things went wrong. 
+
+Before C++23, there was no standard way for you to find out where in the code the exception was thrown. This limitation is not presented in Java or C#, but for C++ it is the case. In these languages (Java and C#), the exceptions carry the addition of a stack trace. The stack trace in these languages is something in which their runtimes are collected during function invocations. 
+
+From C++23, you have access to this feature by leveraging the [std::stacktrace](https://en.cppreference.com/w/cpp/header/stacktrace) object in your exception object.
+
+Canonical Example:
 
 ```cpp
 #include <exception>
@@ -5880,6 +5897,7 @@ public:
     
     const std::stacktrace& where() const noexcept
     {
+        // The trace object which holds tracing information
         return m_trace; 
     }
     
