@@ -1,7 +1,7 @@
-<center><h1>Technical Note. From C++98 to C++2x</h1></center>
+# Technical Note. From C++98 to C++2x
 
 <center>
-<img src="imgs/generated_cpp_image.jpeg" alt="book logo" width="80%"/>
+<img src="imgs/generated_cpp_image.jpeg" alt="book logo" width="85%"/>
 </center>
 
 ----
@@ -250,7 +250,7 @@ Historical Note: The original title *"Technical Note. From C++1998 to C++2020"* 
 
 # Introduction
 
-On that technical note, we would like to share complete information regarding the C programming language and all primary C++ programming language standards: C++03/98, C++11, C++14, C++17, and C++20. If you do not know C++, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it a bit. Here "know" has a weak sense. We have also tried to appeal in that note to people with a not-so-big background in C++.
+On that technical note, we would like to share complete information regarding the C programming language and all primary C++ programming language standards: C++03/98, C++11, C++14, C++17, C++20, and C++23. If you do not know C++, this note is less likely for you because it contains subtle technical details for people who are at least familiar with it a bit. Here "know" has a weak sense. We have also tried to appeal in that note to people with a not-so-big background in C++.
 
 Do not get us wrong. If you have never seen the C++ language to obtain knowledge, we recommend first dedicating some time to reading original books by Bjarne Stroustrup. It would be only more effective for you. In recent years, Bjarne Stroustrup has made a lot of effort by providing easy-to-read books such as ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend for whom this language is new to first read any of those books.
 
