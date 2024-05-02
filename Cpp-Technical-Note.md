@@ -1,7 +1,7 @@
-# Technical Note. From C++98 to C++2x
+<center><h1>Technical Note. From C++98 to C++2x</h1></center>
 
 <center>
-<img src="imgs/generated_cpp_image.jpeg" alt="book logo" width="50%"/>
+<img src="imgs/generated_cpp_image.jpeg" alt="book logo" width="80%"/>
 </center>
 
 ----
@@ -4455,23 +4455,62 @@ void f(const T&...arg){}
 Example of performing *printf* in variadic template style (The example is typical and can be found as an example using variadic template, e.g. [here](https://stackoverflow.com/questions/17671772/c11-variadic-printf-performance) question in the [StackOverflow](https://stackoverflow.com/)):
 
 ```cpp
-template<typename T, typename... Args>
-void printf(const char *s, T value, Args... args)
-{
-    using std::cout;
+#include <iostream>
 
-    while (*s) {
-        if (*s == '%') {
-            if (*(s + 1) != '%') {
-                cout << value;
+// Function that takes zero arguments after expansion
+void my_printf(const char* s)
+{
+    while (*s)
+        std::cout << *s++;
+}
+
+template<typename T, typename ... Args>
+void my_printf(const char* s, T value, Args ... args)
+{
+    while (*s) 
+    {
+        if (*s == '%') 
+        {
+            if (*(s + 1) != '%') 
+            {
+                std::cout << value;
                 s += 2;
                 my_printf(s, args...);
                 return;
             }
             ++s;
         }
-        cout << *s++;
+        std::cout << *s++;
     }
+}
+
+template<typename ... Args>
+void my_print_arg_pack_size(Args ... args)
+{
+    std::cout << "Number of elements in template arguments parameters pack: " << sizeof...(args) << '\n';
+}
+
+#if __cplusplus >= 201703L
+    template<typename... Args>
+    bool allLeftFold(Args... args) { return (... && args); }
+#endif
+
+int main()
+{
+    // FOR MSVC use compiler flag to define __cplusplus correcly: /Zc:__cplusplus
+    
+    std::cout << "C++ Standard: " << __cplusplus/100 << '\n' << '\n';
+    
+    // SINCE C++11
+    my_printf("%i %i\n", 12, 12);
+    my_print_arg_pack_size(1, 12.0, 'c');
+    
+#if __cplusplus >= 201703L
+    // SINCE C++17
+    std::cout << allLeftFold(1, 1, 0, 1);
+#endif
+
+    return 0;
 }
 ```
 
@@ -4485,15 +4524,13 @@ There are two important things about variadic templates:
 
 Packing operations:
 * `class ...Args` - **template parameters parameters pack** with optional name. Non-type template parameters can also be organized in the pack via similar syntax `int...`.  One more time - whitespace around <`...`> does not matter for the compiler.
-* `(Arg&&....params)` - **template arguments parameters pack**.
+* `(Arg&&....params)` - **template arguments parameters pack** or **function parameters pack**.
 
 Unpacking operations:
-* `Args...` - **unpack** parameters (or **pack expansion**). Used inside the body of the template function or template class member function to semnatically unroll all template type parameters.
-* `sizeof...(Args)` - the size of parameters in terms of the number of elements in Args. (It is not the size in bytes).
+* `args...` - **unpack** parameters (or **pack expansion**). Used inside the body of the template function or template class member function to semnatically unroll all template type parameters.
+* `sizeof...(args)` or `sizeof...(Args)` - the size of parameters in terms of the number of elements in Args. (It is not the size in bytes).
 
-Variadic templates have been introduced in C++11, but there is one more tick for variadic templates  with the name **fold expression** which has been introduced in C++17. 
-
-The unary syntax for fold expression:
+Variadic templates have been introduced in C++11, but there is one more tick for variadic templates  with the name **fold expression** which has been introduced in C++17. The syntax for fold expression:
 ```cpp
 template<typename... Args>
 bool allLeftFold(Args... args) { return (... && args); }  
@@ -4504,7 +4541,13 @@ bool allRightFold(Args... args) { return (args&& ...); }
 // Unary right fold (E op ...) becomes (E1 op (... op (EN-1 op EN)))
 ```
 
-Documentation: [cpp reference details about folding](https://en.cppreference.com/w/cpp/language/fold)
+The allowable operation for folding includes all operators supported for 32-bit integer numbers.
+
+Documentation: 
+
+* [cpp reference details about folding](https://en.cppreference.com/w/cpp/language/fold)
+* [cpp reference details about parameter pack](https://en.cppreference.com/w/cpp/language/parameter_pack)
+* [cpp reference details about "sizeof..." operator](https://en.cppreference.com/w/cpp/language/sizeof...)
 
 ## Template Specialization
 We have already quickly looked into template specialization. But now we will look more closely into this concept. Override the default behavior for template instantiation is called *specialization*. An explicit specialization declaration must appear after the declaration of the primary/general template, at least due to the language requirements. 
