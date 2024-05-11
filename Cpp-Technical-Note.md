@@ -263,7 +263,7 @@ However, it is important to note that there is a notion of a programming languag
 This note is mainly based on materials from the [references](#references) section and personal experience. We think that information can be helpful for three categories of people:
 
 * People who want to refresh or go deep into several language constructions of C++
-* Obtain a pretty in-depth overview of new features from C++11/14/17/20
+* Obtain a pretty in-depth overview of new features from C++11/14/17/20/23
 * People who need to support (legacy) C++03 or C99 code base
 
 Finally, we welcome anybody who wants to make this note cleaner. We appreciate the style of *language lawyer* and *practical applicability*, but we don't want to have any of the extremes of both types.
@@ -283,10 +283,10 @@ Use *MSVC 19.30 _MSC_VER)* or higher. Visual Studio 2022 Community Edition is di
 
 # Support of Various Features by Compilers Vendors
 
-Compiler vendors hard at work to catch up with all new features. You can keep track of which compiler supports which features of C++11/14/17/20/23 based on this table:
+Compiler vendors are hard at work to catch up with all new features. You can keep track of which compiler supports which features of C++11/14/17/20/23 based on this table:
 [https://en.cppreference.com/w/cpp/compiler_support](https://en.cppreference.com/w/cpp/compiler_support)
 
-Alternative (standartized way) to check presenting of some feature (from C++2020) is using [feature test macro](#13-feature-test-macro). The list of avaialable macros are available here:
+An alternative (standardized way) to check the presence of some features (from C++2020) is using [feature test macro](#13-feature-test-macro). The list of available macros are available here:
 https://en.cppreference.com/w/cpp/feature_test
 
 
@@ -355,12 +355,12 @@ X&x = obj; // X is the datatype of obj
 
 **RValue Reference (starting from C++11)**. The goal of an RValue reference is to have a moving candidate for functions like `void f(T&&)`. In practice, RValue reference is either:
 
-* A reference to an object that soon will be deleted (xvalue expression)
-* Explicitly unconditionally casted reference to the object through `std::move` to an RValue reference. 
+* A reference to an object that will soon be deleted (xvalue expression)
+* Explicitly unconditionally cast reference to the object through `std::move` to an RValue reference. 
 
-The `std::move` after moving, brings object for moving is applied to a valid but undefined state:
+The `std::move` after moving, brings an object for moving and is applied to a valid but undefined state:
 
-> Reusing an object after moving from is in fact *legal* and *valid*. In one of the talks in CppCon [Nicolai M. Josuttis](https://www.josuttis.com/) member of C++ Standard Committee, explicitly highlighted it. In that case, you should reinitialize the object using class API or the logic behind the class.
+> Reusing an object after moving from it is in fact *legal* and *valid*. In one of the talks in CppCon [Nicolai M. Josuttis](https://www.josuttis.com/), a member of C++ Standard Committee, explicitly highlighted it. In that case, you should reinitialize the object using class API or the logic behind the class.
 
 > What was known in C++03/98 as *RValue Reference* starting from C++11 has been renamed into *Const LValue Reference*.
 
@@ -389,19 +389,19 @@ A* ptr;
 
 **Statement Block.** Several C++ or C language statements organized into in a pair of curly braces `{`, `}`.
 
-**cv qualifiers.** During reading standards or another form of language rules you will at some moment faced with this term. It means constant and volatile type qualifiers.
+**cv qualifiers.** During reading standards or another form of language rules you will at some moment be faced with this term. It means constant and volatile type qualifiers.
 
 ----
 
 # Motivation
 
-Both C and C++ programming language represents a pretty thin abstraction over the underlying hardware. The software level below C and C++ is Assembly Language for your computing device. Why computing is critical is excellently motivated by Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/) from MIT, in his undergraduate course about [Algorithms and Data structures](https://ocw.mit.edu/courses/6-046j-introduction-to-algorithms-sma-5503-fall-2005/). In the first lecture. Prof. Charles E. Leiserson in 2005 ( [MIT Introduction to Algorithms 2005, Lecture 1](https://youtu.be/JPyuH4qXLZ0?list=PLJoUgeodwOzMqSSlI_Iy-RvCOrPNXNsku&t=1147) ) highlighted that there are a lot of things that are more important than performance: Modularity; Correctness; Maintainability; Functionality; Robustness; User Friendliness; Programmer time; Simplicity; Extensibility; Reliability; Security; Scalability; etc.
+Both C and C++ programming language represents a pretty thin abstraction over the underlying hardware. The software level below C and C++ is the Assembly Language for your computing device. Why computing is critical is excellently motivated by Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/) from MIT, in his undergraduate course about [Algorithms and Data structures](https://ocw.mit.edu/courses/6-046j-introduction-to-algorithms-sma-5503-fall-2005/). In the first lecture. Prof. Charles E. Leiserson in 2005 ( [MIT Introduction to Algorithms 2005, Lecture 1](https://youtu.be/JPyuH4qXLZ0?list=PLJoUgeodwOzMqSSlI_Iy-RvCOrPNXNsku&t=1147) ) highlighted that there are a lot of things that are more important than performance: Modularity; Correctness; Maintainability; Functionality; Robustness; User Friendliness; Programmer time; Simplicity; Extensibility; Reliability; Security; Scalability; etc.
 
 The **Performance** is the goal in case of having real-time requirements for the software. If the software is not fast enough - it's just not a choice to use or buy it in such circumstances. 
 
 But in fact, if think deeply then performance in fact due to [Prof. Charles E. Leiserson](https://scholar.google.com/citations?user=gWBoNCsAAAAJ&hl=ru&oi=ao) is the currency (money) under which it's possible to buy other features from the list above because these features are not coming for free.
 
-Nowadays, in 2022 due to [Tobex Index July 2022](https://www.tiobe.com/tiobe-index/), the interpretable programming language [Python](https://www.python.org/) is the most popular in that world. From the graphics, you can observe that Python is slightly beyond C in terms of popularity. Interestingly, Python has been designed originally only as a replacement for Bash. That has been described in that [Blog Post](https://python-history.blogspot.com/2009/01/personal-history-part-1-cwi.html?fbclid=IwAR1v3C4KHiJtBbG4NYVY2o__lMchCNVKQGe2ozoI-gcxnwCYNvcdxzD_sHU) written by author of Python Programming Language:
+Nowadays, in 2022 due to [Tobex Index July 2022](https://www.tiobe.com/tiobe-index/), the interpretable programming language [Python](https://www.python.org/) is the most popular in this world. From the graphics, you can observe that Python is slightly beyond C in terms of popularity. Interestingly, Python has been designed originally only as a replacement for Bash. That has been described in that [Blog Post](https://python-history.blogspot.com/2009/01/personal-history-part-1-cwi.html?fbclid=IwAR1v3C4KHiJtBbG4NYVY2o__lMchCNVKQGe2ozoI-gcxnwCYNvcdxzD_sHU) written by the author of Python Programming Language:
 
 > "...My original motivation for creating Python was the perceived need for a higher level language in the Amoeba project. I realized that the development of system administration utilities in C was taking too long. Moreover, doing these in the Bourne shell wouldn't work for a variety of reasons. The most important one was that as a distributed micro-kernel system with a radically new design, Amoeba's primitive operations were very different (and finer-grain) than the traditional primitive operations available in the Bourne shell. So there was a need for a language that would "bridge the gap between C and the shell..." - [Guido van Rossum](https://en.wikipedia.org/wiki/Guido_van_Rossum).
 
@@ -413,7 +413,7 @@ But any interpretable languages are not a choice when actual time matters or sub
 
 ## Downsides of Interpretable Languages
 
-1. The interpreter parses the program's text (source code) line by line (that is represented or in text form or extremely high-level instructions). It is highly inefficient from the start even to execute such high level code. As a consequence, Interpretable languages provide algorithms that can be even up to 50'000 times slower in computing than highly optimized C/C++/ASM code. The interpreter is the worst possible that can be for execution time from all possible three choices for converting source code into the software: (Interpreter, Just In Time compiler, and Compiler).
+1. The interpreter parses the program's text (source code) line by line (that is represented in text form or extremely high-level instructions). It is highly inefficient from the start even to execute such high-level code. As a consequence, Interpretable languages provide algorithms that can be even up to 50'000 times slower in computing than highly optimized C/C++/ASM code. The interpreter is the worst possible that can be for execution time from all possible three choices for converting source code into the software: (Interpreter, Just In Time compiler, and Compiler).
 
     > For a concrete example, please look at Lecture 1 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/) with Prof. [Charles E. Leiserson](https://people.csail.mit.edu/cel/). The overview of that course is also available here: [About Performance Engineering course 6.172 at MIT](https://burlachenkok.github.io/About-Compute-Performance-Optimization-at-MIT/).
 
