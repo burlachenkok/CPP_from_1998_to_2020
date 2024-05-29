@@ -5422,7 +5422,7 @@ Here we present materials presented by Prof. Charles Leiserson, Prof. Julian Shu
 
 7. **Exploit Sparsity.** The idea of exploiting sparsity is to avoid storing and computing on zeroes. Structures such as Compressed Sparse Row(CSR) can be used to compress information about sparse matrices, sparse graphs, and sparse weighted graphs.
 
-8. **Constant folding and propagation.** The idea of constant folding and propagation is to
+8. **Constant folding and Propagation.** The idea of constant folding and propagation is to
 evaluate constant expressions and substitute the
 result in further expressions during compilation.
 
@@ -5446,15 +5446,12 @@ in the body of a loop.
 
 16. **Sentinels.** Sentinels are special dummy values placed in a data structure to simplify the logic of boundary conditions and in particular, as the handling of loop exit tests (*Compilers can not do it right now*).
 
-17. **Loop Unrolling.**  Attempt to save work by combining
-several consecutive iterations of a loop into a single
+17. **Loop Unrolling.**  Attempt to save work by combining several consecutive iterations of a loop into a single
 iteration. Another benefit of loop unrolling it opens more compiler optimization to apply.
     * *Full loop unrolling:* All iterations are unrolled
-    * *Partial loop unrolling:* Several, but not all, of the
-    iterations are unrolled.
+    * *Partial loop unrolling:* Several, but not all, of the iterations are unrolled.
 
-18. **Loop Fusion.** Loop fusion(also called jamming) is to
-combine multiple loops over the same index, saving the overhead
+18. **Loop Fusion.** Loop fusion(also called jamming) is to combine multiple loops over the same index, saving the overhead
 of loop control.  In addition, this technique is good for cache locality, and during loop fusion common subexpression may be obtained (*Compilers can not do it right now in full details*).
 
 19. **Eliminating Wasted Iterations.** Modify loop bounds to avoid executing loop iterations over empty loop bodies.
@@ -5469,21 +5466,21 @@ of loop control.  In addition, this technique is good for cache locality, and du
 
 The benefit is this in this case - the compiler will have one more register in case of this optimization. To specify this in MSVC use [/Oy](https://learn.microsoft.com/en-us/cpp/build/reference/oy-frame-pointer-omission?view=msvc-170) for GCC/CLANG use [-fomit-frame-pointer](https://gcc.gnu.org/onlinedocs/gcc-4.9.2/gcc/Optimize-Options.html).
 
-24. **Minimize write from different threads to the same memory.** Technically if you have CPU threads that are assigned for different CPUs you can write to the same memory location. However, from a memory perspective when logic is executed in different CPU cores there are two hardware protocols that come into play in this situation: 
+24. **Minimize Write from different Thread to the Same Memory.** Technically if you have CPU threads that are assigned for different CPUs you can write to the same memory location. However, from a memory perspective when different logic is executed in different CPU cores there are two hardware protocols that come into play in this situation: 
 
-* *cache consistency* protocol guarantees that all copies of DRAM cache lines are the same in all caches in the system;
+* *cache consistency* protocol guarantees that all copies of DRAM cache lines are the same in all Caches in the system;
 
 * *cache coherence* protocol guarantees any read of memory returns the most recent update anywhere in the system.
 
-Technically you can write in the same place. In reality in real hardware, it leads to phenomena called **invalidation storm**. It can lead to big performance bottlenecks in such protocols as [MSI](https://en.wikipedia.org/wiki/MSI_protocol).
+Technically you can write in the same place. In reality, in real hardware, it leads to phenomena called **invalidation storm**. It can lead to big performance bottlenecks in such protocols as [MSI](https://en.wikipedia.org/wiki/MSI_protocol).
 
 25. **Read after Read is not a race.** If two instructions perform a read and another performs a read as well from another thread, then in this case - there is no race condition. So, you can safely perform read after read without any synchronization. Another pair's read/write, write/read, write/write lead to race and nondeterministic behavior.
 
 26. **If you are using parallel algorithms, then use work-efficient algorithms.** If you want to replace a sequential algorithm with a parallel version then firstly practical parallel algorithms should be work-efficient. 
 
-This property means that if the launch algorithm is in a single core it should have the same asymptotic behavior in terms of compute complexity.
+This property means that if the launch algorithm is in a single core it should have the same asymptotic behavior in terms of compute complexity as best (or good) sequential algorithm.
 
-27. **Use modern compilers.** Compiler developers create new optimizations with each release of modern compilers.
+27. **Use Moden Compilers .** Compiler developers create new optimizations with each release.
 
 28. **Eliminate as possible integer modulus and division.** The modulus division and integer division are typically expensive. The information about instruction latency (the delay in a dependency chain under the assumption that input data is available in the register file), throughput (the maximum number of instructions of the same kind that can be executed per clock cycle), required execution port for INTEL and AMD CPUs are available in this technical document [[16]](https://www.agner.org/optimize/instruction_tables.pdf).
 
@@ -5499,7 +5496,7 @@ So in Windows and Linux if performance is the goal and you know that you will no
 
 Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the mutex is released during spinning - compute spinning is optimal, if the mutex is released after yielding this algorithm algorithm 2 is optimal. There exists a randomized algorithm that can achieve a $1.58$ competitive ratio.
 
-33. **Force uses sequential consistency with memory fences.** For restoring sequential consistency in the multithread program you have to use a memory fence. Memory fences can be issued explicitly or implicitly by locking, exchanging, and some other syncretization commands. **The typical cost of a memory fence is comparable to L2-cache access.**
+33. **Force uses sequential consistency with memory fences.** For restoring sequential consistency in the multithread program you have to use a memory fence. Memory fences can be issued explicitly or implicitly by locking, exchanging, and some other syncronization commands. **The typical cost of a memory fence is comparable to L2-cache miss.**
 
 34. **Consider the latency of memory accesses from different levels.** Take into assumption multicore cache hierarchy and different times for memory access. The relative latency and throughput for access for CPU Caches and Disk space is the following:
 
@@ -5528,11 +5525,12 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
 
 
 35. **Do not underestimate the algorithmic level.** Several tricks that can be done at the algorithm level:
-    * Store pre-computed results.
-    * Early cutoffs.
-    * Use a clever pruning strategy if the algorithm has a combinatorial search nature.
+    * Store pre-computed results
+    * Early cutoffs
+    * Use a clever pruning strategy if the algorithm has a combinatorial search nature
 
-37. **If the algorithm has internal/meta parameters to tune decide how to choose them.** Several strategies to decide internal parameters in the algorithm to use:
+37. **If the algorithm has internal/meta parameters to tune - decide how to choose them.**
+     Several strategies to decide internal parameters in the algorithm to use:
 
     * Construct the model of the computation device. Can explain exact magic constants in the algorithm, but hard to build, cannot model everything.
     * Heuristic-based solution. Works most of the time, however always suboptimal performance.
@@ -5540,7 +5538,7 @@ Sometimes this kind of synchronization is denoted as *Competitive Mutex*. If the
     * Autotuning-based solution. Try parameters, if satisfied then finish, if not select a new candidate heuristically.
 
 
-37. **Be aware of the underlying reasons for slow speed.** 
+38. **Be aware of the underlying reasons for slow speed.** 
     The popular reasons for slow speed are the following:
 
     * *Insufficient parallelism.* You need parallelism to keep multicores, vector units, and GPU busy.
