@@ -972,9 +972,17 @@ For example, [The Linux Programmer's Guide](https://tldp.org/LDP/lpg/node148.htm
 
 C++ 1998 and C++2003 use the C89 preprocessor, although the C language also has evolved: Tradition C, C89, C95, C99, C11, and C17. For a detailed description of the C preprocessor, please read Chapter 3 in ([2]).
 
-Preprocessor macro extensions in C and C++ have the following important properties. Once an extension replaces a macro call, the macro call search process starts from the beginning of the expanded extension for further replacement.
+The C preprocessor commands start with "#" symbol in the source code and it has some aspects. The C language allows any number of whitespace before and after "#" symbol.
+If the line contains only "#" this is an empty preprocessor command and it is ignored. This is what is called a "null directive" in C preprocessor lingvo. The C preprocessor can generate in principle invalid program
 
-During this process, macros referenced in their expansion are not re-expanded, and that preprocessor macro extension does not lead to infinite recursion. Example:
+If C macro expands and generates text which by itself will be a macro command, this last macro command will not be treated as a preprocessor macro definition.
+
+In function define a macro like `#define sum(x,y) ((x)+(y))` it should be not a whitespace between "m" and "(".
+Functions like macros may have zero parameters.
+
+There is no requirement that all arguments should be used in the body of the macros.
+Preprocessor macro extensions in C and C++ have the following important properties. Once an extension replaces a macro call, the macro call search process starts from the beginning of the expanded extension for further replacement.
+However, during this process, macros referenced in their expansion are not re-expanded, and that preprocessor macro extension does not lead to infinite recursion. Example:
 ```cpp
 #define sqrt(x) (x<0 ? sqrt(x) : sqrt(-x))
 ```
