@@ -4100,7 +4100,7 @@ In this conditional compilation block, the right-hand side has been taken from T
 
 ## 14. std::span
 
-The [std::span<T>](https://en.cppreference.com/w/cpp/container/span) class template allows you to refer to any contiguous sequence of T values and is analgous for [std::string_view](https://en.cppreference.com/w/cpp/header/string_view), but for arrays. However, in addition to similarities [std::span<T>](https://en.cppreference.com/w/cpp/container/span) allows you to modify underlying data even with `[]` operator.
+The [std::span<T>](https://en.cppreference.com/w/cpp/container/span) class template allows you to refer to any contiguous sequence of T values and is analogous for [std::string_view](https://en.cppreference.com/w/cpp/header/string_view), but for arrays. However, in addition to similarities [std::span<T>](https://en.cppreference.com/w/cpp/container/span) allows you to modify underlying data even with `[]` operator.
 
 ## 15. Bit Manipulation
 
@@ -4128,7 +4128,7 @@ Several critical conceptual things:
 
 * A module can **export** any number of C++ entities (functions, constants, types, etc.)
 * An exported entity by one module can be used in any source file that **imports** this module
-* The combination of all entities that a module export is called the **module interface**
+* The combination of all entities that a module exports is called the **module interface**
 * A module can **export entire other module**
 
 Documentation dedicated for modules: [cpp reference details](https://en.cppreference.com/w/cpp/language/modules)
@@ -4688,7 +4688,56 @@ The general template must be declared before any partial or complete specializat
 
 In a function template specialization, a template argument is optional if the compiler can deduce it from the type of the function arguments. 
 
-You can nest member templates within many enclosing class templates. If you explicitly specialize a template nested within several enclosing class templates, you must prefix the declaration with `template<>` for every enclosing class template you specialize. 
+You can nest member templates within many enclosing class templates. If you explicitly specialize a template nested within several enclosing class templates, you must prefix the declaration with `template<>` for every enclosing class template you specialize. Example:
+
+```cpp
+#include <iostream>
+
+template <class T>
+class Outer
+{
+public:
+    template <class V>
+    class Inner
+    {
+        public:
+            static void f( T in )
+            {
+                std::cout << "general-template";
+            }
+    };
+};
+
+// full nested class
+template<>
+template<>
+void Outer<double>::Inner<int>::f( double in )
+{
+    std::cout << "specialisation-1";
+}
+
+// specialisation
+template <>
+class Outer<int>
+{
+public:
+    template <class V>
+    class Inner
+    {
+        public:
+            static void f( int in )
+            {
+                std::cout << "specialisation-2";
+            }
+    };
+};
+
+int main()
+{
+    Outer<int>::Inner<int>::f(1);
+    return 0;
+}
+```
 
 Importantly: **you cannot explicitly specialize a class template unless its enclosing class templates are also explicitly specialized.**
 
@@ -4712,11 +4761,11 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-Sometimes while using templates inside templates, there is a need for the `template` qualifier in case of difficulty in understanding from the compiler side that you really want to call member function. 
+Sometimes while using templates inside templates, there is a need for the `template` qualifier in case of difficulty in understanding from the compiler side that you really want to call the member function. 
 
-In this case `template` plays a role of extra marker that you want to use template function.
+In this case `template` plays the role of an extra marker that you want to use the template function.
 
-In this sense it's similar to `typename` used in the context of having access to members of template classes or structs members.
+In this sense, it's similar to `typename` used in the context of having access to members of template classes or structs members.
 
 ```cpp
 template <typename S, typename T>
