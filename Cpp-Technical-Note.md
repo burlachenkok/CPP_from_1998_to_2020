@@ -4708,7 +4708,7 @@ public:
     };
 };
 
-// full nested class
+// Specialization of a member function of a class template nested in another class template
 template<>
 template<>
 void Outer<double>::Inner<int>::f( double in )
@@ -4716,7 +4716,7 @@ void Outer<double>::Inner<int>::f( double in )
     std::cout << "specialisation-1";
 }
 
-// specialisation
+// Specialization of a class template in another class template
 template <>
 class Outer<int>
 {
