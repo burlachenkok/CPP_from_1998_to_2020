@@ -4708,7 +4708,7 @@ public:
     };
 };
 
-// Specialization of a member function of a class template nested in another class template
+// Specialization of a member function of a class template nested in another class template. Number 3 in the list of what is possible to specialize: Member function of a class template.
 template<>
 template<>
 void Outer<double>::Inner<int>::f( double in )
@@ -4716,7 +4716,7 @@ void Outer<double>::Inner<int>::f( double in )
     std::cout << "specialisation-1";
 }
 
-// Specialization of a class template in another class template
+// Specialization of a class template in another class template. Number 4 in the list of what is possible to specialize: Member class of a class template.
 template <>
 class Outer<int>
 {
@@ -4739,9 +4739,9 @@ int main()
 }
 ```
 
-Importantly: **you cannot explicitly specialize a class template unless its enclosing class templates are also explicitly specialized.**
+Importantly: **You cannot explicitly specialize a class template unless its enclosing class templates are also explicitly specialized.**
 
-Example of `template` for create a specialization for the array with a fixed size.
+An example of `template` for creating a specialization for the array with a fixed size.
 ```cpp
 #include "stdio.h"
 
