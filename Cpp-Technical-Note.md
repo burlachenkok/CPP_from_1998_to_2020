@@ -461,7 +461,51 @@ Probably, it's worthwhile to highlight some downside of interpretable languages:
 
 8. Compiler optimization tricks such as code inlining are out of the scope of any interpretable language, because for performing such optimization you should have a compiler. The elimination of the compiler stage will make this optimization and other optimizations [code optimization](#code-optimization) which are executed during compiler optimization is impossible.
 
-9. During creating multithread implementation, you should be careful about memory fences (memory barriers or memory fences are used to enforce ordering constraints of executed instruction in a superscalar processor before and after memory barrier/fence), synchronization, data races, atomic operations, absence of storing some objects in registers. In reality, the implementation of interpreters is typically highly leveraged into existing C or C++ libraries because creating such modules of functionality in an interpreter by itself is not effective enough. However, it is not true that all C and C++ libraries are thread-safe. And so, creating a true multithreading environment inside an interpreter can be tricky. If you want to learn more about how Concurrency in Python is implemented (and want to know more about Global Interpreter Lock (GIL)) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html). Do not get us wrong. Developers of the Python interpreter did their best, but the problem was not so easy in the first place.
+9. During creating multithread implementation, you should be careful about memory fences (memory barriers or memory fences are used to enforce ordering constraints of executed instruction in a superscalar processor before and after memory barrier/fence), synchronization, data races, atomic operations, absence of storing some objects in registers. In reality, the implementation of interpreters is typically highly leveraged into existing C or C++ libraries because creating such modules of functionality in an interpreter by itself is not effective enough. However, it is not true that all C and C++ libraries are thread-safe. And so, creating a true multithreading environment inside an interpreter can be tricky. If you want to learn more about how Concurrency in Python is implemented (and want to know more about Global Interpreter Lock (GIL)) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html). Do not get us wrong. Developers of the Python interpreter did their best, but the problem was not so easy in the first place. Once the Python interpreter resolves it, then at least you should observe speedup from this compute-bound example:
+
+```
+#!/usr/bin/env python3
+# single_count.py (Example has been taken from https://realpython.com/python-gil/)
+
+import time
+from threading import Thread
+
+COUNT = 50000000
+
+def countdown(n):
+    while n>0:
+        n -= 1
+
+start = time.time()
+countdown(COUNT)
+end = time.time()
+```
+
+```
+#!/usr/bin/env python3
+# mth_count.py (Example has been taken from https://realpython.com/python-gil/)
+import time
+from threading import Thread
+
+COUNT = 50000000
+
+def countdown(n):
+    while n>0:
+        n -= 1
+
+t1 = Thread(target=countdown, args=(COUNT//2,))
+t2 = Thread(target=countdown, args=(COUNT//2,))
+
+start = time.time()
+t1.start()
+t2.start()
+t1.join()
+t2.join()
+end = time.time()
+
+print('Time taken in seconds -', end - start)
+
+```
 
 10. Garbage Collector (GC) brings various limitations to any programming language. For example, GC disallows any pointer arithmetic. (For details, please look at Lecture 11 from [6-172. Performance Engineering of Software Systems at MIT](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/)). Therefore adoption of using idea of GC in the language has it conseuqunces.
 
