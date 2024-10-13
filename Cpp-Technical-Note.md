@@ -24,7 +24,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 ----
 
 
-*Revision Update:* July 29, 2024
+*Revision Update:* October 12, 2024
 
 *Historical Note:* The original title *"Technical Note. From C++1998 to C++2020"* in the update from March 2024 has been changed due to the additional appendix to cover some language and library features of C++ 2023.
 
@@ -4543,7 +4543,7 @@ During the definition of a member function or a static member of a template clas
               const Ty& theSecond = Ty());
         void f(){}
     };
-
+    
     #if 1
     template<class Tx, class Ty>
     MyPair<Tx,Ty>::MyPair(const Tx& theFirst, 
@@ -5097,7 +5097,7 @@ Example:
   A compound requirement is similar to a simple requirement. But besides asserting that a given expression must be valid, a compound requirement can:
   * prohibit this expression from ever throwing an exception 
   * constraint type that it evaluates to
-  
+
   Importantly (**and please be careful**), there is no semicolon after the expression inside the curly braces of a compound requirement. Using semicolons inside the compound requirement is a compile-time error.
 
   All possible types of compound requirements:
@@ -5110,7 +5110,7 @@ Example:
   ```
 
   In this type of requirement, the body of a `requires` expression consists of a *sequence of requirements*, and each requirement is introduced with curly braces `{}`. 
-  
+
   Each requirement ends with a semicolon, but one more time all `expr` inside curly braces should not have semicolons.
 
 * **A Type Requirement.** 
@@ -5254,7 +5254,7 @@ The mindset that C++ is shaping, helps to look into details and abstract when ne
 
 
 # References
-  
+
 [1] [The C++ Programming Language: Special Edition, B.Stroustrup](https://www.amazon.com/Programming-Language-Special-3rd/dp/0201700735)
 
 [2] [C: A Reference Manual, 5th Edition. Samuel Harbison, Guy Steele Jr.](https://www.amazon.com/Reference-Manual-Samuel-P-Harbison/dp/013089592X)
@@ -5787,29 +5787,29 @@ https://clang.llvm.org/cxx_status.html
   ```
 
 * **MSVC:** Microsoft Visual C++ (MSVC) is a compiler for C++ applications developed by Microsoft Corporation. At a moment of writing this tehcnical note there is no option `/std:23` from [/std](https://learn.microsoft.com/en-us/cpp/build/reference/std-specify-language-standard-version) for MSVC. The C++ status in MSVC:
-https://learn.microsoft.com/en-us/cpp/overview/visual-cpp-language-conformance
+  https://learn.microsoft.com/en-us/cpp/overview/visual-cpp-language-conformance
 
   ```bash
   :: Even to build simple code snippets you should have a collection of programs (toolchain) that will be used together to build various applications for OS
   ::  https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170
-
+  
   :: For compiler flags references:
   ::   https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-alphabetically?view=msvc-170
   ::   https://learn.microsoft.com/en-us/cpp/build/reference/compiler-options-listed-by-category?view=msvc-170
-
+  
   :: Execute vcvarsall.bat from Windows SDK or Visual Studio. 
   :: Default Path for Visual Studio 2022
-
+  
   ::call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
   call "%VS2022INSTALLDIR%\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
-
+  
   echo ***************IMPORTING MSVC TOOLCHAIN IS FINISHED************************************************
   :: Compile and link test. cpp to executable
   cl.exe /std:c++latest /MT /Ot /GL /O2 main.cpp
-
+  
   :: /std -- Control standard functions of the ISO C or C++ programming language.
   :: /std:c++latest -- this /std:c++latest option includes all currently implemented compiler and standard library features proposed for the next draft standard.
-
+  
   :: /MT -- Use multithreaded C runtime library
   :: /Ot -- Favor Fast Code
   :: /GL -- Global program optimization
@@ -5857,7 +5857,7 @@ int main()
 
     return 0;
 }
-```
+  ```
 
 Feature Test Macro: [__cpp_size_t_suffix](https://en.cppreference.com/w/cpp/feature_test#cpp_size_t_suffix)
 
