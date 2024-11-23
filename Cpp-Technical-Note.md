@@ -4737,19 +4737,19 @@ There are two important things about variadic templates:
 
 **Second thing:** The only way to get the next template argument is to recursively call a function whose template parameters are specified as `<TExtractType, RestTypes...>` via specifying some parameters in the usual way and some parameters via **unpack construction** (see below).
 
-> If you have ever seen functional programming languages, then this construction looks pretty close to that.
+> If you have ever seen functional programming languages, this construction looks close to that.
 
 Packing operations:
 
-* `class ...Args` - **template parameters parameters pack** with optional name. Non-type template parameters can also be organized in the pack via similar syntax `int...`.  One more time - whitespace around <`...`> does not matter for the compiler. This is varidic template arguments for cass or function or method.
-* `(Arg&&....params)` - **template arguments parameters pack** or **function parameters pack**. These are variadic arguments for template function or method.
+* `class ...Args` - **template parameters parameters pack** with optional name. Non-type template parameters can also be organized in the pack via similar syntax `int...`.  One more time - whitespace around <`...`> does not matter for the compiler. These are variadic template arguments for class functions or methods.
+* `(Arg&&....params)` - **template arguments parameters pack** or **function parameters pack**. These are variadic arguments for template functions or methods.
 
 Unpacking operations:
 
-* `args...` - **unpack** parameters (or **pack expansion**). Used inside the body of the template function or template class member function to semnatically unroll all template type parameters or arguments.
-* `sizeof...(args)` or `sizeof...(Args)` - the size of parameters in terms of the number of elements in Args. (**It is not the size in bytes**).
+* `args...` - **unpack** parameters (or **pack expansion**). Used inside the body of the template function or template class member function to semantically unroll all template-type parameters or arguments.
+* `sizeof...(args)` or `sizeof...(Args)` - the size of parameters in terms of the number of elements in Args. (**It is not the size in bytes**). See also [documentation in cppreference](https://en.cppreference.com/w/cpp/language/sizeof...).
 
-Variadic templates have been introduced in C++11, but there is one more trick for variadic templates  with the name **fold expression** which has been introduced in C++17. The syntax for fold expression:
+Variadic templates have been introduced in C++11, but there is one more trick for variadic templates  with the name **fold expression** introduced in C++17. The syntax for fold expression:
 ```cpp
 template<typename... Args>
 bool allLeftFold(Args... args) { return (... && args); }  
