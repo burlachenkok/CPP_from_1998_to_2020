@@ -4665,7 +4665,7 @@ Variadic templates have been introduced in C++11. The motivation is to have the 
 
 The smallest example of template function definition with variadic template arguments:
 ```cpp
-template <class T...>
+template <class...T>
 void f(const T&...arg){}
 ```
 
