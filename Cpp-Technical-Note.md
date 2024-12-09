@@ -3897,7 +3897,8 @@ Documentation: [cpp reference details about inline specifier](https://en.cpprefe
 > If you want to precisely understand exactly how the toolchain handles inline variables (i.e., in which object file this variable is defined) in situations when projects consist of several compiled libraries and binaries, then please double-check with Toolchain documentation. If your project build with the same tools it should not induce any problems.
 
 It may be worthwhile to consider the following example in addition due to some inherited subtleties:
-```
+
+```cpp
 #include <iostream>
 
 class MyClass 
