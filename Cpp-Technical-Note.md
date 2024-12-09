@@ -3299,6 +3299,14 @@ static_assert(sizeof(void*) == sizeof(int),
 ```
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/static_assert).
 
+If the static_assert keyword is not supported by your compiler or you need custom behavior for compile-time errors, you can implement your own version as follows:
+
+```cpp
+// Example of implementing own static assert with templates means
+template <bool> struct static_assert;
+template <> struct static_assert<true> {}; 
+```
+
 ## 5. alignas operator
 
 The `alignas` operator from (C++11) enforces alignment. The `alignas` allocates an object with the requirement to allocate it with an alignment suitable for a specific type. Example of usage:
