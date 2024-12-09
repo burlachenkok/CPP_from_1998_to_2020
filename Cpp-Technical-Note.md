@@ -3872,7 +3872,7 @@ Documentation: [cpp reference details about string_view](https://en.cppreference
 
 ## 10. Inline Variables
 
-Static variables with inline initialization supported only since C++17.
+Static variables with inline initialization have been supported since C++17.
 
 ```cpp
 // C++17 simplified static variables declaration
@@ -3895,6 +3895,46 @@ size_t ObjectsOld::s_object_count;
 Documentation: [cpp reference details about inline specifier](https://en.cppreference.com/w/cpp/language/inline). 
 
 > If you want to precisely understand exactly how the toolchain handles inline variables (i.e., in which object file this variable is defined) in situations when projects consist of several compiled libraries and binaries, then please double-check with Toolchain documentation. If your project build with the same tools it should not induce any problems.
+
+It may be worthwhile to consider the following example in addition due to some inherited subtleties:
+```
+#include <iostream>
+
+class MyClass 
+{
+public:
+    static const int value_i = 1;
+    static inline const float value_fa = 2.0;
+
+//  COMPILE-TIME ERROR
+//    static /*inline*/ const float value_fb = 3.0;
+};
+
+//  COMPILE-TIME ERROR
+// const float MyClass::value_fa;
+
+// NOT COMPILE-TIME ERROR AND IN FACT REQUIRED DUE TO ORIGINAL C++ DESIGN INTENT
+const int MyClass::value_i;
+
+int main() 
+{
+    std::cout << MyClass::value_i << std::endl;
+    std::cout << MyClass::value_fa << std::endl;
+}
+```
+
+The initialization of `value_i` looks like `static inline` C++17 initialization, however in fact this is the old construction that has been in the language since C++98. 
+
+The initialization construction for `value_i` is named as the initialization of integral static constants directly in the class.
+
+According to [1], 10.4.6.2: "You can initialize a class member that is a static constant of integral type. If and only if you do so, you must declare the member somewhere once...The member shall still be defined in a namespace scope if it is used in the program and the namespace scope definition shall not contain an initializer..."
+
+The C++ Standard - ANSI ISO IEC 14882 2003 describes this construction in the section "9.4.2 Static data members, Subparagraph 4":
+
+> If a static data member is of const integral or const enumeration type, its declaration in the class definition can specify a constant-initializer which shall be an integral constant expression (5.19). In that case, the member can appear in integral constant expressions.
+
+In real compilers in fact definition `const int MyClass::value_i;`  is optional in the sense that code with and without this line can be compiled since GCC 4.5.3 and MSVC 2012.
+
 
 ## 11. The Exception Specification has been Removed
 
