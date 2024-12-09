@@ -4798,7 +4798,20 @@ A template specialization can be:
 
 * **Partial.** A partial specialization is a specialization of templates for specific cases. The partial specialization of the original template is a template. The template uses type `T` as the basis for something else. Partial specialization only works for classes but doesn't work for template functions. For template functions to obtain behavior similar to the partial specialization you can combine template function definition with function overloading. A partial specialization has both (i) a template argument list and (ii) a template parameter list. The compiler uses partial specialization if its template argument list matches a subset of the template arguments of a template instantiation.
 
-Example of partial and complete class specialization:
+Example of complete function specialization (1):
+```cpp
+template <class T>
+void f(T arg) {
+    std::cout << "general\n";
+}
+template <>
+void f(int arg) {
+    std::cout << "int\n";
+}
+```
+Function templates can be fully specialized but not partially specialized. If partial specialization is needed, C++ provides an alternative function templates that can be overloaded.
+
+Example of partial and complete class specialization (2):
 ```cpp
 template <class T>
 struct Single {
@@ -4830,9 +4843,29 @@ int main() {
 }
 ```
 
+Example of specialization for static data member of a class template (5)
+```cpp
+template <class T> struct Single
+{
+    Single() : var(def_val) {}   
+    static T* CreateInstanceOfT();   
+    T var;   
+    static T def_val;
+};
+
+template <class T> T Single<T>::def_val(0);
+template <>        int Single<int>::def_val(1);
+template <class T> T* Single<T>::CreateInstanceOfT()  {return 0;}
+
+int main(){   
+    Single<int>::CreateInstanceOfT();     
+    return 0;
+}
+```
+
 ## Templates Miscellaneous
 
-The general template must be declared before any partial or complete specialization. Each instantiated class template specialization has its own copy of any static members. You may explicitly specialize static members.
+The general template must be declared before any partial or complete specialization. Each instantiated class template specialization has its own copy of any static members. You may explicitly specialize in static members.
 
 In a function template specialization, a template argument is optional if the compiler can deduce it from the type of the function arguments. 
 
