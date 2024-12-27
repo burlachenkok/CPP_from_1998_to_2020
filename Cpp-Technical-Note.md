@@ -24,7 +24,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 ----
 
 
-*Revision Update:* October 12, 2024
+*Revision Update:* December 27, 2024
 
 *Historical Note:* The original title *"Technical Note. From C++1998 to C++2020"* in the update from March 2024 has been changed due to the additional appendix to cover some language and library features of C++ 2023.
 
@@ -2486,7 +2486,7 @@ constexpr int sum(int a, int b) { return a + b; }
 ```
 Also, importantly `constexpr` is implicitly thread-safe.
 
-The `constexpr` function can be run in compile time and in runtime. In C++20 there is a way to distinguish between compile time and runtime by using `std::is_constant_evaluated()` inside the function with `constexpr` modifier.
+The `constexpr` function can be run in compile time and in runtime. In C++2020 there is a way to distinguish between compile time evaluated code and that code is executed in runtime by using `std::is_constant_evaluated()` (available since C++20 [is_constant_evaluated](https://en.cppreference.com/w/cpp/types/is_constant_evaluated)) inside the function with `constexpr` modifier.
 
 The `constexpr` functions requirements:
 
@@ -5963,17 +5963,18 @@ Example:
 class Matrix
 {
 public:
-    int operator[] (size_t i, size_t j)
+    int operator[] (size_t i, size_t j) noexcept
     {
-        return 1;
+        return i*10 + j;
     }
 };
 
 int main()
 {
     Matrix m;
-    std::cout << m[0, 9] << "\n";
+    std::cout << m[1, 9] << "\n";
     std::cout << "Hello" << "\n";
+    std::cout << "Multidimensional subscript operator is supported";
 
     return 0;
 }
@@ -6009,6 +6010,11 @@ int div_by_2(int x)
 Attibute test-macro: [__has_cpp_attribute(assume)](https://en.cppreference.com/w/cpp/feature_test#Attributes)
 
 Documentation: [cpp reference assume](https://en.cppreference.com/w/cpp/language/attributes/assume)
+
+Analogs: 
+* MSVC: [__assume(expr)](https://learn.microsoft.com/en-us/cpp/intrinsics/assume?view=msvc-170)
+* Clang: [__builtin_assum(expr)](https://clang.llvm.org/docs/LanguageExtensions.html#builtin-assume)
+* GCC: `if (expr) {} else{ __builtin_unreachable(); }`
 
 ### 7. Withdraw from Optional Garbage Collection
 
@@ -6167,6 +6173,55 @@ This example demonstrates if somebody finds ref-qualifiers too messy for impleme
 Feature-test macro: [__cpp_ref_qualifiers](https://en.cppreference.com/w/cpp/feature_test#cpp_ref_qualifiers)
 
 Documentation: https://en.cppreference.com/w/cpp/language/function#Function_declaration
+
+## If consteval - shorthand for std::is_constant_evaluated() in constexpr functions
+
+The [constexpr](#constexpr-c11) functions body can be executed both in compile time and in runtime.
+The checking that current function context is compiled for compile-time can be attained since C++20 via
+[std::is_constant_evaluated()](https://en.cppreference.com/w/cpp/types/is_constant_evaluated). The C++23 introduced essentially shorthand for 
+`if (std::is_constant_evaluated())` as `if consteval`.
+
+Example:
+```cpp
+#include <iostream>
+
+constexpr const char* str1(int)
+{
+    if consteval
+    {
+        return "compile-time";
+    }
+    else
+    {
+        return "runtime";
+    }
+}
+
+constexpr const char* str2(int)
+{
+    if (std::is_constant_evaluated())
+    {
+        return "compile-time";
+    }
+    else
+    {
+        return "runtime";
+    }
+}
+
+int main()
+{
+    const char* str = str2(1);
+    std::cout << str;
+    return 0;
+}
+```
+
+Feature-test macro: [__cpp_lib_is_constant_evaluated](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_is_constant_evaluated)
+
+Documentation: 
+* https://en.cppreference.com/w/cpp/types/is_constant_evaluated
+* https://en.cppreference.com/w/cpp/language/if
 
 ## C++23 - Preprocessors Features
 
@@ -6386,6 +6441,7 @@ Example:
 
 ```cpp
 #include <iostream>
+#include <utility>
 
 bool decodeBit(int x)
 {
@@ -6409,9 +6465,16 @@ Feature-test macro: [__cpp_lib_unreachable](https://en.cppreference.com/w/cpp/fe
 
 Documentation: https://en.cppreference.com/w/cpp/utility/unreachable
 
+Analogs: 
+* MSVC: [__assume(false)](https://learn.microsoft.com/en-us/cpp/intrinsics/assume?view=msvc-170)
+* GCC: [__builtin_unreachable()](https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html#index-_005f_005fbuiltin_005funreachable)
+* CLANG: [__builtin_unreachable()](https://clang.llvm.org/docs/LanguageExtensions.html#builtin-unreachable)
+
+
 ### 5. Multidimensional View std::mdspan
 
 The `std::mdspan` is a multidimensional view of a contiguous sequence of objects interpretable as a multidimensional array.
+This is a multidimensional extension of [std::span](#14-stdspan) from C++2020.
 
 Feature Test Macro: [__cpp_lib_mdspan](https://en.cppreference.com/w/cpp/feature_test#cpp_lib_mdspan)
 
