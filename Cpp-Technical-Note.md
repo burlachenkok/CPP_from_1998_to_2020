@@ -124,6 +124,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
   - [Clobbered by call](#clobbered-by-call)
   - [Popular Compiler Flags for Optimization](#popular-compiler-flags-for-optimization)
   - [Several Principles for Code Optimization](#several-principles-for-code-optimization)
+  - [Using Static Const Variables to Avoid Copying](#using-static-const-variables-to-avoid-copying)
 - [Lambda Functions](#lambda-functions)
 - [Move Semantics](#move-semantics)
 - [Virtual Functions and Polymorphism in C++](#virtual-functions-and-polymorphism-in-c)
@@ -210,6 +211,8 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 - [Concepts (from C++20)](#concepts-from-c20)
   - [Define Concepts](#define-concepts)
   - [Use Concepts](#use-concepts)
+  - [Terminology about Concepts](#terminology-about-concepts)
+  - [More Bigger Example with Using Concepts](#more-bigger-example-with-using-concepts)
   - [Predefined Concepts](#predefined-concepts)
 - [Coroutines (C++20)](#coroutines-c20)
 - [Acknowledgements](#acknowledgements)
@@ -2821,6 +2824,25 @@ Another two important aspects of code optimization during compilation:
 * The `const` of references or pointers guarantees *nothing* from the code emitting point of view.
 * The `private, protected` class fields garantees *nothing* from code emitting poit of view.
 
+## Using Static Const Variables to Avoid Copying
+
+Declaring a variable as `static const` can improve performance by eliminating unnecessary copying.
+
+When a variable represents a constant value that does not change and 
+it is not dependent on the potentially recursive invocation of a function, 
+using `static const` allows the compiler to store the value in fixed memory once.
+
+While it might seem that declaring a local variable with the `const` qualifier 
+achieves the same effect, there are key differences. In the absence of whole-program optimization (even with optimizations like -O3), modern compilers lack global knowledge of potential recursive invocations of a function. Consequently, constant variables or arrays with automatic storage duration (const but without static) will still be allocated on the stack each time the function is called.
+
+**p.s.** For more details listen the talk [Fast and Small C++ When Efficiency Matters, A.Fertig, CppCon'24](https://www.youtube.com/watch?v=rNl591__9zY).
+
+## Compressed Pairs
+
+Using a Compressed Pair when one of the objects has no data members. For a concrete example, see [no_unique_address](#1-no_unique_address-attribute).
+This example has been mentioned in the talk [Fast and Small C++ When Efficiency Matters, A.Fertig, CppCon'24](https://www.youtube.com/watch?v=rNl591__9zY).
+
+
 # Lambda Functions
 
 Lambda expressions offer a convenient, compact syntax to quickly define callback functions. Basic syntax:
@@ -4013,6 +4035,7 @@ Documentation: [cpp reference filesystem](https://en.cppreference.com/w/cpp/file
 # Miscellaneous Features of C++20
 
 ## 1. no_unique_address Attribute
+
 The `[[no_unique_address]]` attribute allows empty non-static data members to share space with another sub-object of a different type. 
 
 Example based on materials from CPP reference:
@@ -4032,6 +4055,60 @@ int main() {
     return 0;
 }
 ```
+
+Another use case is utilizing this feature in situations where we have a pair of objects, 
+but one of the objects has no data members. The `no_unique_address` attribute can be applied to avoid wasting a single 1 byte, thereby preventing wasting this 1 byte (and extra additional padding bytes) for storing a single pair:
+
+```cpp
+#include <iostream>
+#include <stdint.h>
+
+struct Empty {};
+
+#ifdef _MSC_VER
+	#define no_uniq_address_attr [[msvc::no_unique_address]]
+#else
+	#define no_uniq_address_attr [[no_unique_address]]
+#endif
+
+template <typename TypeA, typename TypeB>
+struct CompressedPair
+{
+	no_uniq_address_attr TypeA a;
+	no_uniq_address_attr TypeB b;
+};
+
+template <typename TypeA, typename TypeB>
+struct UnCompressedPair
+{
+	TypeA a;
+	TypeB b;
+};
+
+int main()
+{
+#if __has_cpp_attribute(no_unique_address)
+	std::cout << " cpp attribute [[no_unique_address]] is supported [OK]\n";
+#else
+	std::cout << " cpp attribute [[no_unique_address]] is not supported [BAD]\n";
+#endif
+
+#if __has_cpp_attribute(msvc::no_unique_address)
+	std::cout << " cpp attribute [[msvc::no_unique_address]] is supported [OK]\n";
+#else
+	std::cout << " cpp attribute [[msvc::no_unique_address]] is not supported [BAD]\n";
+#endif
+
+	std::cout << "sizeof(Empty): " << sizeof(Empty) << " bytes\n";
+	CompressedPair<int64_t, Empty> pair_1;
+	std::cout << "sizeof(CompressedPair<int64_t, Empty>): " << sizeof(pair_1) << " bytes\n";
+	UnCompressedPair<int64_t, Empty> pair_2;
+	std::cout << "sizeof(UnCompressedPair<int64_t, Empty>): " << sizeof(pair_2) << " bytes\n";
+
+	return 0;
+}
+```
+
 
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/attributes/no_unique_address).
 
@@ -4196,7 +4273,9 @@ T sqr(T x) { return x * x; }
 auto sqrNew(auto x) { return x * x; }
 ```
 
-If you want your template to instantiate functions where multiple parameters have the same type or related types, you still have to use the old syntax.  It is so because every occurrence of `auto` in the function parameter list of an abbreviated function template introduces an implicit, unnamed **but** *new* template type parameter. 
+If you want your template to instantiate functions where multiple parameters have the same type or related types, you still have to use the old syntax.  
+
+It is because every occurrence of `auto` or `auto&` in the function parameter list of an abbreviated function template introduces an implicit, unnamed **but** *new* template type parameter. 
 
 Documentation: [cpp reference details](https://en.cppreference.com/w/cpp/language/function_template).
 
@@ -5090,7 +5169,9 @@ int main() {
 
 ## Define Concepts
 
-A [concept](https://en.cppreference.com/w/cpp/language/constraints) is a named set of requirements. It's possible in general, to distinguish three categories of requirements [4,p.512] in context of programming languages:
+A [concept](https://en.cppreference.com/w/cpp/language/constraints) is a named set of requirements. 
+
+It's possible in general, to distinguish three categories of requirements [4,p.512] in context of programming languages:
 * Syntactic Requirements
 * Semantic Requirements
 * Complexity Requirements
@@ -5105,13 +5186,13 @@ General things about [concept](https://en.cppreference.com/w/cpp/language/constr
 
 1. Concepts are never instantiated by the compiler. They never give rise to executable code.
 
-2. Concepts should be seen as functions that the compiler evaluates at compile time to determine whether a set of arguments satisfies the given constraints.
+2. Concepts should be seen as functions that the compiler evaluates at compile time to determine whether a set of arguments satisfies the given constraints or not.
 
 3. A *constant expression* is any expression that the compiler can evaluate at compile time.
 
 The first way to define [concept](https://en.cppreference.com/w/cpp/language/constraints) is to express it via **Constraints**. 
 
-Example of concepts with a *"simple constraint"*:
+Example of concepts with a *"(1) Simple Constraint"*:
 
 ```cpp
 template <typename T>
@@ -5120,9 +5201,10 @@ concept Small = sizeof(T) <= sizeof(int);
 
 In this example, the concept Small is defined with a single *constraint expression*. A single *Constraint Expression* is named [atomic constraint](https://en.cppreference.com/w/cpp/language/constraints).
 
-The [atomic constraints](https://en.cppreference.com/w/cpp/language/constraints) in the body of a concept definition can be combined with logical expressions connected with `&&` or `||` or `!`. Such constraint is formally called a *Disjunction Constraint* and *Conjunction Constraint*.
+The [atomic constraints](https://en.cppreference.com/w/cpp/language/constraints) in the body of a concept definition can be combined with logical expressions connected with `&&` or `||` or `!`. 
+Such constraint is formally called a *(2) Disjunction Constraint* and * (3) Conjunction Constraint*.
 
-Next, you can define *new concepts* in terms of other concepts in a cascading style. Example:
+Next, you can define a new *concepts* in terms of other concepts in a cascading style. Example:
 ```cpp
 template <typename I>
 concept Integer = SignedInteger<I> || UnsignedInteger<I>;
@@ -5150,7 +5232,7 @@ requires (parameter list) { requirements }
 All the compiler does with requirements is check whether they form valid C++ code or not. The concept defined via [requires](https://en.cppreference.com/w/cpp/keyword/requires) can have one of the following types:
 
 * **I. A Simple Requirement.**
-Example of create concept with using *constraint* and *requires*:
+Example of create concept with using *requires* (type-4).
   ```cpp
   template <typename Iter>
   concept RandomAccessIterator = BidirectionalIterator<Iter>
@@ -5162,11 +5244,15 @@ Example of create concept with using *constraint* and *requires*:
   };
   ```
 
-  A simple requirement consists of an arbitrary C++ expression statement and is satisfied if the corresponding expression compiles without errors. All variables you use in these expressions must either be global variables or variables introduced in the parameter list of `requires`. You *cannot* declare local variables in the usual way.
+  A simple requirement consists of an arbitrary C++ expression statement and is satisfied if the corresponding expression compiles without errors. 
+  
+  All variables you use in these expressions must either be global variables or variables introduced in the parameter list of `requires`. 
+  
+  You *cannot* declare local variables in the usual way.
 
 * **II. A Compound Requirement.**
 
-Example:
+  Example:
   ```cpp
   template <typename T>
   concept NoExceptDestructible = 
@@ -5177,19 +5263,25 @@ Example:
   };
   ```
 
-  A compound requirement is similar to a simple requirement. But besides asserting that a given expression must be valid, a compound requirement can:
-  * prohibit this expression from ever throwing an exception 
-  * constraint type that it evaluates to
+  A *compound requirement* (type-5) is similar to a simple requirement. But besides asserting that a given expression must be valid, a compound requirement can:
+  * Prohibit this expression from ever throwing an exception 
+  * Constraint type that it evaluates to
 
   Importantly (**and please be careful**), there is no semicolon after the expression inside the curly braces of a compound requirement. Using semicolons inside the compound requirement is a compile-time error.
 
   All possible types of compound requirements:
 
   ```cpp
-    { expr };           // expr is a valid expression 
-    { expr } noexcept;  // expr is valid and never throws an exception
-    { expr } -> type-constraint;           // expr is valid and its type satisfies type-constraint
-    { expr } noexcept -> type-constraint;  // expr is valid and never throws an exception. expr type satisfies type-constraint
+    // expr is a valid expression 
+    { expr };
+    // expr is valid and never throws an exception
+    { expr } noexcept;
+    // expr is valid and its type satisfies type-constraint
+    { expr } -> type-constraint;
+    
+    // expr is valid and never throws an exception. 
+    // expr type satisfies type-constraint
+    { expr } noexcept -> type-constraint;
   ```
 
   In this type of requirement, the body of a `requires` expression consists of a *sequence of requirements*, and each requirement is introduced with curly braces `{}`. 
@@ -5197,7 +5289,7 @@ Example:
   Each requirement ends with a semicolon, but one more time all `expr` inside curly braces should not have semicolons.
 
 * **A Type Requirement.** 
-Example:
+  Example of type requirement contraints (type-6):
     ```cpp
     template <typename S>
     concept String = requires
@@ -5206,7 +5298,9 @@ Example:
     }
     ```
 
-* **Nested Requirement.** Use requirement inside the body of another requirement. Example:
+* **Nested Requirement.** 
+
+  Use requirement inside the body of another requirement (type-7). Example:
     ```cpp
     template <typename S>
     concept String = requires
@@ -5222,6 +5316,8 @@ See also [cpp reference details](https://en.cppreference.com/w/cpp/language/requ
 
 ## Use Concepts
 
+The concepts are used in termplate code. 
+
 The general outline for a constrained template with concepts usage is as follows:
 
 ```cpp
@@ -5229,7 +5325,9 @@ template <parameter list>
 requires constraints
 template body;
 ```
-Example of using the concept to restrict template using:
+
+Example of using the concept to restrict template using (Syntax A):
+
 ```cpp
 template <typename T>
 requires MyConcept<T> && std::destructible<T>
@@ -5239,9 +5337,7 @@ const T& function(const T& a, const T& b)
 
 In a template, the declaration keyword **requires** specifying the used constraint.
 
-Starting from C++20 there is another shorthand notation for using the concept.
-
-Example:
+Also there is another shorthand notation for using the concep (Syntax B):
 
 ```cpp
 template <typename S>
@@ -5254,6 +5350,96 @@ template <MyConcept T>
 const T& function(const T & a, const T & b)
 {
     return a + b;
+}
+```
+
+## Terminology about Concepts
+
+* The **concept** -- is a named set of requirements. 
+* The **requirements** -- requires(){/*....*/};
+* The **constraints** -- constraints are the types with which the template can be instantiated.
+
+## More Bigger Example with Using Concepts
+
+This example is inspired by Nicolai Josuttis's talk, "Back to Basics: Concepts in C++," presented at CppCon 2024 (https://www.youtube.com/watch?v=jzwqTi7n-rg). It demonstrates:
+* How to use concepts to articulate function overloading when the underlying container interface has fundamentally different APIs.
+* How to apply both longhand and shorthand syntax for concepts.
+* How to utilize concepts in conjunction with [abbreviated functions templates](#9-abbreviated-function-templates).
+
+```cpp
+#include <vector>
+#include <set>
+
+template <typename TCtr>
+concept CtrHasPushBack = 
+requires(TCtr& a, typename TCtr::value_type value)
+{
+    a.push_back(value);
+};
+
+template <typename TCtr>
+concept CtrHasInsert =
+    requires(TCtr& a, typename TCtr::value_type value)
+{
+    a.insert(value);
+};
+
+//===================================================================
+// Lesson-1: Concepts can specialized template functions
+template <typename TCtr, typename TItem>
+requires CtrHasPushBack<TCtr>
+void add_with_specialization(TCtr& ctr, const TItem& item) {
+    ctr.push_back(item);
+}
+
+template <typename TCtr, typename TItem>
+requires CtrHasInsert<TCtr>
+void add_with_specialization(TCtr& ctr, const TItem& item) {
+    ctr.insert(item);
+}
+
+//===================================================================
+// Lesson-2: Concepts should be seen as functions with bool 
+//           return value that the compiler evaluates at compile time.
+static_assert(CtrHasPushBack<std::vector<int>>);
+static_assert(CtrHasInsert<std::set<int>>);
+
+//===================================================================
+// Lesson-3: Concepts with using shorthand syntax
+template <CtrHasPushBack TCtr, typename TItem>
+void add_shorthand(TCtr& ctr, const TItem& item) {
+    ctr.push_back(item);
+}
+template <CtrHasInsert TCtr, typename TItem>
+void add_shorthand(TCtr& ctr, const TItem& item) {
+    ctr.insert(item);
+}
+
+//===================================================================
+// Lesson-4: Facny Style for adding concepts during using 
+//           Abbreviated Function Templates
+void add_abbr(CtrHasPushBack auto& ctr, const auto& item) {
+    ctr.push_back(item);
+}
+void add_abbr(CtrHasInsert auto& ctr, const auto& item) {
+    ctr.insert(item);
+}
+
+int main()
+{
+    std::vector<int>a; 
+    std::set<int>b;
+
+    add_with_specialization(a, int(2));
+    add_with_specialization(b, int(2));
+
+    add_shorthand(a, int(2));
+    add_shorthand(b, int(2));
+
+    add_abbr(a, int(2));
+    add_abbr(b, int(2));
+
+    return 0;
 }
 ```
 
@@ -5270,6 +5456,7 @@ The Standard Library defines a whole collection of predefined concepts defined i
 * *Callable concepts:* [invocable](https://en.cppreference.com/w/cpp/concepts/invocable), etc.
 
 # Coroutines (C++20)
+
 The execution of the usual function includes the ability to perform the following action in the underlying platform:
 * Create stack frame
 * Execute function
