@@ -481,6 +481,8 @@ def countdown(n):
 start = time.time()
 countdown(COUNT)
 end = time.time()
+
+print('Time taken in seconds -', end - start)
 ```
 
 ```
