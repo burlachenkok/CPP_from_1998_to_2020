@@ -32,7 +32,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 ----
 
-**Table of Content**
+**Table of Contents**
 
 - [Introduction](#introduction)
 - [Prepare Environment](#prepare-environment)
@@ -254,15 +254,15 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 
 # Introduction
 
-On that technical note, we would like to share complete information regarding the C programming language and all primary C++ programming language standards: C++03/98, C++11, C++14, C++17, C++20, and C++23. If you do not know C++, this note is less likely for you, because it contains subtle technical details for people who are at least a bit familiar with it. Here "know" has a weak sense. We have also tried to appeal in that note to people with a not-so-big background in C++.
+On that technical note, we would like to share complete information regarding the C programming language and all primary C++ programming language standards: C++03/98, C++11, C++14, C++17, C++20, and C++23. If you do not know C++, this note is less likely for you because it contains subtle technical details for people who are at least a bit familiar with it. Here, "know" has a weak sense. We have also tried to appeal in that note to people with a not-so-big background in C++.
 
-Do not get us wrong. If you have never seen the C++ language to obtain knowledge, we recommend first dedicating some time to reading original books written by the original author of C++ Language [Bjarne Stroustrup](https://www.stroustrup.com/). It would be only more effective for you. In recent years, [Bjarne Stroustrup](https://www.stroustrup.com/) has made a lot of effort by providing easy-to-read books such as ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend that those for whom this language is new first to read any of those books.
+Do not get us wrong. If you have never seen the C++ language to obtain knowledge, we recommend first dedicating some time to reading original books written by the original author of C++ Language [Bjarne Stroustrup](https://www.stroustrup.com/). It would only be more effective for you. In recent years, [Bjarne Stroustrup](https://www.stroustrup.com/) has made a lot of effort by providing easy-to-read books such as ["Principles and Practice Using C++"](https://www.stroustrup.com/programming.html) and ["A Tour of C++ (Second Edition)"](https://www.stroustrup.com/Tour.html). We highly recommend that those for whom this language is new first read any of those books.
 
-If you're unsure whether you should learn C++ or not, then maybe the example presented in section *[Why learn C++ if I know Python (Toy Example)](#why-learn-c-if-i-know-python-toy-example)* of this document will bring some consideration to your mind. C++ language is complex, but currently, it's one of the fastest (in terms of execution speed in CPU) high-level, general-purpose programming languages in the world. It can be observed from comparison tests such as [benchmarksgame-team.pages.debian.net/benchmarksgame](https://benchmarksgame-team.pages.debian.net/benchmarksgame/performance/binarytrees-cpu.html) and checking the language in which compute demanding applications in your domain have been written. In our experience in most cases, it will be C or C++.
+If you're unsure whether you should learn C++ or not, then maybe the example presented in section *[Why learn C++ if I know Python (Toy Example)](#why-learn-c-if-i-know-python-toy-example)* of this document will bring some consideration to your mind. C++ is complex, but currently, it's one of the fastest (in terms of execution speed in CPU) high-level, general-purpose programming languages in the world. It can be observed from comparison tests such as [benchmarksgame-team.pages.debian.net/benchmarksgame](https://benchmarksgame-team.pages.debian.net/benchmarksgame/performance/binarytrees-cpu.html) and checking the language in which compute demanding applications in your domain have been written. In our experience, in most cases, it will be C or C++.
 
-Sometimes you must write software for a software platform (Java Virtual Machine, JavaScript Engine, Python interpreter). This is the case for instance when you can not execute real code in a target computing machine for some reason. In such circumstances, the de facto standard can be another programming language - not C and not C++ at all, and not a dialect of C or C++. Analyzing when it is good or bad to limit users from using C++ or any compiled language is out of the scope of that technical note.
+Sometimes, you must write software for a software platform (Java Virtual Machine, JavaScript Engine, Python interpreter). This is the case, for instance, when you can not execute real code in a target computing machine for some reason. In such circumstances, the de facto standard can be another programming language - not C and not C++ at all, and not a dialect of C or C++. Analyzing when it is good or bad to limit users from using C++ or any compiled language is out of the scope of that technical note.
 
-It is important to note that there is a notion of a programming language (in a very strong sense) that converts algorithms into the language of a computing machine. If Language always requires a software platform to operate - it is not a programming language according to this possible definition (See https://www.stroustrup.com/bs_faq.html#Java or https://www.stroustrup.com/bs_faq.html#Csharp for a discussion about this). 
+It is important to note that there is a notion of a programming language (in a very strong sense) that converts algorithms into the language of a computing machine. If Language always requires a software platform to operate, it is not a programming language according to this possible definition (See https://www.stroustrup.com/bs_faq.html#Java or https://www.stroustrup.com/bs_faq.html#Csharp for a discussion about this). 
 
 This note is mainly based on materials from the [references](#references) section and personal experience. We think that information can be helpful for three categories of people:
 
@@ -274,9 +274,9 @@ Finally, we welcome anybody who wants to make this note cleaner. We appreciate t
 
 # Prepare Environment
 
-To reproduce code snippets you need to have a C++ IDE ( e.g. [Visual Studio](https://visualstudio.microsoft.com/), [QtCreator](https://www.qt.io/product/development-tools), [Xcode](https://developer.apple.com/xcode/), [CLion](https://www.jetbrains.com/clion/) ) or command line environment in which you will launch compiler and linker to compile and link code snippets. Currently, there are plenty of versions of C++ programming language, and you will need to provide compiler information about the version of the language standard that you're going to use. 
+To reproduce code snippets you need to have a C++ IDE ( e.g. [Visual Studio](https://visualstudio.microsoft.com/), [QtCreator](https://www.qt.io/product/development-tools), [Xcode](https://developer.apple.com/xcode/), [CLion](https://www.jetbrains.com/clion/) ) or command line environment in which you will launch compiler and linker to compile and link code snippets. Currently, there are plenty of versions of the C++ programming language, and you will need to provide compiler information about the version of the language standard that you're going to use. 
 
-It can be accomplished by providing the compiler with special flags for the compiler program. If you are using an Integrated Development Environment (IDE) it can be done with extra help from its Graphical User Interface (GUI) or you should find a way to adjust compiler flags in it manually in IDE dependent way:
+It can be accomplished by providing the compiler with special flags for the compiler program. If you are using an Integrated Development Environment (IDE), it can be done with extra help from its Graphical User Interface (GUI), or you should find a way to adjust compiler flags in it manually in IDE dependent way:
 
 * **Visual Studio/MSVC.** Specify `/std:c++20` or `/std:c++latest` for 
 [MSVC](https://learn.microsoft.com/en-us/cpp/build/reference/std-specify-language-standard-version?view=msvc-170) compiler.
@@ -293,7 +293,7 @@ Compiler vendors are hard at work to catch up with all new features, which have 
 You can keep track which compiler supports which features of C++11/14/17/20/23 based on this table:
 [https://en.cppreference.com/w/cpp/compiler_support](https://en.cppreference.com/w/cpp/compiler_support)
 
-An alternative and standardized way starting from C++2020 is to check the presence of some features using [feature test macro](#13-feature-test-macro). The list of available macros is available here:
+An alternative and in fact standardized way starting from C++2020 to check the presence of some features is based on using [feature test macro](#13-feature-test-macro). The list of available macros is available here:
 https://en.cppreference.com/w/cpp/feature_test
 
 
@@ -318,7 +318,7 @@ https://en.cppreference.com/w/cpp/feature_test
 template <class T>
 class MyClass{};
 ```
-**Template Type Argument.** The type assigned to a template type parameter `T` during template class instantiation or template function instantiation. Therefore it's a type with which you specify the template instantiation.
+**Template Type Argument.** The type assigned to a template type parameter `T` during template class instantiation or template function instantiation. Therefore it's a type with which you specify the template to be instantiated.
 
 **Function Object (or functor).** Object of a class that overloads the function call operator. Example:
 
@@ -455,7 +455,7 @@ Probably, it's worthwhile to highlight some downside of interpretable languages:
 
 4. During work with interpretable languages, you don't have a real interface to work with the devices' memory inside the computer and devices in general in all possible ways provided by OS. You do not even have enough tools to precisely handle just the usual *virtual memory* in your **own process**.
 
-5. The interpreter as a computer program adds an extra level of abstraction. The standard implementation Python interpreter is CPython (https://github.com/python/cpython). It is called CPython because it has been implemented in C. Such software as an interpreter improves the time for completing the project from a social point of view, but the implementation of your algorithms, and system is suboptimal from an execution time standpoint (Of course provided you have the skills to implement the functionality on your own).
+5. The interpreter as a computer program adds an extra level of abstraction. The standard implementation Python interpreter is CPython (https://github.com/python/cpython). It is called CPython because it has been implemented in C. Such software as an interpreter improves the time for completing the project from a social point of view, but the implementation of your algorithms, and underlying system can be suboptimal from an execution time standpoint (of course provided you have the skills and time to implement, debug, profile the functionality on your own).
 
 6. The absence of a compiler has *pros* - you do not spend time on a compilation, but there are *cons* - now, the compiler will not tell you about errors in the code because there is no compiler.
 
@@ -463,7 +463,7 @@ Probably, it's worthwhile to highlight some downside of interpretable languages:
 
 8. Compiler optimization tricks such as code inlining are out of the scope of any interpretable language because for performing such optimization you should have a compiler. The elimination of the compiler stage will make this optimization and other [code optimization](#code-optimization) executed during compile-time impossible for user-defined algorithms.
 
-9. During creating multithread implementation, you should be careful about memory fences (memory barriers or memory fences are used to enforce ordering constraints of executed instruction in a superscalar processor before and after memory barrier/fence), synchronization, data races, atomic operations, absence of storing some objects in registers via volatile qualifier (which is absent in Python language). In reality, the implementation of interpreters is typically highly leveraged into existing C or C++ libraries because creating such modules of functionality in an interpreter by itself is not effective. However, it is not true that all C and C++ libraries are thread-safe. And so, creating a true multithreading environment inside an interpreter can be tricky. If you want to learn more about how Concurrency in Python is implemented (and want to know more about Global Interpreter Lock (GIL)) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html). Do not get us wrong. Developers of the Python interpreter did their best, but the problem was not so easy in the first place. Once the Python interpreter resolves it, then at least you should observe speedup from this compute-bound example:
+9. During creating multithread implementation, you should be careful about memory fences (memory barriers or memory fences are used to enforce ordering constraints of executed instruction in a superscalar processor before and after memory barrier/fence), synchronization, data races, atomic operations, absence of storing some objects in registers via volatile qualifier (which is absent in Python language). In reality, the implementation of interpreters is typically highly leveraged into existing C or C++ libraries because creating actual modules of functionality in an interpreter by itself is not effective. However, it is not true that all C and C++ libraries are thread-safe. And so, creating a true multithreading environment inside an interpreter can be tricky. If you want to learn more about how Concurrency in Python is implemented (and want to know more about Global Interpreter Lock (GIL)) we recommend talks by one Python enthusiast, David Beazley: [An Introduction to Python Concurrency, David Beazley](https://www.dabeaz.com/tutorials.html). Do not get us wrong. Developers of the Python interpreter did their best, but the problem was not so easy in the first place. Once the Python interpreter resolves it, then at least you should observe speedup from this compute-bound example:
 
 ```
 #!/usr/bin/env python3
@@ -563,23 +563,23 @@ Some language decisions due to B.Stroustoup:
 
 - *"C++ does not have a universal class Object. It's so because, in C++, we don't need one: generic programming provides statically type-safe alternatives in most cases. Also, there is no valid universal class; in fact, using a universal base class implies the cost."*
 
-- *"Templates are not Generics (from C# or Java). Generics are primarily syntactic sugar for abstract classes. With generics (whether Java or C# generics), You program with precisely defined interfaces and typically pay the cost of virtual function calls and/or dynamic casts to use arguments."*
+- *"Templates are not Generics (from C# or Java). Generics are primarily syntactic sugar for abstract classes. With generics (whether Java or C# generics), you program with precisely defined interfaces and typically pay the cost of virtual function calls and/or dynamic casts to use arguments."*
 
 # Why learn C++ if I know Python (Toy Example)
 
-Sometimes while making programs in Python, you need to write programs directly in Python, not only call external C++ libraries from it. Possible reasons why you need to implement the algorithm in Python (without leveraging external libraries):
+Sometimes, while making programs in Python, you need to write programs directly in Python, not only call external C++ libraries from it. Possible reasons why you need to implement the algorithm in Python (without leveraging external libraries):
 
 * The algorithm is short and suitable for CPU.
 * Library does not exist, or Library exists but does not provide Python bindings.
-* The library does not provide enough configuration and you need it.
-* You need to change something fundamental inside the C++ Library. You don't know C++, and due to a lack of knowledge, you use Python.
+* The library does not provide enough configuration, and you need it.
+* You need to change something fundamental inside the C++ Library. You don't know C++, and due to a lack of knowledge or because the code is too complicated, you use Python.
 
-Creating a CPU-effective algorithm in Python is difficult when wall clock time matters. As a concrete example, Let's compare the wall clock time of two programs written in C++11 and Python3 under the following assumptions:
+Creating a CPU-effective algorithm in Python is difficult when wall clock time matters. As a concrete example, let's compare the wall clock time of two programs written in C++11 and Python3 under the following assumptions:
 
 * Both programs use single-core CPU
-* The C++ program does not use any special optimization techniques. It's usual C++ code.
+* The C++ program does not use any special optimization techniques. It's a usual C++ code.
 
-The test compares wall clock time of the following:
+The test compares the wall clock time of the following:
 
 1. Python with native Python lists
 2. Python implementation with NumPy arrays
