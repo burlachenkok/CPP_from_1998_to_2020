@@ -24,11 +24,11 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
 ----
 
 
-*Revision Update:* December 27, 2024
+*Revision Update:* April 5, 2025
 
 *Historical Note:* The original title *"Technical Note. From C++1998 to C++2020"* in the update from March 2024 has been changed due to the additional appendix to cover some language and library features of C++ 2023.
 
-© 2022-2024 Konstantin Burlachenko, all rights reserved.
+© 2022-2025 Konstantin Burlachenko, all rights reserved.
 
 ----
 
