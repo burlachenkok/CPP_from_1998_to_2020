@@ -241,7 +241,7 @@ Correspondence to: konstantin.burlachenko@kaust.edu.sa
     - [8. Extended Width Float Point Types](#8-extended-width-float-point-types)
     - [9. Explicit Object Parameters in Class Methods](#9-explicit-object-parameters-in-class-methods)
     - [10. Ref-Qualified methods (from C++11) and more about explicit Object Parameter (from C++23)](#10-ref-qualified-methods-from-c11-and-more-about-explicit-object-parameter-from-c23)
-  - [11. If consteval - shorthand for std::is_constant_evaluated() in constexpr functions](#11-if-consteval---shorthand-for-stdis_constant_evaluated-in-constexpr-functions)
+    - [11. If consteval - shorthand for std::is_constant_evaluated() in constexpr functions](#11-if-consteval---shorthand-for-stdis_constant_evaluated-in-constexpr-functions)
   - [C++23 - Preprocessors Features](#c23---preprocessors-features)
     - [1. elifdef](#1-elifdef)
     - [2. elifndef](#2-elifndef)
