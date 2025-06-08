@@ -11,8 +11,6 @@
 
 [King Abdullah University of Science and Technology](https://www.kaust.edu.sa/en), Thuwal, Saudi Arabia.
 
-Correspondence to: burlachenkok@gmail.com
-
 
 **Editors**
 
